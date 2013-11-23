@@ -25,6 +25,10 @@ body[data-page=page-practice] {
 	background-image: linear-gradient(0deg, #666, #CCC);
 }
 
+body[data-page=page-practice] [data-role=menubar] {
+	border-bottom: 5px solid #333;
+}
+
 body[data-page=page-practice] [data-role=content] {
 	background: transparent;
 }
