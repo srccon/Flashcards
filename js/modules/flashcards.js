@@ -46,7 +46,7 @@ define(["transit"], function() {
 			var front = $parent.find("td:eq(0)").text();
 			var back = $parent.find("td:eq(1)").text();
 
-			if (confirm("Remove " + front + " <-> " + back + "?"))
+			if (confirm("Remove " + front + " - " + back + "?"))
 			{ Flashcards.remove(stack, key); }
 		},
 

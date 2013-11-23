@@ -5,7 +5,6 @@ A simple flashcard application for android and web browsers.
 
 * [**Browser version**](http://elias-schuett.de/git/Flashcards/)
 * [**Android app (APK)**](https://dl.dropboxusercontent.com/u/14645664/files/Flashcards.apk)
-* [**Android app (Google Play)**](https://play.google.com/store/apps/details?id=de.elias_schuett.flashcards)
 
 
 ## Features
@@ -17,11 +16,8 @@ A simple flashcard application for android and web browsers.
 
 ## ToDo
 
-* Syncing interface
-* Syncing server software
+* Syncing functionality
 * Expand practice mode
-* Settings
-
 
 ## Dependencies
 

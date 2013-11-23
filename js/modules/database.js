@@ -216,7 +216,7 @@ define(function() {
 				back: "おはよう！"
 			}, {
 				front: "Good evening!",
-				back: "こんにちは"
+				back: "こんにちは!"
 			}, {
 				front: "Good night.",
 				back: "こんばんは。"

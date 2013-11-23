@@ -153,7 +153,16 @@ define(function() {
 				Stacks.practice.index = 0;
 				Stacks.practice.score = 0;
 				
-				Stacks.practice.flashcards = data.shuffle();
+				if (App._settings.shuffle_flashcards) { data.shuffle(); }
+				if (App._settings.switch_front_back) {
+					data.forEach(function(v) {
+						var front = v.front;
+						v.front = v.back;
+						v.back = front;
+					});
+				}
+
+				Stacks.practice.flashcards = data;
 				Stacks.practice();
 			});
 
@@ -174,6 +183,12 @@ define(function() {
 
 			window.history.back();
 			return;
+		}
+
+		if (App._settings.switch_front_back_randomly && Math.round(Math.random())) {
+			var front = flashcard.front;
+			flashcard.front = flashcard.back;
+			flashcard.back = front;
 		}
 		
 		// Reset flashcard view

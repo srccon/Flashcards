@@ -11,6 +11,20 @@ define(function() {
 		App = require("app");
 	};
 
+	/* ========================== */
+	/* ====== LOCALSTORAGE ====== */
+	/* ========================== */
+
+	Utils.localStorage = function(key, value) {
+		if (key !== undefined && value !== undefined) {
+			// Phonegap hack ?
+			window.localStorage.removeItem(key);
+			window.localStorage.setItem(key, JSON.stringify(value));
+		} else if (key !== undefined) {
+			return JSON.parse(window.localStorage.getItem(key));
+		}
+	};	
+
 	/* ======================== */
 	/* ====== FAKE CLICK ====== */
 	/* ======================== */

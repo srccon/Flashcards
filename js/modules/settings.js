@@ -9,6 +9,14 @@ define(function() {
 	Settings.initialize = function() {
 
 		App = require("app");
+
+		var setting, $elem;
+
+		for (setting in App._settings) {
+			$elem = App.$("input[name=" + setting + "]");
+			if (typeof App._settings[setting] == "boolean" && $elem.length)
+			{ $elem.attr("checked", App._settings[setting]); }
+		}
 	};
 
 	/* ==================== */
@@ -17,17 +25,9 @@ define(function() {
 
 	Settings.events = {
 
-		"click #export_json": function(e) {
-			Settings.export("json");
-		},
-
-		"click #export_txt": function(e) {
-			Settings.export("txt");
-		},
-
-		"click #import": function(e) {
-			Settings.import();
-		},
+		"click #export_json": function(e) { Settings.export("json"); },
+		"click #export_txt": function(e) { Settings.export("txt"); },
+		"click #import": function(e) { Settings.import(); },
 
 		"click #reset_all": function(e) {
 			if (confirm("Do you really wish to delete your entire stacks, flashcards and statistics?")) {
@@ -40,7 +40,26 @@ define(function() {
 				Settings.reset_statistics();
 			}
 		},
+
+		"change input[type=checkbox]": function(e) {
+			var what = App.$(e.currentTarget).attr("name");
+			var status = App.$(e.currentTarget).is(":checked");
+			Settings.set(what, status);
+		}
 	};
+
+	/* ================= */
+	/* ====== SET ====== */
+	/* ================= */
+
+	Settings.set = function(what, status) {
+
+		var settings = App.Utils.localStorage("settings") || {};
+		settings[what] = status;
+
+		App.Utils.localStorage("settings", settings);
+		App._settings = settings;
+	}
 
 	/* ==================== */
 	/* ====== EXPORT ====== */

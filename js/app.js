@@ -15,7 +15,13 @@ define([
 
 ], function($, Utils, Router, Settings, DB, Statistics, Stacks, Flashcards, fastclick) {
 
-	var App = {};
+	var App = {
+
+		_settings: Utils.localStorage("settings") || {},
+
+		isMobile: /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent),
+		isPhoneGap: (document.location.protocol == "file:")
+	};
 
 	App.$ = $;
 
