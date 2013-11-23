@@ -97,16 +97,16 @@ define(function() {
 		// Hide the previous page
 		$pageCurrent.hide();
 
+		// Call route function
+		if (Router.routes[hash])
+		{ Router.routes[hash].apply(this, args); }
+
 		// Route to the new page
 		if ($pageNext.attr("data-role") == "page") {
 			App.$("body").attr("data-page", hash);
 			Router.currentPage = hash;
 			$pageNext.show();
 		}
-
-		// Call route function
-		if(Router.routes[hash])
-		{ Router.routes[hash].apply(this, args); }
 	};
 
 	return Router;

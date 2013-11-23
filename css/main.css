@@ -63,6 +63,21 @@ label input:checked + span::before { content: "\f046"; }
 
 [data-role=page] { display: none; }
 
+#splash-screen {
+	width: 100%;
+	height: 100%;
+	
+	position: absolute;
+	left: 0px; top: 0px;
+	z-index: 99;
+
+	background-color: #333;
+	background-image: url("../img/logo-splash-sreen.png");
+	background-position: center center;
+	background-size: 50%;
+	background-repeat: no-repeat;
+}
+
 
 /* ===================== */
 /* ====== MENUBAR ====== */
@@ -71,7 +86,7 @@ label input:checked + span::before { content: "\f046"; }
 [data-role=menubar] {
 	color: #FFF;
 	height: 80px;
-	background-color: #09F;
+	background-color: #93C;
 	display: table;
 	width: 100%;
 	position: relative;
@@ -89,7 +104,7 @@ label input:checked + span::before { content: "\f046"; }
 	font-weight: 300;
 
 	position: absolute;
-	top: 25px; left: 80px;
+	top: 24px; left: 75px;
 }
 
 [data-role=menubar] .action {
@@ -101,14 +116,14 @@ label input:checked + span::before { content: "\f046"; }
 	margin-top: 10px;
 	margin-right: 10px;
 	border-radius: 2px;
-	background-color: #0CF;
+	background-color: #B7D;
 	text-align: center;
 	cursor: pointer;
 	text-decoration: none;
 }
 
 [data-role=menubar] .action:hover {
-	background-color: #0DF;
+	background-color: #C8E;
 }
 
 
@@ -139,13 +154,13 @@ label input:checked + span::before { content: "\f046"; }
 }
 
 .tab:hover {
-	border-bottom-color: #09C;
+	color: #CCC;
 }
 
 .tab.active {
 	color: #FFF;
 	background-color: #222;
-	border-bottom-color: #0CF;
+	border-bottom-color: #B7D;
 }
 
 
