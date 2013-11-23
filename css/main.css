@@ -1,0 +1,380 @@
+* { margin: 0px; padding: 0px; }
+*:focus { outline: none; }
+
+html, body { height: 100%; }
+
+html {
+	background-color: #333;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+body {
+	font-family: Roboto, "Segoe UI", Arial, sans-serif;
+
+	max-width: 1024px;
+	min-height: 100%;
+	background-color: #F9F9F9;
+	margin: 0px auto;
+
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-transform: translate3d(0px, 0px, 0px);
+}
+
+body[data-page=page-practice] {
+	background-image: linear-gradient(0deg, #666, #CCC);
+}
+
+body[data-page=page-practice] [data-role=content] {
+	background: transparent;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	margin-bottom: 20px;
+	text-shadow: 0px 1px #FFF;
+}
+
+ul { margin-left: 20px; }
+li { padding-bottom: 5px; }
+a { color: #039; }
+
+label {
+	background-color: #EEE;
+	padding: 20px;
+	display: block;
+	margin-bottom: 10px;
+	position: relative;
+	cursor: pointer;
+	font-size: 1.2em;
+}
+
+label:hover { background-color: #DDD; }
+
+label span::before {
+	color: #333;
+	font-family: FontAwesome;
+	content: "\f096";
+	width: 20px;
+	display: inline-block;
+}
+
+label input { display: none; }
+label input:checked + span::before { content: "\f046"; }
+
+[data-role=page] { display: none; }
+
+
+/* ===================== */
+/* ====== MENUBAR ====== */
+/* ===================== */
+
+[data-role=menubar] {
+	color: #FFF;
+	height: 80px;
+	background-color: #09F;
+	display: table;
+	width: 100%;
+	position: relative;
+}
+
+[data-role=menubar] .logo {
+	margin-top: 15px;
+	margin-left: 15px;
+}
+
+[data-role=menubar] .title {
+	color: #FFF;
+	text-shadow: 0px 1px #069;
+	font-size: 2em;
+	font-weight: 300;
+
+	position: absolute;
+	top: 25px; left: 80px;
+}
+
+[data-role=menubar] .action {
+	color: #FFF;
+	float: right;
+	width: 30px;
+	height: 30px;
+	padding: 15px;
+	margin-top: 10px;
+	margin-right: 10px;
+	border-radius: 2px;
+	background-color: #0CF;
+	text-align: center;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+[data-role=menubar] .action:hover {
+	background-color: #0DF;
+}
+
+
+/* ================== */
+/* ====== TABS ====== */
+/* ================== */
+
+[data-role=tabs] {
+	display: table;
+	text-align: center;
+	width: 100%;
+}
+
+[data-role=tabs] .fa { margin-right: 5px; }
+
+.tab {
+	color: #999;
+	font-weight: 300;
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	padding: 20px;
+
+	background-color: #111;
+	border-bottom: 5px solid #999;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.tab:hover {
+	border-bottom-color: #09C;
+}
+
+.tab.active {
+	color: #FFF;
+	background-color: #222;
+	border-bottom-color: #0CF;
+}
+
+
+/* ===================== */
+/* ====== CONTENT ====== */
+/* ===================== */
+
+[data-role=content] {
+	padding: 50px;
+	color: #333;
+	background-color: #F9F9F9;
+}
+
+.button {
+	display: inline-block;
+	color: #333;
+	background-color: #DDD;
+	padding: 10px 20px;
+	text-align: center;
+	border-radius: 2px;
+	border: 1px solid #CCC;
+	border-bottom: 1px solid #999;
+	box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.button.big {
+	padding: 20px;
+	font-size: 1.2em;
+}
+
+.button.green {
+	color: #FFF;
+	border: 1px solid #0C0;
+	background-color: #3D3;
+}
+
+
+.button.red {
+	color: #FFF;
+	border: 1px solid #C00;
+	background-color: #D33;
+}
+
+.button.green:hover { background-color: #0D0; border: 1px solid #090; }
+.button.red:hover { background-color: #D00; border: 1px solid #900; }
+.button:hover { background-color: #CCC; }
+
+
+hr {
+	height: 0px;
+	border: 0px;
+	border-top: 2px solid #DDD;
+	border-bottom: 2px solid #FFF;
+	margin: 20px 0px 40px 0px;
+	clear: both;
+}
+
+hr.transparent {
+	height: 10px;
+	border: 0px;
+}
+
+td, th {
+	padding: 10px;
+	text-align: left;
+}
+
+
+/* ==================== */
+/* ====== STACKS ====== */
+/* ==================== */
+
+#stacks {
+	margin-left: 0px;
+	list-style: none;
+	border-bottom: 0px;
+}
+
+#stacks li {
+	color: #666;
+	background-color: #DDD;
+	padding: 20px;
+	cursor: pointer;
+
+	border: 2px solid #CCC;
+	border-top: 0px;
+	box-shadow: inset 0px 2px #EEE;
+}
+
+#stacks li:hover { background-color: #CCC; }
+#stacks li:first-child { margin-top: 0px; border-top: 2px solid #CCC; }
+#stacks li:last-child { margin-bottom: 0px; }
+
+#stacks li .count {
+	float: right;
+	font-size: 0.8em;
+}
+
+#flashcardList {
+	width: 100%;
+	border-spacing: 10px 0px;
+	display: none;
+}
+
+#flashcardList th {
+	color: #666;
+	background-color: #E6E6E6;
+	padding: 20px;
+	border-top: 2px solid #FFF;
+}
+
+#flashcardList td {
+	color: #666;
+	background-color: #EEE;
+	padding: 20px;
+}
+
+#flashcardList td:last-child {
+	padding: 5px;
+}
+
+#flashcardList td:last-child span:first-child { margin-right: 5px; }
+#flashcardList td:last-child span {
+	cursor: pointer;
+	background-color: #E6E6E6;
+	padding: 16px;
+}
+
+
+/* ======================== */
+/* ====== FLASHCARDS ====== */
+/* ======================== */
+
+#flashcard {
+	perspective: 500px;
+	position: relative;
+}
+
+#flashcard-shadow {
+	content: " ";
+
+	opacity: 0.1;
+	margin-top: 10%;
+	margin-left: 10%;
+	width: 80%;
+	height: 40px;
+
+	background-image: url("../img/shadow.png");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+
+#flashcard > div {
+
+	color: #666;
+	font-size: 3em;
+	font-weight: bold;
+	text-shadow:  5px  0px 0px #FFF,
+			     -5px  0px 0px #FFF,
+			      0px  5px 0px #FFF,
+			      0px -5px 0px #FFF,
+			     -5px -5px 0px #FFF,
+			      5px  5px 0px #FFF;
+
+	height: 1.2em;
+	padding: 10% 0px;
+	width: 100%;
+	
+	border: 1px solid #DDD;
+	border-radius: 1px;
+
+	background-color: #FFF; 
+	background-image: 
+	linear-gradient(90deg, transparent 50px, #abced4 50px, #abced4 60px, transparent 60px),
+	linear-gradient(#F9F9F9 .1em, transparent .1em);
+	background-size: 100% 0.8em;
+
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+
+	text-align: center;	
+	backface-visibility: hidden;
+	cursor: pointer;
+}
+
+#flashcard .front {
+	transform: rotateX(5deg);
+
+}
+
+#flashcard .back {
+	position: absolute;
+	top: 0px;
+	transform: rotateX(180deg);
+}
+
+textarea {
+	color: #666;
+	font-family: inherit;
+	background-color: #EEE;
+	border: 0px;
+	resize: none;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 10px;
+}
+
+#page-new-flashcard textarea,
+#page-edit-flashcard textarea {
+	height: 4em;
+	font-size: 2em;
+	text-align: center;
+	padding: 40px;
+}
+
+#practice-buttons {
+	position: absolute;
+	bottom: 0px; left: 0px;
+
+	display: table;
+	border-spacing: 1em;
+	width: 100%;
+}
+
+#practice-buttons .button {
+	font-weight: bold;
+	font-size: 1.5em;
+	padding: 15px 0px;
+	display: table-cell;
+	width: 50%;
+}
