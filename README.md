@@ -1,7 +1,7 @@
 Flashcards (WIP) <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img align="right" alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" /></a>
 ==========
 
-A simple flashcard application for android and web browser.  
+A simple flashcard application for android and web browsers.  
 
 * [**Browser version**](http://elias-schuett.de/git/Flashcards/)
 * [**Android app (APK)**](https://dl.dropboxusercontent.com/u/14645664/files/Flashcards.apk)
