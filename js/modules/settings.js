@@ -119,10 +119,10 @@ define(function() {
 				var s = date.getUTCSeconds(); s = s < 10 ? "0" + s : s;
 
 				var dateString = y + "-" + m + "-" + d + "-" + s;
-				var path = "export-" + dateString + "." + type;
+				var path = "flashcards/export-" + dateString + "." + type;
 
 				App.Utils.PhonegapWriteFile(path, out, function() {
-					alert("Created file in: " + path);
+					alert("Created file in: /sdcard/" + path);
 				});
 
 			} else {

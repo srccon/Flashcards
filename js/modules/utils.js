@@ -58,10 +58,12 @@ define(function() {
 			return;
 		}
 
-		Utils.PhonegapWriteFile.filesystem.root.getFile(path, { create: true, exclusive: false }, function(fileEntry) {
-			fileEntry.createWriter(function(writer) {
-				writer.onwrite = callback;
-				writer.write(content);
+		Utils.PhonegapWriteFile.filesystem.root.getDirectory("flashcards", { create: true, exclusive: false }, function(directoryEntry) {
+			Utils.PhonegapWriteFile.filesystem.root.getFile(path, { create: true, exclusive: false }, function(fileEntry) {
+				fileEntry.createWriter(function(writer) {
+					writer.onwrite = callback;
+					writer.write(content);
+				});
 			});
 		});
 	};
