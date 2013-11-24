@@ -16,6 +16,13 @@ require.config({
 
 require(["app"], function(App) {
 
-	App.initialize();
+	if (App.isPhoneGap) {
+		require(["libs/cordova"], function() {
+			document.addEventListener("deviceready", App.initialize);
+		});
 
+		return;
+	}
+
+	App.initialize();
 });

@@ -43,16 +43,35 @@ define(function() {
 		}
 	};
 
+	Utils.PhonegapWriteFile = function(path, content, callback) {
+
+		if (!Utils.PhonegapWriteFile.filesystem) {
+
+			var _this = this;
+			var args = arguments;
+
+			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(filesystem) {
+				Utils.PhonegapWriteFile.filesystem = filesystem;
+				Utils.PhonegapWriteFile.apply(_this, args);
+			});
+
+			return;
+		}
+
+		Utils.PhonegapWriteFile.filesystem.root.getFile(path, { create: true, exclusive: false }, function(fileEntry) {
+			fileEntry.createWriter(function(writer) {
+				writer.onwrite = callback;
+				writer.write(content);
+			});
+		});
+	};
+
 	Object.defineProperty(Array.prototype, "shuffle", {
 		value:  function() {
 			var counter = this.length, temp, index;
 
-			// While there are elements in the array
 			while (counter--) {
-				// Pick a random index
 				index = (Math.random() * counter) | 0;
-
-				// And swap the last element with it
 				temp = this[counter];
 				this[counter] = this[index];
 				this[index] = temp;

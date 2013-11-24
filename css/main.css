@@ -103,7 +103,7 @@ label input:checked + span::before { content: "\f046"; }
 
 [data-role=menubar] .title {
 	color: #FFF;
-	text-shadow: 0px 1px #069;
+	text-shadow: 0px 2px rgba(0, 0, 0, 0.4);
 	font-size: 2em;
 	font-weight: 300;
 

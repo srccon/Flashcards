@@ -20,8 +20,9 @@ define([
 		_settings: Utils.localStorage("settings") || {},
 
 		isMobile: /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent),
-		isPhoneGap: (document.location.protocol == "file:")
 	};
+
+	App.isPhoneGap = App.isMobile && (document.location.protocol == "file:");
 
 	App.$ = $;
 

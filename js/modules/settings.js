@@ -82,31 +82,50 @@ define(function() {
 		});
 
 		interval = window.setInterval(function() {
-			if (count == stacks.length) {
-				window.clearInterval(interval);
 
-				if (type == "json") {
+			if (count != stacks.length) { return }
+			window.clearInterval(interval);
 
-					out = JSON.stringify(json_data, null, "\t");
-					anchor.href = "data:application/json;charset=UTF-8;," + encodeURIComponent(out);
-					anchor.download = "flashcards.json";
+			if (type == "json") {
 
-				} else if (type == "txt") {
+				out = JSON.stringify(json_data, null, "\t");
+				anchor.href = "data:application/json;charset=UTF-8;," + encodeURIComponent(out);
+				anchor.download = "flashcards.json";
 
-					out = "";
+			} else if (type == "txt") {
 
-					for (var stack in json_data) {
-						out += stack + "\r\n\r\n";
+				out = "";
 
-						json_data[stack].forEach(function(v) {
-							out	+= "\t" + v.front + " - " + v.back + "\r\n";
-						});
+				for (var stack in json_data) {
+					out += stack + "\r\n\r\n";
 
-						out += "\r\n";
-					}
-					anchor.href = "data:text/plain;charset=UTF-8;," + encodeURIComponent(out);
-					anchor.download = "flashcards.txt";
+					json_data[stack].forEach(function(v) {
+						out	+= "\t" + v.front + " - " + v.back + "\r\n";
+					});
+
+					out += "\r\n";
 				}
+
+				anchor.href = "data:text/plain;charset=UTF-8;," + encodeURIComponent(out);
+				anchor.download = "flashcards.txt";
+			}
+
+			if (App.isPhoneGap) {
+
+				var date = new Date();
+				var y = date.getUTCFullYear();
+				var m = date.getUTCMonth()+1; m = m < 10 ? "0" + m : m;
+				var d = date.getUTCDate(); d = d < 10 ? "0" + d : d;
+				var s = date.getUTCSeconds(); s = s < 10 ? "0" + s : s;
+
+				var dateString = y + "-" + m + "-" + d + "-" + s;
+				var path = "export-" + dateString + "." + type;
+
+				App.Utils.PhonegapWriteFile(path, out, function() {
+					alert("Created file in: " + path);
+				});
+
+			} else {
 
 				App.Utils.fake_click(anchor);
 			}
