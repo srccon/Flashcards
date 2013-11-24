@@ -153,16 +153,6 @@ define(["transit"], function() {
 
 		App.DB.addData("Stacks", stack, data, function(e) {
 
-			if (App.Settings.dropbox.isAuthenticated && App.Settings.dropbox.datastore) {
-
-				App.Settings.dropbox.datastore.flashcards.insert({
-					key: e.target.result,
-					stack: stack,
-					front: data.front,
-					back: data.back
-				});
-			}
-
 			App.$("#page-new-flashcard textarea[name=front]").val("");
 			App.$("#page-new-flashcard textarea[name=back]").val("");
 		});
@@ -187,11 +177,6 @@ define(["transit"], function() {
 	Flashcards.remove = function(stack, key) {
 
 		App.DB.removeData("Stacks", stack, key, function() {
-
-			if (App.Settings.dropbox.isAuthenticated && App.Settings.dropbox.datastore) {
-				var record = App.Settings.dropbox.datastore.flashcards.query({ key: key })[0];
-				if (record) { record.deleteRecord(); }
-			}
 
 			App.$("tr[data-key=" + key + "]").remove();
 		});

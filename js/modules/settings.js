@@ -1,4 +1,4 @@
-define(["dropbox"], function(Dropbox) {
+define(function() {
 
 	var Settings = {}, App;
 
@@ -17,8 +17,6 @@ define(["dropbox"], function(Dropbox) {
 			if (typeof App._settings[setting] == "boolean" && $elem.length)
 			{ $elem.attr("checked", App._settings[setting]); }
 		}
-
-		Settings.initDropbox();
 	};
 
 	/* ==================== */
@@ -43,17 +41,6 @@ define(["dropbox"], function(Dropbox) {
 			if (confirm("Do you really wish to delete your statistics?")) {
 				Settings.reset_statistics();
 			}
-		},
-
-		"click #unsync_dropbox": function(e) {
-			Settings.dropbox.client.signOut();
-			$("#unsync_dropbox").hide();
-			$("#sync_dropbox").show();
-		},
-
-		"click #sync_dropbox": function(e) {
-
-			Settings.dropbox.client.authenticate();
 		},
 
 		"change input[type=checkbox]": function(e) {
@@ -146,39 +133,6 @@ define(["dropbox"], function(Dropbox) {
 				App.Utils.fake_click(anchor);
 			}
 		}, 100);
-	};
-
-	/* ========================== */
-	/* ====== INIT DROPBOX ====== */
-	/* ========================== */
-
-	Settings.initDropbox = function() {
-
-		Settings.dropbox = {};
-		Settings.dropbox.client = new Dropbox.Client({ key: "njhr3s6wjjbmfsv" });
-		Settings.dropbox.client.authenticate({ interactive: false });
-
-		if (Settings.dropbox.client.isAuthenticated()) {
-
-			Settings.dropbox.isAuthenticated = true;
-
-			$("#sync_dropbox").hide();
-			$("#unsync_dropbox").show();
-
-			Settings.dropbox.client.getDatastoreManager().openDefaultDatastore(function(error, datastore) {
-
-			    Settings.dropbox.datastore = datastore;
-			    Settings.dropbox.datastore.stacks = Settings.dropbox.datastore.getTable("Stacks");
-			    Settings.dropbox.datastore.flashcards = Settings.dropbox.datastore.getTable("Flashcards");
-			    Settings.dropbox.datastore.statistics = Settings.dropbox.datastore.getTable("Statistics");
-
-				Settings.dropbox.datastore.recordsChanged.addListener(Settings.syncDropbox);
-			});
-		}
-	};
-
-	Settings.syncDropbox = function(e) {
-
 	};
 
 	/* ==================== */
