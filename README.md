@@ -6,6 +6,7 @@ A simple flashcard application for android and web browsers.
 * [**Browser version**](http://elias-schuett.de/git/Flashcards/)
 * [**Android app (APK)**](https://dl.dropboxusercontent.com/u/14645664/files/Flashcards.apk)
 
+![screenshot](https://dl.dropboxusercontent.com/u/14645664/web/dghfdhgfdhgfdhgfd.png)
 
 ## Features
 
