@@ -1,4 +1,4 @@
-define(function() {
+define(["dropbox"], function(Dropbox) {
 
 	var Settings = {}, App;
 
@@ -17,6 +17,8 @@ define(function() {
 			if (typeof App._settings[setting] == "boolean" && $elem.length)
 			{ $elem.attr("checked", App._settings[setting]); }
 		}
+
+		Settings.initDropbox();
 	};
 
 	/* ==================== */
@@ -30,18 +32,32 @@ define(function() {
 		"click #import": function(e) { Settings.import(); },
 
 		"click #reset_all": function(e) {
+
 			if (confirm("Do you really wish to delete your entire stacks, flashcards and statistics?")) {
 				Settings.reset();
 			}
 		},
 
 		"click #reset_statistics": function(e) {
+
 			if (confirm("Do you really wish to delete your statistics?")) {
 				Settings.reset_statistics();
 			}
 		},
 
+		"click #unsync_dropbox": function(e) {
+			Settings.dropbox.client.signOut();
+			$("#unsync_dropbox").hide();
+			$("#sync_dropbox").show();
+		},
+
+		"click #sync_dropbox": function(e) {
+
+			Settings.dropbox.client.authenticate();
+		},
+
 		"change input[type=checkbox]": function(e) {
+
 			var what = App.$(e.currentTarget).attr("name");
 			var status = App.$(e.currentTarget).is(":checked");
 			Settings.set(what, status);
@@ -54,11 +70,11 @@ define(function() {
 
 	Settings.set = function(what, status) {
 
-		var settings = App.Utils.localStorage("settings") || {};
-		settings[what] = status;
+		var _settings = App.Utils.localStorage("settings") || {};
+		_settings[what] = status;
 
-		App.Utils.localStorage("settings", settings);
-		App._settings = settings;
+		App.Utils.localStorage("settings", _settings);
+		App._settings = _settings;
 	}
 
 	/* ==================== */
@@ -68,11 +84,11 @@ define(function() {
 	Settings.export = function(type) {
 
 		var stacks = App.Stacks.list(),
-		    json_data = {},
-		    count = 0,
-		    interval,
-		    out,
-		    anchor = document.createElement("a");
+			json_data = {},
+			count = 0,
+			interval,
+			out,
+			anchor = document.createElement("a");
 
 		[].forEach.call(stacks, function(v) {
 			App.Stacks.flashcards(v, function(data) {
@@ -132,6 +148,39 @@ define(function() {
 		}, 100);
 	};
 
+	/* ========================== */
+	/* ====== INIT DROPBOX ====== */
+	/* ========================== */
+
+	Settings.initDropbox = function() {
+
+		Settings.dropbox = {};
+		Settings.dropbox.client = new Dropbox.Client({ key: "njhr3s6wjjbmfsv" });
+		Settings.dropbox.client.authenticate({ interactive: false });
+
+		if (Settings.dropbox.client.isAuthenticated()) {
+
+			Settings.dropbox.isAuthenticated = true;
+
+			$("#sync_dropbox").hide();
+			$("#unsync_dropbox").show();
+
+			Settings.dropbox.client.getDatastoreManager().openDefaultDatastore(function(error, datastore) {
+
+			    Settings.dropbox.datastore = datastore;
+			    Settings.dropbox.datastore.stacks = Settings.dropbox.datastore.getTable("Stacks");
+			    Settings.dropbox.datastore.flashcards = Settings.dropbox.datastore.getTable("Flashcards");
+			    Settings.dropbox.datastore.statistics = Settings.dropbox.datastore.getTable("Statistics");
+
+				Settings.dropbox.datastore.recordsChanged.addListener(Settings.syncDropbox);
+			});
+		}
+	};
+
+	Settings.syncDropbox = function(e) {
+
+	};
+
 	/* ==================== */
 	/* ====== IMPORT ====== */
 	/* ==================== */
@@ -145,8 +194,8 @@ define(function() {
 	/* =================== */
 
 	Settings.reset = function() {
-		window.indexedDB.deleteDatabase('Stacks');
-		window.indexedDB.deleteDatabase('Statistics');
+		window.indexedDB.deleteDatabase("Stacks");
+		window.indexedDB.deleteDatabase("Statistics");
 		window.localStorage.clear();
 		window.location.reload();
 	};
@@ -156,7 +205,7 @@ define(function() {
 	/* ============================== */
 
 	Settings.reset_statistics = function() {
-		window.indexedDB.deleteDatabase('Statistics');
+		window.indexedDB.deleteDatabase("Statistics");
 		window.location.reload();
 	};
 

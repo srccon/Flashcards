@@ -69,21 +69,6 @@ define(function() {
 		}
 	};
 
-	/* ==================== */
-	/* ====== CREATE ====== */
-	/* ==================== */
-
-	Stacks.create = function(name) {
-
-		App.DB.createObjectStore("Stacks", name, null, function(objectStore) {
-
-			if (!App.DB.Stacks.objectStoreNames.length) { App.Router.$page.find(".note").remove(); }
-			App.$("#stacks").append("<li class='stack'><b>" + name + "</b></li>");
-		});
-
-		App.DB.createObjectStore("Statistics", name);
-	};
-
 	/* ================== */
 	/* ====== LIST ====== */
 	/* ================== */
@@ -93,13 +78,36 @@ define(function() {
 	};
 
 	/* ==================== */
+	/* ====== CREATE ====== */
+	/* ==================== */
+
+	Stacks.create = function(name) {
+
+		App.DB.createObjectStore("Stacks", name, null, function(objectStore) {
+
+			if (App.Settings.dropbox.isAuthenticated && App.Settings.dropbox.datastore)
+			{ App.Settings.dropbox.datastore.stacks.insert({ name: name }); }
+
+			if (!App.DB.Stacks.objectStoreNames.length) { App.Router.$page.find(".note").remove(); }
+			App.$("#stacks").append("<li class='stack'><b>" + name + "</b></li>");
+		});
+
+		App.DB.createObjectStore("Statistics", name);
+	};
+
+	/* ==================== */
 	/* ====== REMOVE ====== */
 	/* ==================== */
 
 	Stacks.remove = function(stack) {
 
 		App.DB.deleteObjectStore("Stacks", stack, null, function(e) {
-			console.log(App.DB.Stacks.objectStoreNames);
+
+			if (App.Settings.dropbox.isAuthenticated && App.Settings.dropbox.datastore) {
+				var record = App.Settings.dropbox.datastore.stacks.query({ name: name })[0];
+				if (record) { record.deleteRecord(); }
+			}
+
 			Stacks.updateView();
 			window.location.hash = "page-stacks";
 		});

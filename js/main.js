@@ -2,11 +2,13 @@ require.config({
 
 	shim: {
 		"chart": { exports: "Chart" },
+		"dropbox": { exports: "Dropbox" },
 		"transit": { deps: ["jquery"] }
 	},
 
 	paths: {
 		"jquery": "libs/jquery",
+		"dropbox": "libs/dropbox",
 		"chart": "libs/chart",
 		"transit": "plugins/jquery.transit",
 		"fastclick": "libs/fastclick"

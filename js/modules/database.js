@@ -24,6 +24,7 @@ define(function() {
 			requestStatistics = w.indexedDB.open("Statistics");
 
 			requestStatistics.onsuccess = function(e) {
+
 				Database.Statistics = requestStatistics.result;
 				callback();
 			};
@@ -36,6 +37,8 @@ define(function() {
 
 	Database.createObjectStore = function(dbName, name, onupgradeneeded, onsuccess) {
 
+		if ([].indexOf.call(Database[dbName].objectStoreNames, name) != -1) { return; }
+
 		if (Database.createObjectStore.pending) {
 			if (!Database.createObjectStore.pendingTasks)
 			{ Database.createObjectStore.pendingTasks = []; }
@@ -46,16 +49,10 @@ define(function() {
 
 		Database.createObjectStore.pending = true;
 
-		var exists = false,
-		    version,
+		var version,
 		    request,
 		    objectStore;
 
-		[].forEach.call(Database[dbName].objectStoreNames, function(v) {
-			if (v == name) { exists = true; return false; }
-		});
-
-		if (exists) { return; }
 
 		version = Database[dbName].version + 1;
 		Database[dbName].close();
@@ -75,6 +72,7 @@ define(function() {
 		request.onupgradeneeded = function(e) {
 			var db = e.target.result;
 			objectStore = db.createObjectStore(name, { autoIncrement: true });
+
 			if (onupgradeneeded) { onupgradeneeded(objectStore); }
 		};
 	};
@@ -117,6 +115,7 @@ define(function() {
 		request.onupgradeneeded = function(e) {
 			var db = e.target.result;
 			objectStore = db.deleteObjectStore(name);
+
 			if (onupgradeneeded) { onupgradeneeded(objectStore); }
 		};
 	};
@@ -175,6 +174,7 @@ define(function() {
 	/* ========================= */
 
 	Database.updateData = function(dbName, objectStoreName, key, newData, onsuccess) {
+
 		var transaction = Database[dbName].transaction(objectStoreName, "readwrite");
 		var objectStore = transaction.objectStore(objectStoreName);
 
