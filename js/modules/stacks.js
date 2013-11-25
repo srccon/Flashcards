@@ -18,29 +18,32 @@ define(function() {
 
 	Stacks.events = {
 
-		// Stack link functionality
 		"click #stacks li": function(e) {
 			location.hash = "page-stack:" + $(e.currentTarget).text().trim();
 		},
 
-		// New stack button functionality
 		"click #new-stack": function(e) {
 			var name = window.prompt("Stack name:", "Vocabulary 1");
 			if (name) { Stacks.create(name); }
 		},
 
-		// New stack button functionality
 		"click #exit-practice": function(e) {
 			delete Stacks.practice.flashcards;
 			delete Stacks.practice.index;
 			window.history.back();
 		},
 
-		// New stack button functionality
 		"click #remove-stack": function(e) {
 			var stack = $("#page-stack h1").text();
 			if (confirm("Remove \"" + stack + "\" and all of its flashcards?"))
 			{ Stacks.remove(stack); }
+		},
+
+		"click #rename-stack": function(e) {
+			alert("not yet possible..");
+			// var name = window.prompt("Stack name:", "Vocabulary 1");
+			// var stack = $("#page-stack h1").text();
+			// if (name) { Stacks.rename(name, stack); }
 		}
 	};
 
@@ -86,7 +89,7 @@ define(function() {
 		App.DB.createObjectStore("Stacks", name, null, function(objectStore) {
 
 			if (!App.DB.Stacks.objectStoreNames.length) { App.Router.$page.find(".note").remove(); }
-			App.$("#stacks").append("<li class='stack'><b>" + name + "</b></li>");
+			App.$("#stacks").append("<li class='stack'><b>" + name + "</b> <span class='fa fa-arrow-right' style='float: right;'></span></li>");
 		});
 
 		App.DB.createObjectStore("Statistics", name);
@@ -103,6 +106,15 @@ define(function() {
 			Stacks.updateView();
 			window.location.hash = "page-stacks";
 		});
+	};
+
+	/* ==================== */
+	/* ====== RENAME ====== */
+	/* ==================== */
+
+	Stacks.rename = function(stack, name) {
+
+		
 	};
 
 	/* ======================== */
@@ -144,7 +156,7 @@ define(function() {
 	Stacks.practice = function(stack) {
 
 		// Fetch flashcards
-		if (!Stacks.practice.flashcards) {
+		if (stack) {
 
 			var flashcards = Stacks.flashcards(stack, function(data) {
 

@@ -293,6 +293,11 @@ hr.transparent {
 }
 
 
+#stack-options { width: 100%; }
+#stack-options td {
+	padding: 10px;
+}
+
 /* ======================== */
 /* ====== FLASHCARDS ====== */
 /* ======================== */
