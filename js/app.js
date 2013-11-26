@@ -16,22 +16,17 @@ define([
 ], function($, Utils, Router, Settings, DB, Statistics, Stacks, Flashcards, fastclick) {
 
 	var App = {
-
 		_settings: Utils.localStorage("settings") || {},
-
 		isMobile: /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent),
 	};
 
 	App.isPhoneGap = App.isMobile && (document.location.protocol == "file:");
 
 	App.$ = $;
-
 	App.Utils = Utils;
 	App.Router = Router;
-
 	App.Settings = Settings;
 	App.DB = DB;
-
 	App.Statistics = Statistics;
 	App.Stacks = Stacks;
 	App.Flashcards = Flashcards;
@@ -71,6 +66,7 @@ define([
 	};
 
 	App.registerEvents = function() {
+		
 		var key, event, pair, type, selector;
 
 		for (key in App) {

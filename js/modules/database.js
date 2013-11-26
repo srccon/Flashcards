@@ -9,19 +9,20 @@ define(function() {
 	Database.initialize = function(callback) {
 
 		App = require("app");
-
 		var w = window, request;
 
 		w.indexedDB = w.indexedDB || w.mozIndexedDB || w.webkitIndexedDB || w.msIndexedDB;
 		w.IDBTransaction = w.IDBTransaction || w.webkitIDBTransaction || w.msIDBTransaction;
 		w.IDBKeyRange = w.IDBKeyRange || w.webkitIDBKeyRange || w.msIDBKeyRange;
 
+		// Open database
 		request = w.indexedDB.open("App");
-
 		request.onsuccess = function(e) {
 
+			// Store database object
 			Database.App = request.result;
 
+			// Create necessary objectsores
 			Database.createObjectStore("App", "Stacks");
 			Database.createObjectStore("App", "Flashcards", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); });
 			Database.createObjectStore("App", "Statistics", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); }, callback, callback);
@@ -248,9 +249,7 @@ define(function() {
 				}
 			]);
 		});
-
-		// Database.createObjectStore("Statistics", "Japanese - Greetings");
 	};
 
 	return Database;
-})
+});

@@ -18,41 +18,52 @@ define(function() {
 
 	Stacks.events = {
 
+		// Stack link
 		"click #stacks li": function(e) {
 			location.hash = "page-stack:" + App.$(e.currentTarget).attr("data-key");
 		},
 
+		// Create stack
 		"click #new-stack": function(e) {
 			var name = window.prompt("Stack name:", "Vocabulary 1");
 			if (name) { Stacks.create(name); }
 		},
 
+		// Remove stack
 		"click #remove-stack": function(e) {
 			var stack = App.$("#page-stack h1").text();
 			var id = +window.location.hash.split(":")[1];
+
 			if (confirm("Remove \"" + stack + "\" and all of its flashcards?"))
 			{ Stacks.remove(id); }
 		},
 
+		// Rename stack
 		"click #rename-stack": function(e) {
-
-			var id = +window.location.hash.split(":")[1],
-			    stack = App.$("#page-stack h1").text(),
-			    name = window.prompt("Stack name:", stack);
-
+			var id = +window.location.hash.split(":")[1];
+			var stack = App.$("#page-stack h1").text();
+			var name = window.prompt("Stack name:", stack);
 			if (name) { Stacks.rename(id, name); }
 		},
 
+		// Practice stack
 		"click #practice": function(e) {
-			var id = +window.location.hash.split(":")[1]
+			var id = +window.location.hash.split(":")[1];
 			location.hash = "page-practice:" + id;
 		},
 
+		// Exit practice
 		"click #exit-practice": function(e) {
 			delete Stacks.practice.flashcards;
 			delete Stacks.practice.index;
 			window.history.back();
 		},
+
+		// Return to stack
+		"click .stack-return": function(e) {
+			var stackID = +window.location.hash.split(":")[1];
+			window.location.hash = "#page-stack:" + stackID;
+		}
 	};
 
 	/* ========================= */
@@ -67,15 +78,14 @@ define(function() {
 			$stacks.html("");
 
 			if (stacks.length) {
+
 				$stacks.parent().find(".note").hide();
 
-				// List all stacks
 				[].forEach.call(stacks, function(v) {
 					$stacks.append("<li class='stack' data-key='" + v.key + "'><b>" + v.value.name + "</b> <span class='fa fa-arrow-right' style='float: right;'></span></li>");
 				});
-			} else {
-				$stacks.parent().find(".note").show();
-			}
+
+			} else { $stacks.parent().find(".note").show(); }
 		});
 	};
 
@@ -94,9 +104,7 @@ define(function() {
 	/* ================= */
 
 	Stacks.get = function(callback) {
-		App.DB.getData("App", "Stacks", null, function(data) {
-			callback(data);
-		});
+		App.DB.getData("App", "Stacks", null, callback);
 	};
 
 	/* ==================== */
@@ -122,7 +130,7 @@ define(function() {
 		App.Flashcards.getAll(id, function(flashcards) {
 
 			var keys = [].map.call(flashcards, function(v) { return v.key; });
-			App.Flashcards.remove(keys);
+			App.Flashcards.remove(keys, true);
 
 			App.DB.removeData("App", "Stacks", id, function(e) {
 				App.$(".stack[data-key=" + id + "]").remove();
@@ -159,7 +167,10 @@ define(function() {
 				Stacks.practice.index = 0;
 				Stacks.practice.score = 0;
 				
+				// Shuffle
 				if (App._settings.shuffle_flashcards) { data.shuffle(); }
+
+				// Switch
 				if (App._settings.switch_front_back) {
 					data = data.map(function(v) {
 						var front = v.value.front;
@@ -194,13 +205,10 @@ define(function() {
 		}
 
 		if (App._settings.switch_front_back_randomly && Math.round(Math.random())) {
-
 			var front = flashcard.value.front;
 			flashcard.value.front = flashcard.value.back;
 			flashcard.value.back = front;
 		}
-
-		console.log(flashcard);
 
 		// Reset flashcard view
 		App.$("#practice-buttons").hide();
@@ -213,4 +221,4 @@ define(function() {
 	};
 
 	return Stacks;
-})
+});

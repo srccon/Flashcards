@@ -16,6 +16,7 @@ define(function() {
 			Router.templates[$(this).attr("id")] = $(this).html();
 		});
 
+		// Setup routing
 		window.addEventListener("hashchange", Router.route, false);
 		Router.route();
 	};
@@ -26,57 +27,63 @@ define(function() {
 
 	Router.routes = {
 
-		"page-statistics": function() {
-			App.Statistics.updateView();
-		},
+		"page-stack": function(stackID) {
 
-		"page-stack": function(id) {
-			App.Stacks.getName(+id, function(stackname) {
-				App.Flashcards.getAll(+id, function(data) {
+			// Get stack name
+			App.Stacks.getName(+stackID, function(stackname) {
+
+				// Get all flashcards for that stack
+				App.Flashcards.getAll(+stackID, function(data) {
 
 					Router.$page.find(".stack-name").html(stackname);
-					var $flashcardList = $("#flashcardList");
-					var actions = "<span class='fa fa-pencil edit-flashcard'></span><span class='fa fa-times remove-flashcard'></span>";
+					var $flashcards = $("#flashcards");
 
 					if (data.length) {
-
 						data.forEach(function(v) {
-							$flashcardList.append(
+
+							$flashcards.append(
 								"<tr data-key='" + v.key + "'>" +
+									"<td><label><input type='checkbox'><span></span></label></td>" +
 									"<td>" + v.value.front + "</td>" +
 									"<td>" + v.value.back + "</td>" +
-									"<td width='98'>" + actions + "</td>" +
 								"</tr>"
 							);
 						});
 
 						Router.$page.find(".note").remove();
-						$flashcardList.show();
+						$flashcards.show();
 					}
-				});
-			});
-		},
-
-		"page-new-flashcard": function(stackID) {
-			App.Stacks.getName(+stackID, function(stackname) {
-				Router.$page.find(".stack-name").html(stackname);
-			});
-		},
-
-		"page-edit-flashcard": function(stackID, key) {
-
-			App.Stacks.getName(+stackID, function(stackname) {
-				Router.$page.find(".stack-name").html(stackname);
-				App.Flashcards.get(+key, function(data) {
-					console.log(data);
-					Router.$page.find("textarea[name=front]").val(data.front);
-					Router.$page.find("textarea[name=back]").val(data.back);
 				});
 			});
 		},
 
 		"page-practice": function(id) {
 			App.Stacks.practice(+id);
+		},
+
+		"page-flashcard-new": function(stackID) {
+			App.Stacks.getName(+stackID, function(stackname) {
+				Router.$page.find(".stack-name").html(stackname);
+			});
+		},
+
+		"page-flashcard-edit": function(stackID, key) {
+
+			// Get stack name
+			App.Stacks.getName(+stackID, function(stackname) {
+
+				// Get all flashcards for that stack
+				App.Flashcards.get(+key, function(data) {
+
+					Router.$page.find(".stack-name").html(stackname);
+					Router.$page.find("textarea[name=front]").val(data.front);
+					Router.$page.find("textarea[name=back]").val(data.back);
+				});
+			});
+		},
+
+		"page-statistics": function() {
+			App.Statistics.updateView();
 		}
 	};
 
@@ -116,4 +123,4 @@ define(function() {
 	};
 
 	return Router;
-})
+});

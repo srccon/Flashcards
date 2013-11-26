@@ -152,9 +152,9 @@
 			<div data-role="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
-				<div class="action" id="new-flashcard">
-					<span class="fa fa-plus fa-2x"></span>
-				</div>
+				<div class="action" id="flashcard-new"><span class="fa fa-plus fa-2x"></span></div>
+				<div class="action" id="rename-stack"><span class="fa fa-pencil fa-2x"></span></div>
+				<div class="action" id="remove-stack"><span class="fa fa-times fa-2x"></span></div>
 			</div>
 
 			<div data-role="tabs">
@@ -173,20 +173,21 @@
 
 				<em class="note">No flashcards available, create one!</em>
 				
-				<table id="flashcardList">
+				<table id="flashcards">
 					<tr>
+						<th style="width: 20px"><label><input type="checkbox" name="select_all"><span></span></label></th>
 						<th>Front</th>
 						<th>Back</th>
-						<th>Actions</th>
 					</tr>
 				</table>
 
 				<hr>
 
-				<table id="stack-options">
+				<table class="actions">
 					<tr>
-						<td><a class="button" id="rename-stack" style="width: 100%;"><span class="fa fa-pencil"></span> rename</a></td>
-						<td><a class="button red" id="remove-stack" style="width: 100%;"><span class="fa fa-times"></span> remove</a></td>
+						<td><a class="button big stretch flashcard-edit"><span class="fa fa-pencil"></span> edit selection</a></td>
+						<td><a class="button big stretch flashcard-move"><span class="fa fa-share"></span> move selection</a></td>
+						<td><a class="button big red stretch flashcard-remove"><span class="fa fa-times"></span> remove selection</a></td>
 					</tr>
 				</table>
 			</div>
@@ -196,7 +197,7 @@
 		<!--====== NEW FLASHCARD ======-->
 		<!--===========================-->
 
-		<div data-role="page" id="page-new-flashcard" data-template="true">
+		<div data-role="page" id="page-flashcard-new" data-template="true">
 			<div data-role="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
@@ -215,7 +216,7 @@
 			<div data-role="content">
 
 				<h1 class="stack-name" style="float: left;"></h1>
-				<a class="button" id="add-flashcard" style="float: right;">add flashcard</a>
+				<a class="button" class="flashcard-add" style="float: right;">add flashcard</a>
 				
 				<hr>
 				
@@ -228,13 +229,13 @@
 		<!--====== EDIT FLASHCARD ======-->
 		<!--============================-->
 
-		<div data-role="page" id="page-edit-flashcard" data-template="true">
+		<div data-role="page" id="page-flashcard-edit" data-template="true">
 			<div data-role="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
-				<a class="action" href="javascript:history.back()">
+				<div class="action stack-return">
 					<span class="fa fa-sign-out fa-2x"></span>
-				</a>
+				</div>
 			</div>
 
 			<div data-role="tabs">
@@ -247,7 +248,7 @@
 			<div data-role="content">
 
 				<h1 class="stack-name" style="float: left;"></h1>
-				<a class="button" id="update-flashcard" style="float: right;">update flashcard</a>
+				<a class="button flashcard-update" style="float: right;">update flashcard</a>
 				
 				<hr>
 				

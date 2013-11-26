@@ -11,7 +11,6 @@ require.config({
 		"transit": "plugins/jquery.transit",
 		"fastclick": "libs/fastclick"
 	}
-
 });
 
 require(["app"], function(App) {

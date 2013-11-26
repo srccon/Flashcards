@@ -43,6 +43,10 @@ define(function() {
 		}
 	};
 
+	/* ================================== */
+	/* ====== PHONEGAP WRITE FILE  ====== */
+	/* ================================== */
+
 	Utils.PhonegapWriteFile = function(path, content, callback) {
 
 		if (!Utils.PhonegapWriteFile.filesystem) {
@@ -68,6 +72,10 @@ define(function() {
 		});
 	};
 
+	/* =========================== */
+	/* ====== ARRAY SHUFFLE ====== */
+	/* =========================== */
+
 	Object.defineProperty(Array.prototype, "shuffle", {
 		value:  function() {
 			var counter = this.length, temp, index;
@@ -88,4 +96,4 @@ define(function() {
 	});
 
 	return Utils;
-})
+});

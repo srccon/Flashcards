@@ -21,6 +21,13 @@ body {
 	-webkit-transform: translate3d(0px, 0px, 0px);
 }
 
+[data-role=page] { display: none; }
+
+
+/* =================== */
+/* ====== PAGES ====== */
+/* =================== */
+
 body[data-page=page-practice] {
 	background-image: linear-gradient(0deg, #666, #CCC);
 }
@@ -33,39 +40,10 @@ body[data-page=page-practice] [data-role=content] {
 	background: transparent;
 }
 
-h1, h2, h3, h4, h5, h6 {
-	margin-bottom: 20px;
-	text-shadow: 0px 1px #FFF;
-}
 
-ul { margin-left: 20px; }
-li { padding-bottom: 5px; }
-a { color: #039; }
-
-label {
-	background-color: #EEE;
-	padding: 20px;
-	display: block;
-	margin-bottom: 10px;
-	position: relative;
-	cursor: pointer;
-	font-size: 1.2em;
-}
-
-label:hover { background-color: #DDD; }
-
-label span::before {
-	color: #333;
-	font-family: FontAwesome;
-	content: "\f096";
-	width: 20px;
-	display: inline-block;
-}
-
-label input { display: none; }
-label input:checked + span::before { content: "\f046"; }
-
-[data-role=page] { display: none; }
+/* =========================== */
+/* ====== SPLASH SCREEN ====== */
+/* =========================== */
 
 #splash-screen {
 	width: 100%;
@@ -143,7 +121,7 @@ label input:checked + span::before { content: "\f046"; }
 
 [data-role=tabs] .fa { margin-right: 5px; }
 
-.tab {
+[data-role=tabs] .tab {
 	color: #999;
 	font-weight: 300;
 	display: table-cell;
@@ -157,11 +135,11 @@ label input:checked + span::before { content: "\f046"; }
 	text-decoration: none;
 }
 
-.tab:hover {
+[data-role=tabs] .tab:hover {
 	color: #CCC;
 }
 
-.tab.active {
+[data-role=tabs] .tab.active {
 	color: #FFF;
 	background-color: #222;
 	border-bottom-color: #B7D;
@@ -176,6 +154,65 @@ label input:checked + span::before { content: "\f046"; }
 	padding: 50px;
 	color: #333;
 	background-color: #F9F9F9;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	margin-bottom: 20px;
+	text-shadow: 0px 1px #FFF;
+}
+
+a { color: #039; }
+ul { margin-left: 20px; }
+li { padding-bottom: 5px; }
+
+hr {
+	height: 0px;
+	border: 0px;
+	border-top: 2px solid #DDD;
+	border-bottom: 2px solid #FFF;
+	margin: 20px 0px 40px 0px;
+	clear: both;
+}
+
+hr.transparent {
+	height: 10px;
+	border: 0px;
+}
+
+label {
+	background-color: #EEE;
+	padding: 20px;
+	display: block;
+	margin-bottom: 10px;
+	position: relative;
+	cursor: pointer;
+	font-size: 1.2em;
+}
+
+label:hover { background-color: #DDD; }
+
+label span::before {
+	color: #333;
+	font-family: FontAwesome;
+	content: "\f096";
+	width: 20px;
+	display: inline-block;
+}
+
+label input { display: none; }
+label input:checked + span::before { content: "\f046"; }
+
+textarea {
+	color: #666;
+	font-family: inherit;
+
+	width: 100%;
+	padding: 10px;
+	border: 0px;
+	
+	box-sizing: border-box;
+	background-color: #EEE;
+	resize: none;
 }
 
 .button {
@@ -217,21 +254,6 @@ label input:checked + span::before { content: "\f046"; }
 .button:hover { background-color: #CCC; }
 
 
-hr {
-	height: 0px;
-	border: 0px;
-	border-top: 2px solid #DDD;
-	border-bottom: 2px solid #FFF;
-	margin: 20px 0px 40px 0px;
-	clear: both;
-}
-
-hr.transparent {
-	height: 10px;
-	border: 0px;
-}
-
-
 /* ==================== */
 /* ====== STACKS ====== */
 /* ==================== */
@@ -262,45 +284,52 @@ hr.transparent {
 	font-size: 0.8em;
 }
 
-#flashcardList {
+
+/* =================== */
+/* ====== STACK ====== */
+/* =================== */
+
+#flashcards {
 	width: 100%;
 	border-spacing: 10px 0px;
 	display: none;
 }
 
-#flashcardList th {
+#flashcards th {
 	color: #666;
 	background-color: #E6E6E6;
-	padding: 20px;
 	border-top: 2px solid #FFF;
+	text-align: left;
+	padding: 0px 20px;
 }
 
-#flashcardList td {
+#flashcards td {
 	color: #666;
 	background-color: #EEE;
-	padding: 20px;
+	padding: 10px 20px;
 }
 
-#flashcardList td:last-child {
-	padding: 5px;
+#flashcards th:first-child,
+#flashcards td:first-child {
+	padding: 0px;
+	text-align: left;
 }
 
-#flashcardList td:last-child span:first-child { margin-right: 5px; }
-#flashcardList td:last-child span {
-	cursor: pointer;
-	background-color: #E6E6E6;
-	padding: 16px;
+#flashcards label { background: transparent; }
+
+#page-stack .actions {
+	width: 100%;
+	table-layout: fixed;
 }
 
-
-#stack-options { width: 100%; }
-#stack-options td {
+#page-stack .actions td {
 	padding: 10px;
 }
 
-/* ======================== */
-/* ====== FLASHCARDS ====== */
-/* ======================== */
+
+/* ======================= */
+/* ====== FLASHCARD ====== */
+/* ======================= */
 
 #flashcard {
 	perspective: 500px;
@@ -310,15 +339,16 @@ hr.transparent {
 #flashcard-shadow {
 	content: " ";
 
-	opacity: 0.1;
 	margin-top: 10%;
 	margin-left: 10%;
+	
 	width: 80%;
 	height: 40px;
 
 	background-image: url("../img/shadow.png");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
+	opacity: 0.1;
 }
 
 #flashcard > div {
@@ -326,11 +356,15 @@ hr.transparent {
 	color: #666;
 	font-size: 3em;
 	font-weight: bold;
-	text-shadow:  5px  0px 0px #FFF,
-			     -5px  0px 0px #FFF,
-			      0px  5px 0px #FFF,
+	text-align: center;
+
+	text-shadow: -5px  0px 0px #FFF,
+			      5px  0px 0px #FFF,
 			      0px -5px 0px #FFF,
+			      0px  5px 0px #FFF,
 			     -5px -5px 0px #FFF,
+			      5px -5px 0px #FFF,
+			     -5px  5px 0px #FFF,
 			      5px  5px 0px #FFF;
 
 	height: 1.2em;
@@ -342,20 +376,17 @@ hr.transparent {
 
 	background-color: #FFF; 
 	background-image: 
-	linear-gradient(90deg, transparent 50px, #abced4 50px, #abced4 60px, transparent 60px),
-	linear-gradient(#F9F9F9 .1em, transparent .1em);
+		linear-gradient(90deg, transparent 50px, #abced4 50px, #abced4 60px, transparent 60px),
+		linear-gradient(#F9F9F9 .1em, transparent .1em);
 	background-size: 100% 0.8em;
 
 	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-
-	text-align: center;	
 	backface-visibility: hidden;
 	cursor: pointer;
 }
 
 #flashcard .front {
 	transform: rotateX(5deg);
-
 }
 
 #flashcard .back {
@@ -364,19 +395,8 @@ hr.transparent {
 	transform: rotateX(180deg);
 }
 
-textarea {
-	color: #666;
-	font-family: inherit;
-	background-color: #EEE;
-	border: 0px;
-	resize: none;
-	width: 100%;
-	box-sizing: border-box;
-	padding: 10px;
-}
-
-#page-new-flashcard textarea,
-#page-edit-flashcard textarea {
+#page-flashcard-new textarea,
+#page-flashcard-edit textarea {
 	height: 4em;
 	font-size: 2em;
 	text-align: center;
@@ -390,6 +410,7 @@ textarea {
 	display: table;
 	border-spacing: 1em;
 	width: 100%;
+	table-layout: fixed;
 }
 
 #practice-buttons .button {
@@ -397,5 +418,4 @@ textarea {
 	font-size: 1.5em;
 	padding: 15px 0px;
 	display: table-cell;
-	width: 50%;
 }
