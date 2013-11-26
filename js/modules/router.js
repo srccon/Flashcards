@@ -30,47 +30,53 @@ define(function() {
 			App.Statistics.updateView();
 		},
 
-		"page-stack": function(stack) {
-			App.Flashcards.list(stack, function(data) {
+		"page-stack": function(id) {
+			App.Stacks.getName(+id, function(stackname) {
+				App.Flashcards.getAll(+id, function(data) {
 
-				Router.$page.find(".stack-name").html(stack);
-				var $flashcardList = $("#flashcardList");
-				var actions = "<span class='fa fa-pencil edit-flashcard'></span><span class='fa fa-times remove-flashcard'></span>";
+					Router.$page.find(".stack-name").html(stackname);
+					var $flashcardList = $("#flashcardList");
+					var actions = "<span class='fa fa-pencil edit-flashcard'></span><span class='fa fa-times remove-flashcard'></span>";
 
-				if (data.length) {
+					if (data.length) {
 
-					data.forEach(function(v) {
-						$flashcardList.append(
-							"<tr data-key='" + v.key + "'>" +
-								"<td>" + v.front + "</td>" +
-								"<td>" + v.back + "</td>" +
-								"<td width='98'>" + actions + "</td>" +
-							"</tr>"
-						);
-					});
+						data.forEach(function(v) {
+							$flashcardList.append(
+								"<tr data-key='" + v.key + "'>" +
+									"<td>" + v.value.front + "</td>" +
+									"<td>" + v.value.back + "</td>" +
+									"<td width='98'>" + actions + "</td>" +
+								"</tr>"
+							);
+						});
 
-					Router.$page.find(".note").remove();
-					$flashcardList.show();
-				}
+						Router.$page.find(".note").remove();
+						$flashcardList.show();
+					}
+				});
 			});
 		},
 
-		"page-new-flashcard": function(stack) {
-			Router.$page.find(".stack-name").html(stack);
-		},
-
-		"page-edit-flashcard": function(stack, key) {
-			Router.$page.find(".stack-name").html(stack);
-			Router.$page.attr("data-key", key);
-
-			App.Flashcards.get(stack, key, function(data) {
-				Router.$page.find("textarea[name=front]").val(data.front);
-				Router.$page.find("textarea[name=back]").val(data.back);
+		"page-new-flashcard": function(stackID) {
+			App.Stacks.getName(+stackID, function(stackname) {
+				Router.$page.find(".stack-name").html(stackname);
 			});
 		},
 
-		"page-practice": function(stack) {
-			App.Stacks.practice(stack);
+		"page-edit-flashcard": function(stackID, key) {
+
+			App.Stacks.getName(+stackID, function(stackname) {
+				Router.$page.find(".stack-name").html(stackname);
+				App.Flashcards.get(+key, function(data) {
+					console.log(data);
+					Router.$page.find("textarea[name=front]").val(data.front);
+					Router.$page.find("textarea[name=back]").val(data.back);
+				});
+			});
+		},
+
+		"page-practice": function(id) {
+			App.Stacks.practice(+id);
 		}
 	};
 

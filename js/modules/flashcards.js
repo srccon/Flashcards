@@ -19,27 +19,25 @@ define(["transit"], function() {
 
 		// New button
 		"click #new-flashcard": function(e) {
-
-			var stack = $("#page-stack h1").text();
-			location.hash = "page-new-flashcard:" + stack;
+			var id = +window.location.hash.split(":")[1];
+			location.hash = "page-new-flashcard:" + id;
 		},
 
 		// Add button
 		"click #add-flashcard": function(e) {
 
-			var stack = $("#page-new-flashcard h1").text();
 			var data = {
+				stackID: +window.location.hash.split(":")[1],
 				front: $("#page-new-flashcard textarea[name=front]").val(),
 				back: $("#page-new-flashcard textarea[name=back]").val()
 			};
 
-			Flashcards.add(stack, data);
+			Flashcards.add(data);
 		},
 
 		// Remove button
 		"click .remove-flashcard": function(e) {
 
-			var stack = $("#page-stack h1").text();
 			var $parent = $(e.currentTarget).parents("tr");
 			var key = +$parent.attr("data-key");
 
@@ -47,16 +45,14 @@ define(["transit"], function() {
 			var back = $parent.find("td:eq(1)").text();
 
 			if (confirm("Remove " + front + " - " + back + "?"))
-			{ Flashcards.remove(stack, key); }
+			{ Flashcards.remove(key); }
 		},
 
 		// Edit button
 		"click .edit-flashcard": function(e) {
-
-			var stack = $("#page-stack h1").text();
+			var stackID = +window.location.hash.split(":")[1];
 			var key = $(e.currentTarget).parents("tr").attr("data-key");
-
-			location.hash = "page-edit-flashcard:" + stack + ":" + key;
+			location.hash = "page-edit-flashcard:" + stackID + ":" + key;
 		},
 
 		// Update button
@@ -90,13 +86,6 @@ define(["transit"], function() {
 			$("#flashcard-shadow").transition({ rotateX: 0 }, 1000);
 		},
 
-		// Practice button functionality
-		"click #practice": function(e) {
-
-			var stack = $("#page-stack h1").text();
-			location.hash = "page-practice:" + stack;
-		},
-
 		// Practice buttons
 		"click #practice-buttons .button": function(e) {
 
@@ -107,40 +96,22 @@ define(["transit"], function() {
 		}
 	};
 
-	/* ================== */
-	/* ====== LIST ====== */
-	/* ================== */
+	/* ===================== */
+	/* ====== GET ALL ====== */
+	/* ===================== */
 
-	Flashcards.list = function(stack, callback) {
-		
-		var transaction = App.DB.Stacks.transaction(stack);
-		var objectStore = transaction.objectStore(stack);
-		var pairs = [];
-
-		objectStore.openCursor().onsuccess = function(e) {
-			var cursor = e.target.result;
-
-			if (cursor) {
-
-				pairs.push({
-					key: cursor.key,
-					front: cursor.value.front,
-					back: cursor.value.back
-				});
-
-				cursor.continue();
-
-			} else { callback(pairs); }
-		};
+	Flashcards.getAll = function(stackID, callback) {
+		App.DB.getData("App", "Flashcards", ["stackID", stackID], function(data) {
+			callback(data);
+		});
 	};
 
 	/* ================= */
 	/* ====== GET ====== */
 	/* ================= */
 
-	Flashcards.get = function(stack, key, callback) {
-		
-		App.DB.getData("Stacks", stack, key, function(data) {
+	Flashcards.get = function(key, callback) {
+		App.DB.getData("App", "Flashcards", key, function(data) {
 			callback(data);
 		});
 	};
@@ -149,10 +120,10 @@ define(["transit"], function() {
 	/* ====== ADD ====== */
 	/* ================= */
 
-	Flashcards.add = function(stack, data) {
+	Flashcards.add = function(data) {
 
-		App.DB.addData("Stacks", stack, data, function(e) {
-
+		App.DB.addData("App", "Flashcards", data, function(e) {
+			if (data.length) { return; }
 			App.$("#page-new-flashcard textarea[name=front]").val("");
 			App.$("#page-new-flashcard textarea[name=back]").val("");
 		});
@@ -174,11 +145,22 @@ define(["transit"], function() {
 	/* ====== REMOVE ====== */
 	/* ==================== */
 
-	Flashcards.remove = function(stack, key) {
+	Flashcards.remove = function(key) {
 
-		App.DB.removeData("Stacks", stack, key, function() {
+		var count = 0;
+		var fn = function(key) {
 
-			App.$("tr[data-key=" + key + "]").remove();
+			if (count == keys.length-1) {
+				if (keys.length == 1) { App.$("tr[data-key=" + key + "]").remove(); }
+			}
+
+			count++;
+		};
+
+		var keys = typeof key == "object" && key.length ? key : [key];
+
+		keys.forEach(function(key) {
+			App.DB.removeData("App", "Flashcards", key, function() { fn(key); });
 		});
 	};
 

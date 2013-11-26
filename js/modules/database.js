@@ -10,24 +10,21 @@ define(function() {
 
 		App = require("app");
 
-		var w = window, requestStacks, requestStatistics;
+		var w = window, request;
 
 		w.indexedDB = w.indexedDB || w.mozIndexedDB || w.webkitIndexedDB || w.msIndexedDB;
 		w.IDBTransaction = w.IDBTransaction || w.webkitIDBTransaction || w.msIDBTransaction;
 		w.IDBKeyRange = w.IDBKeyRange || w.webkitIDBKeyRange || w.msIDBKeyRange;
 
-		requestStacks = w.indexedDB.open("Stacks");
+		request = w.indexedDB.open("App");
 
-		requestStacks.onsuccess = function(e) {
+		request.onsuccess = function(e) {
 
-			Database.Stacks = requestStacks.result;
-			requestStatistics = w.indexedDB.open("Statistics");
+			Database.App = request.result;
 
-			requestStatistics.onsuccess = function(e) {
-
-				Database.Statistics = requestStatistics.result;
-				callback();
-			};
+			Database.createObjectStore("App", "Stacks");
+			Database.createObjectStore("App", "Flashcards", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); });
+			Database.createObjectStore("App", "Statistics", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); }, callback, callback);
 		};
 	};
 
@@ -35,45 +32,46 @@ define(function() {
 	/* ====== CREATE OBJECT STORE ====== */
 	/* ================================= */
 
-	Database.createObjectStore = function(dbName, name, onupgradeneeded, onsuccess) {
+	Database.createObjectStore = function(dbName, name, onupgradeneeded, onsuccess, onexists) {
 
-		if ([].indexOf.call(Database[dbName].objectStoreNames, name) != -1) { return; }
+		// objectStore already exists
+		if ([].indexOf.call(Database[dbName].objectStoreNames, name) != -1) { return (onexists || function(){})(); }
 
+		// Operation pending, store current call in queue
 		if (Database.createObjectStore.pending) {
-			if (!Database.createObjectStore.pendingTasks)
-			{ Database.createObjectStore.pendingTasks = []; }
 
-			Database.createObjectStore.pendingTasks.push([dbName, name, onupgradeneeded, onsuccess]);
+			if (!Database.createObjectStore.queue)
+			{ Database.createObjectStore.queue = []; }
+
+			Database.createObjectStore.queue.push(arguments);
 			return;
 		}
 
 		Database.createObjectStore.pending = true;
+		var version, request, objectStore;
 
-		var version,
-		    request,
-		    objectStore;
-
-
-		version = Database[dbName].version + 1;
-		Database[dbName].close();
+		// Reopen DB with new version
+		version = Database[dbName].version + 1; Database[dbName].close();
 		request = window.indexedDB.open(dbName, version);
+
+		// Create new objectStore
+		request.onupgradeneeded = function(e) {
+			var db = e.target.result;
+			objectStore = db.createObjectStore(name, { autoIncrement: true });
+			if (onupgradeneeded) { onupgradeneeded(objectStore); }
+		};
 
 		request.onsuccess = function(e) {
 			Database.createObjectStore.pending = false;
 			Database[dbName] = request.result;
+
 			if (onsuccess) { onsuccess(); }
 
-			if (Database.createObjectStore.pendingTasks) {
-				var task = Database.createObjectStore.pendingTasks.shift();
-				if (task) { Database.createObjectStore.apply(this, task); }
+			// Process next call if available
+			if (Database.createObjectStore.queue) {
+				var call = Database.createObjectStore.queue.shift();
+				if (call) { Database.createObjectStore.apply(this, call); }
 			}
-		};
-
-		request.onupgradeneeded = function(e) {
-			var db = e.target.result;
-			objectStore = db.createObjectStore(name, { autoIncrement: true });
-
-			if (onupgradeneeded) { onupgradeneeded(objectStore); }
 		};
 	};
 
@@ -83,40 +81,40 @@ define(function() {
 
 	Database.deleteObjectStore = function(dbName, name, onupgradeneeded, onsuccess) {
 
+		// Operation pending, store current call in queue
 		if (Database.deleteObjectStore.pending) {
-			if (!Database.deleteObjectStore.pendingTasks)
-			{ Database.deleteObjectStore.pendingTasks = []; }
 
-			Database.deleteObjectStore.pendingTasks.push([dbName, name, onupgradeneeded, onsuccess]);
+			if (!Database.deleteObjectStore.queue)
+			{ Database.deleteObjectStore.queue = []; }
+
+			Database.deleteObjectStore.queue.push([dbName, name, onupgradeneeded, onsuccess]);
 			return;
 		}
 
 		Database.deleteObjectStore.pending = true;
+		var version, request, objectStore;
 
-		var version,
-		    request,
-		    objectStore;
-
-		version = Database[dbName].version + 1;
-		Database[dbName].close();
+		// Reopen DB with new version
+		version = Database[dbName].version + 1; Database[dbName].close();
 		request = window.indexedDB.open(dbName, version);
+
+		// Delete objectStore
+		request.onupgradeneeded = function(e) {
+			var db = e.target.result;
+			objectStore = db.deleteObjectStore(name);
+
+			if (onupgradeneeded) { onupgradeneeded(objectStore); }
+		};
 
 		request.onsuccess = function(e) {
 			Database.deleteObjectStore.pending = false;
 			Database[dbName] = request.result;
 			if (onsuccess) { onsuccess(); }
 
-			if (Database.deleteObjectStore.pendingTasks) {
-				var task = Database.deleteObjectStore.pendingTasks.shift();
-				if (task) { Database.deleteObjectStore.apply(this, task); }
+			if (Database.deleteObjectStore.queue) {
+				var call = Database.deleteObjectStore.queue.shift();
+				if (call) { Database.deleteObjectStore.apply(this, call); }
 			}
-		};
-
-		request.onupgradeneeded = function(e) {
-			var db = e.target.result;
-			objectStore = db.deleteObjectStore(name);
-
-			if (onupgradeneeded) { onupgradeneeded(objectStore); }
 		};
 	};
 
@@ -125,14 +123,33 @@ define(function() {
 	/* ====================== */
 
 	Database.getData = function(dbName, objectStoreName, key, onsuccess) {
-		
+
 		var transaction = Database[dbName].transaction(objectStoreName);
 		var objectStore = transaction.objectStore(objectStoreName);
-		var pairs = [];
+		var pairs = [], range;
 
-		if (key !== null) {
+		if (typeof key == "number") {
 
-			objectStore.get(+key).onsuccess = function(e) { onsuccess(e.target.result); };
+			objectStore.get(key).onsuccess = function(e) { onsuccess(e.target.result); };
+
+		} else if (key && typeof key == "object" && key.length) {
+
+			range = window.IDBKeyRange.only(key[1]);
+			objectStore.index(key[0]).openCursor(range).onsuccess = function(e) {
+
+				var cursor = e.target.result;
+
+				if (cursor) {
+
+					pairs.push({
+						value: cursor.value,
+						key: cursor.primaryKey
+					});
+
+					cursor.continue();
+
+				} else { onsuccess(pairs); }
+			};
 
 		} else {
 
@@ -159,14 +176,18 @@ define(function() {
 	/* ====================== */
 
 	Database.addData = function(dbName, objectStoreName, data, onsuccess) {
+
 		var transaction = Database[dbName].transaction(objectStoreName, "readwrite");
 		var objectStore = transaction.objectStore(objectStoreName);
 
 		if (data.length) {
-			data.forEach(function(v) { objectStore.add(v); });
-		} else {
-			objectStore.add(data).onsuccess = onsuccess;
-		}
+			data.forEach(function(v, i) {
+				if (i == data.length-1)
+				{ objectStore.add(v).onsuccess = onsuccess; }
+				else
+				{ objectStore.add(v); }
+			});
+		} else { objectStore.add(data).onsuccess = onsuccess; }
 	};
 
 	/* ========================= */
@@ -206,49 +227,29 @@ define(function() {
 
 	Database.createTestData = function() {
 
-		Database.createObjectStore("Stacks", "Japanese - Greetings", null, function() {
-			Database.addData("Stacks", "Japanese - Greetings", [
-			{
-				front: "Nice to meet you!",
-				back: "はじめまして！"
-			}, {
-				front: "Good morning!",
-				back: "おはよう！"
-			}, {
-				front: "Good evening!",
-				back: "こんにちは!"
-			}, {
-				front: "Good night.",
-				back: "こんばんは。"
-			}
+		App.Stacks.create("Japanese - Greetings", function(id) {
+			App.Flashcards.add([
+				{
+					stackID: id,
+					front: "Nice to meet you!",
+					back: "はじめまして！"
+				}, {
+					stackID: id,
+					front: "Good morning!",
+					back: "おはよう！"
+				}, {
+					stackID: id,
+					front: "Good evening!",
+					back: "こんにちは!"
+				}, {
+					stackID: id,
+					front: "Good night.",
+					back: "こんばんは。"
+				}
 			]);
 		});
 
-		Database.createObjectStore("Stacks", "Japanese - Animals", null, function() {
-			Database.addData("Stacks", "Japanese - Animals", [
-			{
-				front: "Dog",
-				back: "犬「いぬ」"
-			}, {
-				front: "Cat",
-				back: "猫「ねこ」"
-			}, {
-				front: "Horse",
-				back: "馬「うま」"
-			}, {
-				front: "Fish",
-				back: "魚「さかな」"
-			}, {
-				front: "Bird",
-				back: "鳥「とり」"
-			}
-			]);
-
-			App.Stacks.updateView();
-		});
-
-		Database.createObjectStore("Statistics", "Japanese - Greetings");
-		Database.createObjectStore("Statistics", "Japanese - Animals");
+		// Database.createObjectStore("Statistics", "Japanese - Greetings");
 	};
 
 	return Database;

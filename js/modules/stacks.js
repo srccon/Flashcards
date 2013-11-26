@@ -19,7 +19,7 @@ define(function() {
 	Stacks.events = {
 
 		"click #stacks li": function(e) {
-			location.hash = "page-stack:" + $(e.currentTarget).text().trim();
+			location.hash = "page-stack:" + App.$(e.currentTarget).attr("data-key");
 		},
 
 		"click #new-stack": function(e) {
@@ -27,24 +27,32 @@ define(function() {
 			if (name) { Stacks.create(name); }
 		},
 
+		"click #remove-stack": function(e) {
+			var stack = App.$("#page-stack h1").text();
+			var id = +window.location.hash.split(":")[1];
+			if (confirm("Remove \"" + stack + "\" and all of its flashcards?"))
+			{ Stacks.remove(id); }
+		},
+
+		"click #rename-stack": function(e) {
+
+			var id = +window.location.hash.split(":")[1],
+			    stack = App.$("#page-stack h1").text(),
+			    name = window.prompt("Stack name:", stack);
+
+			if (name) { Stacks.rename(id, name); }
+		},
+
+		"click #practice": function(e) {
+			var id = +window.location.hash.split(":")[1]
+			location.hash = "page-practice:" + id;
+		},
+
 		"click #exit-practice": function(e) {
 			delete Stacks.practice.flashcards;
 			delete Stacks.practice.index;
 			window.history.back();
 		},
-
-		"click #remove-stack": function(e) {
-			var stack = $("#page-stack h1").text();
-			if (confirm("Remove \"" + stack + "\" and all of its flashcards?"))
-			{ Stacks.remove(stack); }
-		},
-
-		"click #rename-stack": function(e) {
-			alert("not yet possible..");
-			// var name = window.prompt("Stack name:", "Vocabulary 1");
-			// var stack = $("#page-stack h1").text();
-			// if (name) { Stacks.rename(name, stack); }
-		}
 	};
 
 	/* ========================= */
@@ -53,58 +61,74 @@ define(function() {
 
 	Stacks.updateView = function() {
 
-		var stacks = Stacks.list();
-		var $stacks = App.$("#stacks");
+		Stacks.get(function(stacks) {
 
-		$stacks.html("");
+			var $stacks = App.$("#stacks");
+			$stacks.html("");
 
-		if (stacks.length) {
+			if (stacks.length) {
+				$stacks.parent().find(".note").hide();
 
-			$stacks.parent().find(".note").hide();
-
-			// List all stacks
-			[].forEach.call(stacks, function(v) {
-
-				$stacks.append("<li class='stack'><b>" + v + "</b> <span class='fa fa-arrow-right' style='float: right;'></span></li>");
-			});
-		} else {
-			$stacks.parent().find(".note").show();
-		}
+				// List all stacks
+				[].forEach.call(stacks, function(v) {
+					$stacks.append("<li class='stack' data-key='" + v.key + "'><b>" + v.value.name + "</b> <span class='fa fa-arrow-right' style='float: right;'></span></li>");
+				});
+			} else {
+				$stacks.parent().find(".note").show();
+			}
+		});
 	};
 
-	/* ================== */
-	/* ====== LIST ====== */
-	/* ================== */
+	/* ====================== */
+	/* ====== GET NAME ====== */
+	/* ====================== */
 
-	Stacks.list = function() {
-		return App.DB.Stacks.objectStoreNames;
+	Stacks.getName = function(id, callback) {
+		App.DB.getData("App", "Stacks", id, function(data) {
+			callback(data.name, id);
+		});
+	};
+
+	/* ================= */
+	/* ====== GET ====== */
+	/* ================= */
+
+	Stacks.get = function(callback) {
+		App.DB.getData("App", "Stacks", null, function(data) {
+			callback(data);
+		});
 	};
 
 	/* ==================== */
 	/* ====== CREATE ====== */
 	/* ==================== */
 
-	Stacks.create = function(name) {
+	Stacks.create = function(name, callback) {
+		App.DB.addData("App", "Stacks", { name: name }, function(e) {
 
-		App.DB.createObjectStore("Stacks", name, null, function(objectStore) {
+			var key = e.target.result;
+			if (!App.$(".stack").length) { $("#page-stacks .note").hide(); }
 
-			if (!App.DB.Stacks.objectStoreNames.length) { App.Router.$page.find(".note").remove(); }
-			App.$("#stacks").append("<li class='stack'><b>" + name + "</b> <span class='fa fa-arrow-right' style='float: right;'></span></li>");
+			App.$("#stacks").append("<li class='stack' data-key='" + key + "'><b>" + name + "</b> <span class='fa fa-arrow-right' style='float: right;'></span></li>");
+			if (callback) { callback(key) }
 		});
-
-		App.DB.createObjectStore("Statistics", name);
 	};
 
 	/* ==================== */
 	/* ====== REMOVE ====== */
 	/* ==================== */
 
-	Stacks.remove = function(stack) {
+	Stacks.remove = function(id) {
+		App.Flashcards.getAll(id, function(flashcards) {
 
-		App.DB.deleteObjectStore("Stacks", stack, null, function(e) {
+			var keys = [].map.call(flashcards, function(v) { return v.key; });
+			App.Flashcards.remove(keys);
 
-			Stacks.updateView();
-			window.location.hash = "page-stacks";
+			App.DB.removeData("App", "Stacks", id, function(e) {
+				App.$(".stack[data-key=" + id + "]").remove();
+				if (!App.$(".stack").length) { App.$("#page-stacks .note").show(); }
+				window.location.hash = "page-stacks";
+			});
 		});
 	};
 
@@ -112,55 +136,25 @@ define(function() {
 	/* ====== RENAME ====== */
 	/* ==================== */
 
-	Stacks.rename = function(stack, name) {
-
-		
-	};
-
-	/* ======================== */
-	/* ====== FLASHCARDS ====== */
-	/* ======================== */
-
-	Stacks.flashcards = function(stack, callback, nokey) {
-		
-		var transaction = App.DB.Stacks.transaction(stack);
-		var objectStore = transaction.objectStore(stack);
-		var pairs = [];
-
-		// Collect all flashcards
-		objectStore.openCursor().onsuccess = function(e) {
-
-			var cursor = e.target.result, data;
-
-			if (cursor) {
-
-				data = {
-					key: cursor.key,
-					front: cursor.value.front,
-					back: cursor.value.back
-				};
-
-				if (nokey) { delete data.key; }
-				pairs.push(data);
-
-				cursor.continue();
-
-			} else { callback(pairs); }
-		};
+	Stacks.rename = function(id, name) {
+		App.DB.updateData("App", "Stacks", id, { name: name }, function(e) {
+			App.$(".stack[data-key=" + id + "] b").html(name);
+			App.$("#page-stack h1").html(name);
+		});
 	};
 
 	/* ====================== */
 	/* ====== PRACTICE ====== */
 	/* ====================== */
 
-	Stacks.practice = function(stack) {
+	Stacks.practice = function(id) {
 
 		// Fetch flashcards
-		if (stack) {
+		if (id !== undefined) {
 
-			var flashcards = Stacks.flashcards(stack, function(data) {
+			App.Flashcards.getAll(id, function(data) {
 
-				Stacks.practice.stack = stack;
+				Stacks.practice.id = id;
 				Stacks.practice.total = data.length;
 				Stacks.practice.index = 0;
 				Stacks.practice.score = 0;
@@ -188,7 +182,7 @@ define(function() {
 			delete Stacks.practice.flashcards;
 
 			App.Statistics.registerPracticeSession(
-				Stacks.practice.stack,
+				Stacks.practice.id,
 				Stacks.practice.score,
 				Stacks.practice.total
 			);
@@ -198,19 +192,20 @@ define(function() {
 		}
 
 		if (App._settings.switch_front_back_randomly && Math.round(Math.random())) {
-			var front = flashcard.front;
-			flashcard.front = flashcard.back;
+
+			var front = flashcard.value.front;
+			flashcard.front = flashcard.value.back;
 			flashcard.back = front;
 		}
 		
 		// Reset flashcard view
-		$("#practice-buttons").hide();
-		$("#flashcard .front").css({ rotateX: 5 });
-		$("#flashcard .back").css({ rotateX: 180 });
-		$("#flashcard-shadow").css({ rotateX: 0 });
+		App.$("#practice-buttons").hide();
+		App.$("#flashcard .front").css({ rotateX: 5 });
+		App.$("#flashcard .back").css({ rotateX: 180 });
+		App.$("#flashcard-shadow").css({ rotateX: 0 });
 
-		$("#flashcard .front").html(flashcard.front);
-		$("#flashcard .back").html(flashcard.back);
+		App.$("#flashcard .front").html(flashcard.value.front);
+		App.$("#flashcard .back").html(flashcard.value.back);
 	};
 
 	return Stacks;

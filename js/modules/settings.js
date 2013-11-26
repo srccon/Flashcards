@@ -148,8 +148,7 @@ define(function() {
 	/* =================== */
 
 	Settings.reset = function() {
-		window.indexedDB.deleteDatabase("Stacks");
-		window.indexedDB.deleteDatabase("Statistics");
+		window.indexedDB.deleteDatabase("App");
 		window.localStorage.clear();
 		window.location.reload();
 	};
@@ -159,8 +158,12 @@ define(function() {
 	/* ============================== */
 
 	Settings.reset_statistics = function() {
-		window.indexedDB.deleteDatabase("Statistics");
-		window.location.reload();
+		App.DB.deleteObjectStore("App", "Statistics", null, function() {
+			App.DB.createObjectStore("App", "Statistics", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); }, function() {
+
+				window.location.reload();
+			});
+		});
 	};
 
 	return Settings;
