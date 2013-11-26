@@ -161,10 +161,12 @@ define(function() {
 				
 				if (App._settings.shuffle_flashcards) { data.shuffle(); }
 				if (App._settings.switch_front_back) {
-					data.forEach(function(v) {
-						var front = v.front;
-						v.front = v.back;
-						v.back = front;
+					data = data.map(function(v) {
+						var front = v.value.front;
+						v.value.front = v.value.back;
+						v.value.back = front;
+
+						return v;
 					});
 				}
 
@@ -194,10 +196,12 @@ define(function() {
 		if (App._settings.switch_front_back_randomly && Math.round(Math.random())) {
 
 			var front = flashcard.value.front;
-			flashcard.front = flashcard.value.back;
-			flashcard.back = front;
+			flashcard.value.front = flashcard.value.back;
+			flashcard.value.back = front;
 		}
-		
+
+		console.log(flashcard);
+
 		// Reset flashcard view
 		App.$("#practice-buttons").hide();
 		App.$("#flashcard .front").css({ rotateX: 5 });
