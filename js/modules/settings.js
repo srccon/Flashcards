@@ -70,23 +70,16 @@ define(function() {
 
 	Settings.export = function(type) {
 
-		var stacks = App.Stacks.list(),
-			json_data = {},
+		var json_data = {},
+		    stackdata,
 			count = 0,
 			interval,
 			out,
 			anchor = document.createElement("a");
 
-		[].forEach.call(stacks, function(v) {
-			App.Stacks.flashcards(v, function(data) {
-				json_data[v] = data;
-				count++;
-			}, true);
-		});
+		var interval_fn = function() {
 
-		interval = window.setInterval(function() {
-
-			if (count != stacks.length) { return }
+			if (count != Object.keys(stackdata).length) { return; }
 			window.clearInterval(interval);
 
 			if (type == "json") {
@@ -103,7 +96,7 @@ define(function() {
 					out += stack + "\r\n\r\n";
 
 					json_data[stack].forEach(function(v) {
-						out	+= "\t" + v.front + " - " + v.back + "\r\n";
+						out	+= "\t" + v.value.front + " - " + v.value.back + "\r\n";
 					});
 
 					out += "\r\n";
@@ -132,7 +125,26 @@ define(function() {
 
 				App.Utils.fake_click(anchor);
 			}
-		}, 100);
+		};
+
+		App.Flashcards.get(null, function(data) {
+
+			stackdata = [];
+
+			[].forEach.call(data, function(v) {
+				if (!stackdata[v.value.stackID]) { stackdata[v.value.stackID] = []; }
+				stackdata[v.value.stackID].push(v);
+			});
+
+			interval = window.setInterval(interval_fn, 100);
+
+			for (stackID in stackdata) {
+				App.Stacks.getName(+stackID, function(stackname, id) {
+					json_data[stackname] = stackdata[id];
+					count++;
+				});
+			}
+		});
 	};
 
 	/* ==================== */

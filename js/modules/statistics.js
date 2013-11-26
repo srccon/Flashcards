@@ -49,7 +49,7 @@ define(["chart"], function(Chart) {
 			for (stackID in stackdata) {
 				App.Stacks.getName(+stackID, function(stackname, id) {
 
-					var data = stackdata[stackID];
+					var data = stackdata[id];
 					if (data.length < 2) { return; }
 
 					if (!count) { App.$("#page-statistics").find("[data-role=content]").html(""); }
