@@ -154,12 +154,38 @@ define(function() {
 		var $stacks = $("#page-stacks li");
 		var stack_names = [];
 		var stack_keys = [];
+		var count = 0;
+		var length = Object.keys(json_data).length;
+
+		var imported = [];
+		var merged = [];
+		var interval;
+
+		var check_fn = function() {
+			console.log(count, length);
+			if (count >= length) {
+				window.clearInterval(interval);
+
+				var out = [];
+
+				if (imported.length)
+				{ out.push("== Imported ==\n\n" + imported.join("\n")); }
+
+				if (merged.length)
+				{ out.push("== Merged ==\n\n" + merged.join("\n")); }
+
+				if (!imported.length && !merged.length)
+				{ return alert("Everything up to date!"); }
+		
+				alert(out.join("\n\n"));
+			}
+		};
 
 		$stacks.each(function() {
 			stack_names.push($(this).text().trim());
 			stack_keys.push(+$(this).attr("data-key"));
 		});
-		
+
 		for (var stack in json_data) {
 
 			if (stack_names.indexOf(stack) == -1) {
@@ -168,41 +194,46 @@ define(function() {
 
 					var flashcards = json_data[stack];
 					flashcards.forEach(function(v) { v.stackID = key; });
-					App.Flashcards.add(flashcards, function() { alert("Imported: " + stack); });
-
+					App.Flashcards.add(flashcards, function() {
+						imported.push(stack);
+						count++;
+					});
 				});
 
 			} else {
 
 				var stackID = stack_keys[stack_names.indexOf(stack)];
+
 				App.Flashcards.getAll(stackID, function(data, stackID) {
+					App.Stacks.getName(stackID, function(stackname) {
 
-					var flashcards = json_data[stack].filter(function(v, i) {
-						
-						var front_same = false, back_same = false;
-						var unique = [].every.call(data, function(vv) {
+						var flashcards = json_data[stackname].filter(function(v, i) {
+							
+							var front_same, back_same;
+							var unique = [].every.call(data, function(vv) {
 
-							front_same = v.front == vv.value.front;
-							back_same = v.back == vv.value.back;
+								front_same = v.front == vv.value.front;
+								back_same = v.back == vv.value.back;
 
-							return !(front_same && back_same);
+								return !(front_same && back_same);
+							});
+
+							return unique;
 						});
 
-						return unique;
-					});
+						if (!flashcards.length) { return; }
+						flashcards.forEach(function(v) { v.stackID = stackID; });
 
-					console.log(flashcards);
-					if (!flashcards.length) { return alert("Nothing to import"); }
-					flashcards.forEach(function(v) { v.stackID = stackID; });
-
-					App.Flashcards.add(flashcards, function() {
-						App.Stacks.getName(stackID, function(stackname) {
-							alert("Merged: " + stackname);
+						App.Flashcards.add(flashcards, function() {
+							merged.push(stackname);
+							count++;
 						});
 					});
 				});
 			}
 		}
+
+		interval = window.setInterval(check_fn, 100);
 	};
 
 	/* =================== */
