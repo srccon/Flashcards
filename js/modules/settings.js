@@ -25,9 +25,22 @@ define(function() {
 
 	Settings.events = {
 
-		"click #export_json": function(e) { Settings.export("json"); },
-		"click #export_txt": function(e) { Settings.export("txt"); },
-		"click #import": function(e) { Settings.import(); },
+		"click #export": function(e) { Settings.export(); },
+		"change #import input": function(e) {
+
+			var reader = new FileReader();
+			var fileName = e.target.files[0].name;
+			var extension = fileName.substr(fileName.lastIndexOf('.') + 1);
+			var $target = $(e.currentTarget);
+
+			if (extension != "json") { return alert("Only json files supported!"); }
+
+			reader.readAsText(e.target.files[0]);
+			reader.onload = function(e) {
+				Settings.import(e.target.result);
+				$target.val("");
+			};
+		},
 
 		"click #reset_all": function(e) {
 			if (confirm("Do you really wish to delete your entire stacks, flashcards and statistics?")) {
@@ -65,7 +78,7 @@ define(function() {
 	/* ====== EXPORT ====== */
 	/* ==================== */
 
-	Settings.export = function(type) {
+	Settings.export = function() {
 
 		var anchor = document.createElement("a"),
 		    json_data = {},
@@ -77,30 +90,9 @@ define(function() {
 			if (count != Object.keys(stackdata).length) { return; }
 			window.clearInterval(interval);
 
-			if (type == "json") {
-
-				out = JSON.stringify(json_data, null, "\t");
-				anchor.href = "data:application/json;charset=UTF-8;," + encodeURIComponent(out);
-				anchor.download = "flashcards.json";
-
-			} else if (type == "txt") {
-
-				out = "";
-
-				for (var stack in json_data) {
-
-					out += stack + "\r\n\r\n";
-					
-					json_data[stack].forEach(function(v) {
-						out	+= "\t" + v.value.front + " - " + v.value.back + "\r\n";
-					});
-
-					out += "\r\n";
-				}
-
-				anchor.href = "data:text/plain;charset=UTF-8;," + encodeURIComponent(out);
-				anchor.download = "flashcards.txt";
-			}
+			out = JSON.stringify(json_data, null, "\t");
+			anchor.href = "data:application/json;charset=UTF-8;," + encodeURIComponent(out);
+			anchor.download = "flashcards.json";
 
 			if (App.isPhoneGap) {
 
@@ -113,7 +105,7 @@ define(function() {
 				    seconds = date.getUTCSeconds(); seconds = seconds < 10 ? "0" + seconds : seconds,
 
 				    dateString = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds,
-				    path = "flashcards/flashcards " + dateString + "." + type;
+				    path = "flashcards/flashcards " + dateString + ".json";
 
 				App.Utils.PhonegapWriteFile(path, out, function() {
 					alert("Created file in: /sdcard/" + path);
@@ -135,7 +127,17 @@ define(function() {
 
 			for (stackID in stackdata) {
 				App.Stacks.getName(+stackID, function(stackname, id) {
-					json_data[stackname] = stackdata[id];
+
+					var data = stackdata[id];
+					data = data.map(function(v) {
+						return {
+							front: v.value.front,
+							back: v.value.back
+						};
+					});
+
+					json_data[stackname] = data;
+
 					count++;
 				});
 			}
@@ -146,8 +148,61 @@ define(function() {
 	/* ====== IMPORT ====== */
 	/* ==================== */
 
-	Settings.import = function() {
+	Settings.import = function(json_data) {
+		if (typeof json_data != "object") { json_data = JSON.parse(json_data); }
 
+		var $stacks = $("#page-stacks li");
+		var stack_names = [];
+		var stack_keys = [];
+
+		$stacks.each(function() {
+			stack_names.push($(this).text().trim());
+			stack_keys.push(+$(this).attr("data-key"));
+		});
+		
+		for (var stack in json_data) {
+
+			if (stack_names.indexOf(stack) == -1) {
+
+				App.Stacks.create(stack, function(key, stack) {
+
+					var flashcards = json_data[stack];
+					flashcards.forEach(function(v) { v.stackID = key; });
+					App.Flashcards.add(flashcards, function() { alert("Imported: " + stack); });
+
+				});
+
+			} else {
+
+				var stackID = stack_keys[stack_names.indexOf(stack)];
+				App.Flashcards.getAll(stackID, function(data, stackID) {
+
+					var flashcards = json_data[stack].filter(function(v, i) {
+						
+						var front_same = false, back_same = false;
+						var unique = [].every.call(data, function(vv) {
+
+							front_same = v.front == vv.value.front;
+							back_same = v.back == vv.value.back;
+
+							return !(front_same && back_same);
+						});
+
+						return unique;
+					});
+
+					console.log(flashcards);
+					if (!flashcards.length) { return alert("Nothing to import"); }
+					flashcards.forEach(function(v) { v.stackID = stackID; });
+
+					App.Flashcards.add(flashcards, function() {
+						App.Stacks.getName(stackID, function(stackname) {
+							alert("Merged: " + stackname);
+						});
+					});
+				});
+			}
+		}
 	};
 
 	/* =================== */

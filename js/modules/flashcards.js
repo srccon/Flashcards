@@ -136,7 +136,9 @@ define(["transit"], function() {
 	/* ===================== */
 
 	Flashcards.getAll = function(stackID, callback) {
-		App.DB.getData("App", "Flashcards", ["stackID", stackID], callback);
+		App.DB.getData("App", "Flashcards", ["stackID", stackID], function(data) {
+			callback(data, stackID);
+		});
 	};
 
 	/* ================= */
@@ -151,11 +153,14 @@ define(["transit"], function() {
 	/* ====== ADD ====== */
 	/* ================= */
 
-	Flashcards.add = function(data) {
+	Flashcards.add = function(data, callback) {
 
 		// Add key(s)
 		App.DB.addData("App", "Flashcards", data, function(e) {
+
+			if (callback) { callback(); }
 			if (data.length) { return; }
+			
 			App.$("#page-flashcard-new textarea[name=front]").val("");
 			App.$("#page-flashcard-new textarea[name=back]").val("");
 		});

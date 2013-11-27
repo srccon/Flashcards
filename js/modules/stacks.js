@@ -118,7 +118,7 @@ define(function() {
 			if (!App.$(".stack").length) { $("#page-stacks .note").hide(); }
 
 			App.$("#stacks").append("<li class='stack' data-key='" + key + "'><b>" + name + "</b> <span class='fa fa-arrow-right' style='float: right;'></span></li>");
-			if (callback) { callback(key) }
+			if (callback) { callback(key, name) }
 		});
 	};
 
@@ -168,7 +168,8 @@ define(function() {
 				Stacks.practice.score = 0;
 				
 				// Shuffle
-				if (App._settings.shuffle_flashcards) { data.shuffle(); }
+				if (App._settings.shuffle_flashcards)
+				{ data = Utils.array_shuffle(data); }
 
 				// Switch
 				if (App._settings.switch_front_back) {

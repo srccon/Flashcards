@@ -76,24 +76,18 @@ define(function() {
 	/* ====== ARRAY SHUFFLE ====== */
 	/* =========================== */
 
-	Object.defineProperty(Array.prototype, "shuffle", {
-		value:  function() {
-			var counter = this.length, temp, index;
+	Utils.array_shuffle = function(arr) {
+		var count = arr.length, temp, index;
 
-			while (counter--) {
-				index = (Math.random() * counter) | 0;
-				temp = this[counter];
-				this[counter] = this[index];
-				this[index] = temp;
-			}
+		while (count--) {
+			index = (Math.random() * count) | 0;
+			temp = arr[count];
+			arr[count] = arr[index];
+			arr[index] = temp;
+		}
 
-			return this;
-		},
-
-		enumerable: false,
-		configureable: false,
-		writeable: false
-	});
+		return arr;
+	};
 
 	return Utils;
 });
