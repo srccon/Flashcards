@@ -221,7 +221,7 @@ define(function() {
 							return unique;
 						});
 
-						if (!flashcards.length) { return; }
+						if (!flashcards.length) { count++; return; }
 						flashcards.forEach(function(v) { v.stackID = stackID; });
 
 						App.Flashcards.add(flashcards, function() {
