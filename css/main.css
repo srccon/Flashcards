@@ -441,3 +441,27 @@ textarea {
 	z-index: 1;
 	opacity: 0;
 }
+
+#file-browser {
+	margin: 0px;
+	list-style: none;
+}
+
+#file-browser li {
+	color: #666;
+	background-color: #DDD;
+	padding: 20px;
+	cursor: pointer;
+
+	border: 2px solid #CCC;
+	border-top: 0px;
+	box-shadow: inset 0px 2px #EEE;
+}
+
+#file-browser li:hover { background-color: #CCC; }
+#file-browser li:first-child { margin-top: 0px; border-top: 2px solid #CCC; }
+#file-browser li:last-child { margin-bottom: 0px; }
+
+#page-file-browser .path {
+	font-style: italic;
+}

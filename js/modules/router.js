@@ -84,6 +84,12 @@ define(function() {
 
 		"page-statistics": function() {
 			App.Statistics.updateView();
+		},
+
+		"page-file-browser": function() {
+			if (!App.isPhoneGap) { return; }
+			App.Utils.PhoneGap.currentDir = "/mnt/sdcard/";
+			App.Utils.PhoneGap.updateView();
 		}
 	};
 

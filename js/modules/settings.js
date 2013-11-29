@@ -26,6 +26,12 @@ define(function() {
 	Settings.events = {
 
 		"click #export": function(e) { Settings.export(); },
+
+		"click #import": function(e) {
+			if (!App.isPhoneGap) { return; }
+			window.location.hash = "page-file-browser";
+		},
+
 		"change #import input": function(e) {
 
 			var reader = new FileReader();
@@ -91,27 +97,32 @@ define(function() {
 			window.clearInterval(interval);
 
 			out = JSON.stringify(json_data, null, "\t");
-			anchor.href = "data:application/json;charset=UTF-8;," + encodeURIComponent(out);
-			anchor.download = "flashcards.json";
 
 			if (App.isPhoneGap) {
 
 				var date = new Date(),
+
 				    year = date.getUTCFullYear(),
 				    month = date.getUTCMonth()+1; month = month < 10 ? "0" + month : month,
 				    day = date.getUTCDate(); day = day < 10 ? "0" + day : day,
+				    
 				    hours = date.getUTCHours(); hours = hours < 10 ? "0" + hours : hours,
 				    minutes = date.getUTCMinutes(); minutes = minutes < 10 ? "0" + minutes : minutes,
 				    seconds = date.getUTCSeconds(); seconds = seconds < 10 ? "0" + seconds : seconds,
 
-				    dateString = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds,
-				    path = "flashcards/flashcards " + dateString + ".json";
+				    dateString = year + "-" + month + "-" + day + "_" + hours + "-" + minutes + "-" + seconds,
+				    path = "flashcards/flashcards_" + dateString + ".json";
 
-				App.Utils.PhonegapWriteFile(path, out, function() {
+				App.Utils.PhoneGap.writeFile(path, out, function() {
 					alert("Created file in: /sdcard/" + path);
 				});
 
-			} else { App.Utils.fake_click(anchor); }
+			} else {
+
+				anchor.href = "data:application/json;charset=UTF-8;," + encodeURIComponent(out);
+				anchor.download = "flashcards.json";
+				anchor.click();
+			}
 		};
 
 		App.Flashcards.get(null, function(data) {
@@ -149,7 +160,19 @@ define(function() {
 	/* ==================== */
 
 	Settings.import = function(json_data) {
-		if (typeof json_data != "object") { json_data = JSON.parse(json_data); }
+
+		var error = false;
+
+		if (typeof json_data != "object") {
+			try {
+				json_data = JSON.parse(json_data);
+			} catch (err) {
+				alert("Not a valid import file");
+				error = true;
+			}
+
+			if (error) { return; }
+		}
 
 		var $stacks = $("#page-stacks li");
 		var stack_names = [];
@@ -162,23 +185,23 @@ define(function() {
 		var interval;
 
 		var check_fn = function() {
-			console.log(count, length);
-			if (count >= length) {
-				window.clearInterval(interval);
+			
+			if (count < length) { return; }
+			window.clearInterval(interval);
 
-				var out = [];
+			var out = [];
 
-				if (imported.length)
-				{ out.push("== Imported ==\n\n" + imported.join("\n")); }
+			if (imported.length)
+			{ out.push("== Imported ==\n\n" + imported.join("\n")); }
 
-				if (merged.length)
-				{ out.push("== Merged ==\n\n" + merged.join("\n")); }
+			if (merged.length)
+			{ out.push("== Merged ==\n\n" + merged.join("\n")); }
 
-				if (!imported.length && !merged.length)
-				{ return alert("Everything up to date!"); }
-		
-				alert(out.join("\n\n"));
-			}
+			if (!imported.length && !merged.length)
+			{ return alert("Everything up to date!"); }
+	
+			alert(out.join("\n\n"));
+			window.location.hash = "page-settings";
 		};
 
 		$stacks.each(function() {

@@ -286,6 +286,35 @@
 			</div>
 		</div>
 
+
+		<!--===================================-->
+		<!--====== PHONEGAP FILE BROWSER ======-->
+		<!--===================================-->
+
+		<div data-role="page" id="page-file-browser">
+			<div data-role="menubar">
+				<img class="logo" src="img/logo.png" height="50px">
+				<span class="title">Flashcards</span>
+				<a class="action" href="javascript:history.back()"><span class="fa fa-sign-out fa-2x"></span></a>
+			</div>
+
+			<div data-role="tabs">
+				<a href="#page-stacks" class="tab"><span class="fa fa-inbox"></span> Stacks</a>
+				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> Statistics</a>
+				<a href="#page-settings" class="tab active"><span class="fa fa-cog"></span> Settings</a>
+				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> About</a>
+			</div>
+
+			<div data-role="content">
+
+				<h1>Import</h1>
+				<span class="path"></span>
+				<hr>
+
+				<ul id="file-browser"></ul>
+			</div>
+		</div>
+
 		<script type="text/javascript" data-main="js/main.js" src="js/libs/require.js"></script>
 	</body>
 </html>
