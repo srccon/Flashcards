@@ -301,7 +301,7 @@ textarea {
 
 #flashcards {
 	width: 100%;
-	border-spacing: 10px 0px;
+	border-spacfing: 10px 0px;
 	display: none;
 }
 
@@ -344,6 +344,7 @@ textarea {
 #flashcard {
 	perspective: 500px;
 	position: relative;
+	width: 100%;
 }
 
 #flashcard-shadow {
@@ -368,18 +369,17 @@ textarea {
 	font-weight: bold;
 	text-align: center;
 
-	text-shadow: -5px  0px 0px #FFF,
-			      5px  0px 0px #FFF,
-			      0px -5px 0px #FFF,
-			      0px  5px 0px #FFF,
-			     -5px -5px 0px #FFF,
-			      5px -5px 0px #FFF,
-			     -5px  5px 0px #FFF,
-			      5px  5px 0px #FFF;
+	text-shadow: -1px  0px 0px #FFF,
+			      1px  0px 0px #FFF,
+			      0px -1px 0px #FFF,
+			      0px  1px 0px #FFF,
+			     -1px -1px 0px #FFF,
+			      1px -1px 0px #FFF,
+			     -1px  1px 0px #FFF,
+			      1px  1px 0px #FFF;
 
-	height: 1.2em;
-	padding: 10% 0px;
-	width: 100%;
+	padding: 10% 10%;
+	width:  80%;
 	
 	border: 1px solid #DDD;
 	border-radius: 1px;
@@ -484,6 +484,10 @@ textarea {
 	
 	hr {
 		margin: 10px 0px 20px 0px;
+	}
+
+	#flashcard > div {
+		font-size: 2em;
 	}
 
 	[data-role=tabs] .fa {
