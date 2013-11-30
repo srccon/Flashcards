@@ -285,16 +285,14 @@ textarea {
 	color: #999;
 	padding: 20px;
 	margin: 10px 0px;
-	border: 2px solid #FFF;
 
-	box-shadow: 0px 0px 10px #EEE;
-	background-color: #FCFCFC;
+	background-color: #EEE;
 	cursor: pointer;
 }
 
 #stacks li:hover {
 	color: #666;
-	box-shadow: 0px 0px 10px #DDD;
+	background-color: #DDD;
 }
 
 #stacks li:hover .fa:last-child { color: #999; }
@@ -318,20 +316,19 @@ textarea {
 	width: 100%;
 	border-spacing: 0px;
 	display: none;
-	border: 5px solid #DDD;
+	border: 5px solid #09C;
 }
 
 #flashcards th {
-	color: #666;
-	background-color: #EEE;
+	color: #FFF;
+	background-color: #0CE;
 	text-align: left;
 	padding: 0px 20px;
 }
 
 #flashcards th {
-	border-bottom: 5px solid #DDD;
+	border-bottom: 5px solid #09C;
 }
-
 
 #flashcards tr:last-child td {
 	border-bottom: 0px;
@@ -349,7 +346,7 @@ textarea {
 
 #flashcards td {
 	color: #666;
-	background-color: #FCFCFC;
+	background-color: #EEE;
 	padding: 10px 20px;
 }
 
@@ -362,8 +359,8 @@ textarea {
 #page-stack .actions {
 	width: 100%;
 	table-layout: fixed;
-	border: 5px solid #DDD;
-	background-color: #DDD;
+	border: 5px solid #09C;
+	background-color: #09C;
 	border-top: 0px;
 	border-spacing: 0px;
 }
@@ -373,15 +370,15 @@ textarea {
 #page-stack .actions td:last-child { padding-right: 0px; }
 
 #page-stack .actions td .button {
-	color: #666;
+	color: #FFF;
 	border: 0px;
 	border-radius: 0px;
-	background-color: #EEE;
+	background-color: #0CE;
 	box-shadow: none;
 }
 
 #page-stack .actions td .button:hover {
-	background-color: #F6F6F6;
+	background-color: #0DF;
 }
 
 #page-stack .actions td .button .fa { margin-right: 5px; }
