@@ -69,7 +69,7 @@ body[data-page=page-practice] [data-role=content] {
 [data-role=menubar] {
 	color: #FFF;
 	height: 80px;
-	background-color: #93C;
+	background-color: #09C;
 	display: table;
 	width: 100%;
 	position: relative;
@@ -82,7 +82,7 @@ body[data-page=page-practice] [data-role=content] {
 
 [data-role=menubar] .title {
 	color: #FFF;
-	text-shadow: 0px 2px rgba(0, 0, 0, 0.4);
+	text-shadow: -1px -1px rgba(0, 0, 0, 0.4);
 	font-size: 2em;
 	font-weight: 300;
 
@@ -99,7 +99,7 @@ body[data-page=page-practice] [data-role=content] {
 	margin-top: 10px;
 	margin-right: 10px;
 	border-radius: 2px;
-	background-color: #B7D;
+	background-color: #0CE;
 	text-align: center;
 	cursor: pointer;
 	text-decoration: none;
@@ -109,7 +109,7 @@ body[data-page=page-practice] [data-role=content] {
 }
 
 [data-role=menubar] .action:hover {
-	background-color: #C8E;
+	background-color: #0DF;
 }
 
 
@@ -149,7 +149,7 @@ body[data-page=page-practice] [data-role=content] {
 [data-role=tabs] .tab.active {
 	color: #FFF;
 	background-color: #222;
-	border-bottom-color: #93C;
+	border-bottom-color: #09C;
 }
 
 
@@ -542,7 +542,7 @@ textarea {
 
 	[data-role=menubar] .action {
 
-		box-shadow: 0px 0px 10px 10px #93C;
+		box-shadow: 0px 0px 10px 10px #09C;
 	}
 
 	[data-role=tabs] .fa {
