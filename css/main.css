@@ -4,7 +4,7 @@
 html, body { height: 100%; }
 
 html {
-	background-color: #333;
+	background-color: #111;
 	overflow-x: hidden;
 	overflow-y: scroll;
 }
@@ -12,9 +12,10 @@ html {
 body {
 	font-family: Roboto, "Segoe UI", Arial, sans-serif;
 
+	min-width: 400px;
 	max-width: 1024px;
 	min-height: 100%;
-	background-color: #F9F9F9;
+	background-color: #F6F6F6;
 	margin: 0px auto;
 
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -105,7 +106,6 @@ body[data-page=page-practice] [data-role=content] {
 
 	position: relative;
 	z-index: 2;
-	box-shadow: 0px 0px 10px 10px #93C;
 }
 
 [data-role=menubar] .action:hover {
@@ -149,7 +149,7 @@ body[data-page=page-practice] [data-role=content] {
 [data-role=tabs] .tab.active {
 	color: #FFF;
 	background-color: #222;
-	border-bottom-color: #B7D;
+	border-bottom-color: #93C;
 }
 
 
@@ -160,7 +160,10 @@ body[data-page=page-practice] [data-role=content] {
 [data-role=content] {
 	padding: 50px;
 	color: #333;
-	background-color: #F9F9F9;
+	background-color: #F6F6F6;
+	background-image: linear-gradient(0deg, #F6F6F6, #FFF);
+	background-repeat: repeat-x;
+	background-size: 100% 100px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -175,8 +178,7 @@ li { padding-bottom: 5px; }
 hr {
 	height: 0px;
 	border: 0px;
-	border-top: 2px solid #DDD;
-	border-bottom: 2px solid #FFF;
+	border-bottom: 2px solid #DDD;
 	margin: 20px 0px 40px 0px;
 	clear: both;
 }
@@ -187,19 +189,20 @@ hr.transparent {
 }
 
 label {
-	background-color: #EEE;
+	background-color: #E9E9E9;
 	padding: 20px;
 	display: block;
 	margin-bottom: 10px;
 	position: relative;
 	cursor: pointer;
 	font-size: 1.2em;
+	border-radius: 5px;
 }
 
 label:hover { background-color: #DDD; }
 
 label span::before {
-	color: #333;
+	color: inherit;
 	font-family: FontAwesome;
 	content: "\f096";
 	width: 20px;
@@ -207,7 +210,11 @@ label span::before {
 }
 
 label input { display: none; }
-label input:checked + span::before { content: "\f046"; }
+label input:checked + span::before {
+	content: "\f046";
+	margin-left: 2px;
+	margin-right: -2px;
+}
 
 textarea {
 	color: #666;
@@ -275,19 +282,27 @@ textarea {
 }
 
 #stacks li {
-	color: #666;
-	background-color: #DDD;
+	color: #999;
 	padding: 20px;
-	cursor: pointer;
+	margin: 10px 0px;
+	border: 2px solid #FFF;
 
-	border: 2px solid #CCC;
-	border-top: 0px;
-	box-shadow: inset 0px 2px #EEE;
+	box-shadow: 0px 0px 10px #EEE;
+	background-color: #FCFCFC;
+	cursor: pointer;
 }
 
-#stacks li:hover { background-color: #CCC; }
-#stacks li:first-child { margin-top: 0px; border-top: 2px solid #CCC; }
+#stacks li:hover {
+	color: #666;
+	box-shadow: 0px 0px 10px #DDD;
+}
+
+#stacks li:hover .fa:last-child { color: #999; }
+
+
+#stacks li:first-child { margin-top: 0px; }
 #stacks li:last-child { margin-bottom: 0px; }
+#stacks li .fa:last-child { color: #CCC; }
 
 #stacks li .count {
 	float: right;
@@ -301,28 +316,45 @@ textarea {
 
 #flashcards {
 	width: 100%;
-	border-spacfing: 10px 0px;
+	border-spacing: 0px;
 	display: none;
+	border: 5px solid #DDD;
 }
 
 #flashcards th {
 	color: #666;
-	background-color: #E6E6E6;
-	border-top: 2px solid #FFF;
+	background-color: #EEE;
 	text-align: left;
 	padding: 0px 20px;
 }
 
-#flashcards td {
-	color: #666;
-	background-color: #EEE;
-	padding: 10px 20px;
+#flashcards th {
+	border-bottom: 5px solid #DDD;
+}
+
+
+#flashcards tr:last-child td {
+	border-bottom: 0px;
 }
 
 #flashcards th:first-child,
 #flashcards td:first-child {
 	padding: 0px;
-	text-align: left;
+	text-align: center;
+}
+
+#flashcards th label {
+	margin: 0px;
+}
+
+#flashcards td {
+	color: #666;
+	background-color: #FCFCFC;
+	padding: 10px 20px;
+}
+
+#flashcards tr:nth-child(odd) td {
+	background-color: #F6F6F6;
 }
 
 #flashcards label { background: transparent; }
@@ -330,12 +362,29 @@ textarea {
 #page-stack .actions {
 	width: 100%;
 	table-layout: fixed;
+	border: 5px solid #DDD;
+	background-color: #DDD;
+	border-top: 0px;
+	border-spacing: 0px;
 }
 
-#page-stack .actions td {
-	padding: 10px;
+#page-stack .actions td { padding: 0px 2px; }
+#page-stack .actions td:first-child { padding-left: 0px; }
+#page-stack .actions td:last-child { padding-right: 0px; }
+
+#page-stack .actions td .button {
+	color: #666;
+	border: 0px;
+	border-radius: 0px;
+	background-color: #EEE;
+	box-shadow: none;
 }
 
+#page-stack .actions td .button:hover {
+	background-color: #F6F6F6;
+}
+
+#page-stack .actions td .button .fa { margin-right: 5px; }
 
 /* ======================= */
 /* ====== FLASHCARD ====== */
@@ -387,7 +436,7 @@ textarea {
 	background-color: #FFF; 
 	background-image: 
 		linear-gradient(90deg, transparent 50px, #abced4 50px, #abced4 60px, transparent 60px),
-		linear-gradient(#F9F9F9 .1em, transparent .1em);
+		linear-gradient(#F6F6F6 .1em, transparent .1em);
 	background-size: 100% 0.8em;
 
 	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
@@ -480,7 +529,7 @@ textarea {
 /* ====== MEDIA QUERIES ====== */
 /* =========================== */
 
-@media only screen and (orientation : portrait) and (max-width : 800px) {
+@media only screen and (orientation : portrait) and (max-width : 600px) {
 	
 	hr {
 		margin: 10px 0px 20px 0px;
@@ -488,6 +537,12 @@ textarea {
 
 	#flashcard > div {
 		font-size: 2em;
+	}
+
+
+	[data-role=menubar] .action {
+
+		box-shadow: 0px 0px 10px 10px #93C;
 	}
 
 	[data-role=tabs] .fa {

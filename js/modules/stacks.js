@@ -82,7 +82,13 @@ define(function() {
 				$stacks.parent().find(".note").hide();
 
 				[].forEach.call(stacks, function(v) {
-					$stacks.append("<li class='stack' data-key='" + v.key + "'><b>" + v.value.name + "</b> <span class='fa fa-arrow-right' style='float: right;'></span></li>");
+					$stacks.append(
+						"<li class='stack' data-key='" + v.key + "'>" +
+							"<span class='fa fa-tags' style='margin-right: 10px;'></span>" +
+							" <b>" + v.value.name + "</b> " +
+							"<span class='fa fa-arrow-right' style='float: right;'></span>" +
+						"</li>"
+					);
 				});
 
 			} else { $stacks.parent().find(".note").show(); }
@@ -117,7 +123,14 @@ define(function() {
 			var key = e.target.result;
 			if (!App.$(".stack").length) { $("#page-stacks .note").hide(); }
 
-			App.$("#stacks").append("<li class='stack' data-key='" + key + "'><b>" + name + "</b> <span class='fa fa-arrow-right' style='float: right;'></span></li>");
+				App.$("#stacks").append(
+					"<li class='stack' data-key='" + key + "'>" +
+						"<span class='fa fa-tags' style='margin-right: 10px;'></span>" +
+						" <b>" + name + "</b> " +
+						"<span class='fa fa-arrow-right' style='float: right;'></span>" +
+					"</li>"
+				);
+
 			if (callback) { callback(key, name) }
 		});
 	};
