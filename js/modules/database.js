@@ -241,7 +241,7 @@ define(function() {
 				}, {
 					stackID: id,
 					front: "Good evening!",
-					back: "こんにちは!"
+					back: "こんにちは！"
 				}, {
 					stackID: id,
 					front: "Good night.",
