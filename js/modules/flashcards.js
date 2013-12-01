@@ -198,7 +198,7 @@ define(["transit"], function() {
 			if (!no_UI) {
 				App.$("#page-stack tr[data-key=" + key + "]").remove();
 
-				if (!App.$("#page-stack tr").length < 3) {
+				if (App.$("#page-stack tr").length < 3) {
 					$("#page-stack .note").show();
 					App.$("#flashcards, #page-stack .actions").hide();
 				}
