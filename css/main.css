@@ -12,10 +12,9 @@ html {
 body {
 	font-family: Roboto, "Segoe UI", Arial, sans-serif;
 
-	min-width: 400px;
 	max-width: 1024px;
 	min-height: 100%;
-	background-color: #F6F6F6;
+	background-color: #EEE;
 	margin: 0px auto;
 
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -69,10 +68,11 @@ body[data-page=page-practice] [data-role=content] {
 [data-role=menubar] {
 	color: #FFF;
 	height: 80px;
-	background-color: #09C;
+	background-color: #333;
 	display: table;
 	width: 100%;
 	position: relative;
+	background-image: linear-gradient(0deg, #111, #333);
 }
 
 [data-role=menubar] .logo {
@@ -82,7 +82,7 @@ body[data-page=page-practice] [data-role=content] {
 
 [data-role=menubar] .title {
 	color: #FFF;
-	text-shadow: -1px -1px rgba(0, 0, 0, 0.4);
+	text-shadow: 0px -2px #000;
 	font-size: 2em;
 	font-weight: 300;
 
@@ -99,7 +99,7 @@ body[data-page=page-practice] [data-role=content] {
 	margin-top: 10px;
 	margin-right: 10px;
 	border-radius: 2px;
-	background-color: #0CE;
+	background-color: #444;
 	text-align: center;
 	cursor: pointer;
 	text-decoration: none;
@@ -109,7 +109,7 @@ body[data-page=page-practice] [data-role=content] {
 }
 
 [data-role=menubar] .action:hover {
-	background-color: #0DF;
+	background-color: #666;
 }
 
 
@@ -148,7 +148,6 @@ body[data-page=page-practice] [data-role=content] {
 
 [data-role=tabs] .tab.active {
 	color: #FFF;
-	background-color: #222;
 	border-bottom-color: #09C;
 }
 
@@ -158,12 +157,9 @@ body[data-page=page-practice] [data-role=content] {
 /* ===================== */
 
 [data-role=content] {
-	padding: 50px;
 	color: #333;
-	background-color: #F6F6F6;
-	background-image: linear-gradient(0deg, #F6F6F6, #FFF);
-	background-repeat: repeat-x;
-	background-size: 100% 100px;
+	padding: 50px;
+	background-color: #EEE;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -189,7 +185,7 @@ hr.transparent {
 }
 
 label {
-	background-color: #E9E9E9;
+	background-color: #E3E3E3;
 	padding: 20px;
 	display: block;
 	margin-bottom: 10px;
@@ -282,25 +278,29 @@ textarea {
 }
 
 #stacks li {
-	color: #999;
+	color: #666;
 	padding: 20px;
 	margin: 10px 0px;
 
-	background-color: #EEE;
+	border-left: 5px solid #BBB;
+	box-shadow: inset 0px -2px #CCC;
+
+	border-radius: 2px;
+	background-color: #DDD;
 	cursor: pointer;
 }
 
 #stacks li:hover {
-	color: #666;
-	background-color: #DDD;
+	color: #333;
+	background-color: #CCC;
+	box-shadow: inset 0px -2px #BBB;
 }
 
-#stacks li:hover .fa:last-child { color: #999; }
-
+#stacks li .fa:last-child { color: #999; }
+#stacks li:hover .fa:last-child { color: #666; }
 
 #stacks li:first-child { margin-top: 0px; }
 #stacks li:last-child { margin-bottom: 0px; }
-#stacks li .fa:last-child { color: #CCC; }
 
 #stacks li .count {
 	float: right;
@@ -316,18 +316,17 @@ textarea {
 	width: 100%;
 	border-spacing: 0px;
 	display: none;
-	border: 5px solid #09C;
+	border: 5px solid #333;
 }
 
 #flashcards th {
 	color: #FFF;
-	background-color: #0CE;
+	background-color: #666;
 	text-align: left;
 	padding: 0px 20px;
-}
 
-#flashcards th {
-	border-bottom: 5px solid #09C;
+	box-shadow: inset 0px 2px #777;
+	border-bottom: 5px solid #333;
 }
 
 #flashcards tr:last-child td {
@@ -359,8 +358,8 @@ textarea {
 #page-stack .actions {
 	width: 100%;
 	table-layout: fixed;
-	border: 5px solid #09C;
-	background-color: #09C;
+	border: 5px solid #333;
+	background-color: #333;
 	border-top: 0px;
 	border-spacing: 0px;
 }
@@ -372,13 +371,16 @@ textarea {
 #page-stack .actions td .button {
 	color: #FFF;
 	border: 0px;
-	border-radius: 0px;
-	background-color: #0CE;
+
+	border-top: 2px solid #777;
+
+	background-color: #666;
 	box-shadow: none;
 }
 
 #page-stack .actions td .button:hover {
-	background-color: #0DF;
+	background-color: #999;
+	border-color: #AAA;
 }
 
 #page-stack .actions td .button .fa { margin-right: 5px; }
