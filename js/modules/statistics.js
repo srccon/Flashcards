@@ -28,7 +28,7 @@ define(["chart"], function(Chart) {
 		});
 	};
 
-	Statistics.updateView = function(callback) {
+	Statistics.updateView = function() {
 
 		var display_note = true;
 
@@ -42,6 +42,8 @@ define(["chart"], function(Chart) {
 				if (!stackdata[v.value.stackID]) { stackdata[v.value.stackID] = []; }
 				stackdata[v.value.stackID].push(v);
 			});
+
+			if (display_note) { App.$("#page-statistics").find(".note").show(); }
 
 			// Now fetch the stack name and process the data
 			for (stackID in stackdata) {
@@ -97,11 +99,8 @@ define(["chart"], function(Chart) {
 						datasetStrokeWidth: 5,
 						animation: false
 					});
-
 				});
 			}
-
-			if (callback) { callback(); }
 		});
 	};
 

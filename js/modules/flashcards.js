@@ -194,7 +194,16 @@ define(["transit"], function() {
 
 		var keys = typeof key == "object" && key.length ? key : [key], count = 0;
 		var fn = function(key) {
-			if (!no_UI) { App.$("tr[data-key=" + key + "]").remove(); }
+
+			if (!no_UI) {
+				App.$("#page-stack tr[data-key=" + key + "]").remove();
+
+				if (!App.$("#page-stack tr").length < 3) {
+					$("#page-stack .note").show();
+					App.$("#flashcards, #page-stack .actions").hide();
+				}
+			}
+			
 			count++;
 		};
 
