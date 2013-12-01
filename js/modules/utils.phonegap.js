@@ -19,7 +19,7 @@ define(function() {
 		});
 	};
 
-	PhoneGap.updateView = function(entries) {
+	PhoneGap.updateView = function(entries, callback) {
 
 		var fn_populate = function(entries) {
 
@@ -35,6 +35,8 @@ define(function() {
 				else
 				$fileBrowser.append("<li>" + v.name + "</li>");
 			});
+
+			if (callback) { callback(); }
 		};
 
 		var $fileBrowser = App.$("#file-browser");

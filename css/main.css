@@ -68,11 +68,11 @@ body[data-page=page-practice] [data-role=content] {
 [data-role=menubar] {
 	color: #FFF;
 	height: 80px;
-	background-color: #333;
+	background-color: #069;
 	display: table;
 	width: 100%;
 	position: relative;
-	background-image: linear-gradient(0deg, #111, #333);
+	border-bottom: 2px solid #000;
 }
 
 [data-role=menubar] .logo {
@@ -82,7 +82,7 @@ body[data-page=page-practice] [data-role=content] {
 
 [data-role=menubar] .title {
 	color: #FFF;
-	text-shadow: 0px -2px #000;
+	text-shadow: -1px -1px rgba(0, 0, 0, 0.5);
 	font-size: 2em;
 	font-weight: 300;
 
@@ -99,7 +99,7 @@ body[data-page=page-practice] [data-role=content] {
 	margin-top: 10px;
 	margin-right: 10px;
 	border-radius: 2px;
-	background-color: #444;
+	background-color: #047;
 	text-align: center;
 	cursor: pointer;
 	text-decoration: none;
@@ -109,7 +109,7 @@ body[data-page=page-practice] [data-role=content] {
 }
 
 [data-role=menubar] .action:hover {
-	background-color: #666;
+	background-color: #025;
 }
 
 
@@ -316,17 +316,17 @@ textarea {
 	width: 100%;
 	border-spacing: 0px;
 	display: none;
-	border: 5px solid #333;
+	border: 5px solid #036;
 }
 
 #flashcards th {
 	color: #FFF;
-	background-color: #666;
+	background-color: #069;
 	text-align: left;
 	padding: 0px 20px;
 
-	box-shadow: inset 0px 2px #777;
-	border-bottom: 5px solid #333;
+	box-shadow: inset 0px 2px #09c;
+	border-bottom: 5px solid #CCC;
 }
 
 #flashcards tr:last-child td {
@@ -355,13 +355,15 @@ textarea {
 
 #flashcards label { background: transparent; }
 
+.note { display: none; }
 #page-stack .actions {
 	width: 100%;
 	table-layout: fixed;
-	border: 5px solid #333;
-	background-color: #333;
+	border: 5px solid #036;
+	background-color: #036;
 	border-top: 0px;
 	border-spacing: 0px;
+	display: none;
 }
 
 #page-stack .actions td { padding: 0px 2px; }
@@ -372,15 +374,15 @@ textarea {
 	color: #FFF;
 	border: 0px;
 
-	border-top: 2px solid #777;
+	border-top: 2px solid #09c;
 
-	background-color: #666;
+	background-color: #069;
 	box-shadow: none;
 }
 
 #page-stack .actions td .button:hover {
-	background-color: #999;
-	border-color: #AAA;
+	background-color: #09c;
+	border-color: #0cf;
 }
 
 #page-stack .actions td .button .fa { margin-right: 5px; }

@@ -28,7 +28,7 @@ define(["chart"], function(Chart) {
 		});
 	};
 
-	Statistics.updateView = function() {
+	Statistics.updateView = function(callback) {
 
 		var display_note = true;
 
@@ -100,6 +100,8 @@ define(["chart"], function(Chart) {
 
 				});
 			}
+
+			if (callback) { callback(); }
 		});
 	};
 

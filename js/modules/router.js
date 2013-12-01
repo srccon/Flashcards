@@ -50,8 +50,11 @@ define(function() {
 							);
 						});
 
-						Router.$page.find(".note").remove();
+						Router.$page.find(".note").hide();
+						Router.$page.find(".actions").show();
 						$flashcards.show();
+					} else {
+						Router.$page.find(".note").show();
 					}
 				});
 			});
