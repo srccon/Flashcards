@@ -5,8 +5,13 @@ A simple flashcard application for android and web browsers.
 
 * [**Browser version**](http://elias-schuett.de/git/Flashcards/)
 * [**Android app (APK)**](https://dl.dropboxusercontent.com/u/14645664/files/Flashcards.apk)
+* [**Android app (Google Play)**](https://play.google.com/store/apps/details?id=de.elias_schuett.flashcards)
 
-![screenshot](https://dl.dropboxusercontent.com/u/14645664/web/dghfdhgfdhgfdhgfd.png)
+<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-24-24.png" height="320">&nbsp;
+<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-24-35.png" height="320">&nbsp;
+<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-32-34.png" height="320">&nbsp;
+<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-25-13.png" height="320">&nbsp;
+
 
 ## Features
 
