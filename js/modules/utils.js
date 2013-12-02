@@ -23,7 +23,20 @@ define(function() {
 		} else if (key !== undefined) {
 			return JSON.parse(window.localStorage.getItem(key));
 		}
-	};	
+	};
+
+	/* ========================= */
+	/* ====== ESCAPE HTML ====== */
+	/* ========================= */
+
+	Utils.escapeHTML = function(str) {
+		return str
+		  .replace(/&/g, "&amp;")
+		  .replace(/</g, "&lt;")
+		  .replace(/>/g, "&gt;")
+		  .replace(/"/g, "&quot;")
+		  .replace(/'/g, "&#039;");
+	};
 
 	/* =========================== */
 	/* ====== ARRAY SHUFFLE ====== */

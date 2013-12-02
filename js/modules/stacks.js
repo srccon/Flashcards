@@ -118,6 +118,9 @@ define(function() {
 	/* ==================== */
 
 	Stacks.create = function(name, callback) {
+
+		name = App.Utils.escapeHTML(name);
+
 		App.DB.addData("App", "Stacks", { name: name }, function(e) {
 
 			var key = e.target.result;
@@ -182,7 +185,7 @@ define(function() {
 				
 				// Shuffle
 				if (App._settings.shuffle_flashcards)
-				{ data = Utils.array_shuffle(data); }
+				{ data = App.Utils.array_shuffle(data); }
 
 				// Switch
 				if (App._settings.switch_front_back) {

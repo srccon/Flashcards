@@ -34,8 +34,8 @@ define(["transit"], function() {
 
 			var data = {
 				stackID: +window.location.hash.split(":")[1],
-				front: $("#page-flashcard-new textarea[name=front]").val(),
-				back: $("#page-flashcard-new textarea[name=back]").val()
+				front: App.Utils.escapeHTML($("#page-flashcard-new textarea[name=front]").val()),
+				back: App.Utils.escapeHTML($("#page-flashcard-new textarea[name=back]").val())
 			};
 
 			Flashcards.add(data);
