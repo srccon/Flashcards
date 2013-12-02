@@ -221,7 +221,7 @@ textarea {
 	border: 0px;
 	
 	box-sizing: border-box;
-	background-color: #DDD;
+	background-color: #FAFAFA;
 	resize: none;
 }
 
@@ -526,6 +526,22 @@ textarea {
 	font-style: italic;
 }
 
+#page-stack-settings table {
+	width: 100%;
+	border-spacing: 10px;
+	table-layout: fixed;
+	text-align: center;
+}
+
+#page-stack-settings table .fa {
+	padding-bottom: 15px;
+}
+
+#page-stack-settings .languages {
+	padding: 10px;
+	width: 100%;
+	height: 50px;
+}
 
 /* =========================== */
 /* ====== MEDIA QUERIES ====== */

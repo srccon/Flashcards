@@ -32,24 +32,24 @@ define(function() {
 		// Remove stack
 		"click #remove-stack": function(e) {
 			var stack = App.$("#page-stack h1").text();
-			var id = +window.location.hash.split(":")[1];
+			var stackID = +window.location.hash.split(":")[1];
 
 			if (confirm("Remove \"" + stack + "\" and all of its flashcards?"))
-			{ Stacks.remove(id); }
+			{ Stacks.remove(stackID); }
 		},
 
 		// Rename stack
 		"click #rename-stack": function(e) {
-			var id = +window.location.hash.split(":")[1];
-			var stack = App.$("#page-stack h1").text();
+			var stackID = +window.location.hash.split(":")[1];
+			var stack = App.$("#page-stack-settings .stack-name").text();
 			var name = window.prompt("Stack name:", stack);
-			if (name) { Stacks.rename(id, name); }
+			if (name) { Stacks.rename(stackID, name); }
 		},
 
 		// Practice stack
 		"click #practice": function(e) {
-			var id = +window.location.hash.split(":")[1];
-			location.hash = "page-practice:" + id;
+			var stackID = +window.location.hash.split(":")[1];
+			location.hash = "page-practice:" + stackID;
 		},
 
 		// Exit practice
@@ -63,6 +63,29 @@ define(function() {
 		"click .stack-return": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
 			window.location.hash = "#page-stack:" + stackID;
+		},
+
+		// Stack settings
+		"click #stack-settings": function(e) {
+			var stackID = +window.location.hash.split(":")[1];
+			location.hash = "page-stack-settings:" + stackID;
+		},
+
+		// Stack settings
+		"change select.languages": function(e) {
+
+			var stackID = +window.location.hash.split(":")[1];
+			var isFrom = $(e.currentTarget).hasClass("from");
+			var code = $(e.currentTarget).val();
+
+			if (!App._settings.translation_preferences)
+			{ App._settings.translation_preferences = {}; }
+
+			if (!App._settings.translation_preferences[stackID])
+			{ App._settings.translation_preferences[stackID] = {}; }
+
+			App._settings.translation_preferences[stackID][isFrom ? "from" : "to"] = code;
+			App.Utils.localStorage("settings", App._settings);
 		}
 	};
 
@@ -175,7 +198,7 @@ define(function() {
 	Stacks.rename = function(id, name) {
 		App.DB.updateData("App", "Stacks", id, { name: name }, function(e) {
 			App.$(".stack[data-key=" + id + "] b").html(name);
-			App.$("#page-stack h1").html(name);
+			App.$("#page-stack-settings .stack-name").html(name);
 		});
 	};
 

@@ -60,6 +60,26 @@ define(function() {
 			});
 		},
 
+		"page-stack-settings": function(stackID) {
+			App.Stacks.getName(+stackID, function(stackname) {
+				Router.$page.find(".stack-name").html(stackname);
+			});
+
+			var prefs = App._settings.translation_preferences && App._settings.translation_preferences[stackID];
+			var $select = App.$("select.languages");
+
+			App.Flashcards.translate.languages.forEach(function(v, i) {
+				var code = App.Flashcards.translate.language_codes[i];
+				$select.append("<option value='" + code + "'>" + v + "</option>");
+			});
+
+			if (prefs) {
+				App.$("select.from").find("option[value=" + prefs.from + "]").attr("selected", "selected")
+				App.$("select.to").find("option[value=" + prefs.to + "]").attr("selected", "selected")
+			}
+		},
+
+
 		"page-practice": function(id) {
 			App.Stacks.practice(+id);
 		},

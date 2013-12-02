@@ -122,7 +122,6 @@
 
 			<div data-role="content">
 
-
 				<h1>Author</h1><hr>
 
 				Developed and designed by <a href="http://elias-schuett.de">Elias Schütt</a>.<br><br>
@@ -151,9 +150,8 @@
 			<div data-role="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
+				<div class="action" id="stack-settings"><span class="fa fa-cog fa-2x"></span></div>
 				<div class="action" id="flashcard-new"><span class="fa fa-plus fa-2x"></span></div>
-				<div class="action" id="rename-stack"><span class="fa fa-pencil fa-2x"></span></div>
-				<div class="action" id="remove-stack"><span class="fa fa-times fa-2x"></span></div>
 			</div>
 
 			<div data-role="tabs">
@@ -190,6 +188,50 @@
 			</div>
 		</div>
 
+		<!--============================-->
+		<!--====== STACK SETTINGS ======-->
+		<!--============================-->
+
+		<div data-role="page" id="page-stack-settings" data-template="true">
+			<div data-role="menubar">
+				<img class="logo" src="img/logo.png" height="50px">
+				<span class="title">Flashcards</span>
+				<a class="action" href="javascript:history.back()">
+					<span class="fa fa-sign-out fa-2x"></span>
+				</a>
+			</div>
+
+			<div data-role="tabs">
+				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
+				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
+				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
+				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
+			</div>
+
+			<div data-role="content">
+
+				<h1>Stack settings</h1>
+				<span class="stack-name"></span>
+
+				<hr class="transparent">
+				<h2>Translation buttons</h2><hr>
+
+				<table>
+					<tr>
+						<td><select class="languages from"><option>From (front)</option></select><br><br></td>
+						<td><span class="fa fa-arrows-h fa-2x"></span></td>
+						<td><select class="languages to"><option>To (back)</option></select><br><br></td>
+					</tr>
+				</table>
+
+				<hr class="transparent">
+				<h2>Actions</h2><hr>
+
+				<a class="button stretch big" id="rename-stack"><span class="fa fa-pencil"></span> rename stack</a><br><br>
+				<a class="button red stretch big" id="remove-stack"><span class="fa fa-times"></span> remove stack</a>
+			</div>
+		</div>
+
 		<!--===========================-->
 		<!--====== NEW FLASHCARD ======-->
 		<!--===========================-->
@@ -217,8 +259,10 @@
 				
 				<hr>
 				
+				<a class="button stretch translate big front">translate front</a><br><br>
 				<textarea name="front" placeholder="Front"></textarea><br><br>
-				<textarea name="back" placeholder="Back"></textarea>
+				<textarea name="back" placeholder="Back"></textarea><br><br>
+				<a class="button stretch translate big back">translate back</a>
 			</div>
 		</div>
 
