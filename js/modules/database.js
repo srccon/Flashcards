@@ -172,6 +172,26 @@ define(function() {
 		}
 	};
 
+	/* ======================================== */
+	/* ====== COUNT OBJECT STORE ENTRIES ====== */
+	/* ======================================== */
+
+	Database.countObjectStoreEntries = function(dbName, objectStoreName, key, callback) {
+
+		var transaction = Database[dbName].transaction(objectStoreName);
+		var objectStore = transaction.objectStore(objectStoreName);
+		var pairs = [], range, request;
+
+		if (key && typeof key == "object" && key.length) {
+
+			range = window.IDBKeyRange.only(key[1]);
+			request = objectStore.index(key[0]).count(range);
+
+		} else { request = objectStore.count(); }
+
+		request.onsuccess = function(e) { callback(e.target.result); };
+	};
+
 	/* ====================== */
 	/* ====== ADD DATE ====== */
 	/* ====================== */

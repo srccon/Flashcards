@@ -82,13 +82,17 @@ define(function() {
 				$stacks.parent().find(".note").hide();
 
 				[].forEach.call(stacks, function(v) {
-					$stacks.append(
-						"<li class='stack' data-key='" + v.key + "'>" +
-							"<span class='fa fa-tags' style='margin-right: 10px;'></span>" +
-							" <b>" + v.value.name + "</b> " +
-							"<span class='fa fa-arrow-right' style='float: right;'></span>" +
-						"</li>"
-					);
+
+					Stacks.countFlashcards(v.key, function(num) {
+						$stacks.append(
+							"<li class='stack' data-key='" + v.key + "'>" +
+								"<span class='fa fa-tags' style='margin-right: 10px;'></span>" +
+								" <b>" + v.value.name + "</b> " +
+								"<span class='fa fa-arrow-right'></span>" +
+								"<span class='count'>" + num + " Cards</span>" +
+							"</li>"
+						);
+					});
 				});
 
 			} else { $stacks.parent().find(".note").show(); }
@@ -111,6 +115,14 @@ define(function() {
 
 	Stacks.get = function(callback) {
 		App.DB.getData("App", "Stacks", null, callback);
+	};
+
+	/* ============================== */
+	/* ====== COUNT FLASHCARDS ====== */
+	/* ============================== */
+
+	Stacks.countFlashcards = function(stackID, callback) {
+		App.DB.countObjectStoreEntries("App", "Flashcards", ["stackID", stackID], callback);
 	};
 
 	/* ==================== */

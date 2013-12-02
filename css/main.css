@@ -296,8 +296,8 @@ textarea {
 	box-shadow: inset 0px -2px #BBB;
 }
 
-#stacks li .fa:last-child { color: #999; }
-#stacks li:hover .fa:last-child { color: #666; }
+#stacks li .fa-arrow-right { float: right; color: #999; }
+#stacks li:hover .fa-arrow-right { color: #666; }
 
 #stacks li:first-child { margin-top: 0px; }
 #stacks li:last-child { margin-bottom: 0px; }
@@ -305,6 +305,7 @@ textarea {
 #stacks li .count {
 	float: right;
 	font-size: 0.8em;
+	margin-right: 10px;
 }
 
 
