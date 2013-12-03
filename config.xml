@@ -21,7 +21,7 @@
     </feature>
 
     <preference name="permissions"                value="none"/>
-    <preference name="phonegap-version"           value="3.2.0" />          <!-- all: current version of PhoneGap -->
+    <preference name="phonegap-version"           value="3.1.0" />          <!-- all: current version of PhoneGap -->
     <preference name="orientation"                value="portrait" />       <!-- all: default means both landscape and portrait are enabled -->
     <preference name="target-device"              value="tablet" />         <!-- all: possible values handset, tablet, or universal -->
     <preference name="fullscreen"                 value="true" />           <!-- all: hides the status bar at the top of the screen -->
