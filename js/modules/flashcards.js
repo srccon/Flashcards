@@ -109,7 +109,7 @@ define(["transit"], function() {
 
 			var stackID = +window.location.hash.split(":")[1];
 			var isFront = $(e.currentTarget).hasClass("front");
-			var text = $("#page-flashcard-new textarea[name=" + (isFront ? "front" : "back") + "]").val();
+			var text = App.Router.$page.find("textarea[name=" + (isFront ? "front" : "back") + "]").val();
 
 			Flashcards.translate(stackID, text, isFront);
 		},
@@ -201,7 +201,7 @@ define(["transit"], function() {
 		var prefs = App._settings.translation_preferences && App._settings.translation_preferences[stackID], from, to, url, $target;
 		if (!prefs) { return alert("Please set your translation preferences in your stack settings first."); }
 
-		$target = App.$("#page-flashcard-new textarea[name=" + (isFront ? "back" : "front") + "]");
+		$target = App.Router.$page.find("textarea[name=" + (isFront ? "back" : "front") + "]");
 		$target.val("translating ...");
 
 		from = prefs.from;

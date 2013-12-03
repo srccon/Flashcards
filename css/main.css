@@ -90,6 +90,11 @@ body[data-page=page-practice] [data-role=content] {
 	top: 24px; left: 75px;
 }
 
+[data-role=menubar] .actions {
+	display: inline-block;
+	float: right;
+}
+
 [data-role=menubar] .action {
 	color: #FFF;
 	float: right;
@@ -357,7 +362,7 @@ textarea {
 #flashcards label { background: transparent; }
 
 .note { display: none; }
-#page-stack .actions {
+#page-stack [data-role=content] .actions {
 	width: 100%;
 	table-layout: fixed;
 	border: 5px solid #036;
@@ -367,11 +372,11 @@ textarea {
 	display: none;
 }
 
-#page-stack .actions td { padding: 0px 2px; }
-#page-stack .actions td:first-child { padding-left: 0px; }
-#page-stack .actions td:last-child { padding-right: 0px; }
+#page-stack [data-role=content] .actions td { padding: 0px 2px; }
+#page-stack [data-role=content] .actions td:first-child { padding-left: 0px; }
+#page-stack [data-role=content] .actions td:last-child { padding-right: 0px; }
 
-#page-stack .actions td .button {
+#page-stack [data-role=content] .actions td .button {
 	color: #FFF;
 	border: 0px;
 
@@ -381,12 +386,12 @@ textarea {
 	box-shadow: none;
 }
 
-#page-stack .actions td .button:hover {
+#page-stack [data-role=content] .actions td .button:hover {
 	background-color: #09c;
 	border-color: #0cf;
 }
 
-#page-stack .actions td .button .fa { margin-right: 5px; }
+#page-stack [data-role=content] .actions td .button .fa { margin-right: 5px; }
 
 /* ======================= */
 /* ====== FLASHCARD ====== */
@@ -557,11 +562,32 @@ textarea {
 		font-size: 2em;
 	}
 
+	[data-role=menubar] {
+		border-top: 2px solid #000;
+		border-bottom: 0px;
+	}
+
+	[data-role=menubar] .actions {
+		display: table;
+		float: none;
+		table-layout: fixed;
+		width: 100%;
+		margin-top: 10px;
+		border-spacing: 10px;
+		background-color: #111;
+	}
 
 	[data-role=menubar] .action {
-
-		box-shadow: 0px 0px 10px 10px #069;
+		display: table-cell;
+		margin: 0px;
+		text-align: center;
+		padding: 20px 0px;
+		float: none;
+		border-radius: 0px;
+		background-color: #333;
 	}
+
+	[data-role=menubar] .action:hover { background-color: #444; }
 
 	[data-role=tabs] .fa {
 		font-size: 1.4em;
@@ -591,16 +617,18 @@ textarea {
 	}
 
 	#flashcards,
-	#page-stack .actions {
+	#page-stack [data-role=content] .actions {
 		border-spacing: 0px;
 	}
 	
-	#page-stack .actions td {
+	#page-stack [data-role=content] .actions td {
 		float: left;
 		width: 100%;
 		padding: 10px 0px;
 	}
 
-	#page-stack .actions td:first-child { padding-top: 0px; }
-	#page-stack .actions td:last-child { padding-bottom: 0px; }
+	#stacks .count { display: none; }
+
+	#page-stack [data-role=content] .actions td:first-child { padding-top: 0px; }
+	#page-stack [data-role=content] .actions td:last-child { padding-bottom: 0px; }
 }
