@@ -235,7 +235,7 @@ define(["transit"], function() {
 
 				if (App.$("#page-stack tr").length < 3) {
 					$("#page-stack .note").show();
-					App.$("#flashcards, #page-stack .actions").hide();
+					App.$("#flashcards, .flashcard-actions").hide();
 				}
 			}
 			

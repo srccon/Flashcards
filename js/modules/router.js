@@ -51,7 +51,7 @@ define(function() {
 						});
 
 						Router.$page.find(".note").hide();
-						Router.$page.find(".actions").show();
+						Router.$page.find(".flashcard-actions").show();
 						$flashcards.show();
 					} else {
 						Router.$page.find(".note").show();
@@ -145,7 +145,7 @@ define(function() {
 
 		// Route to the new page
 		if ($pageNext.attr("data-role") == "page") {
-			App.$("body").attr("data-page", hash);
+			App.$("html").attr("data-page", hash);
 			Router.currentPage = hash;
 			$pageNext.show();
 		}

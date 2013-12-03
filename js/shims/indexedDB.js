@@ -485,7 +485,7 @@ var idbModules = {};
             }
         }
     };
-	
+    
     var Key = (function(){
         return {
             encode: function(key){
@@ -502,20 +502,20 @@ var idbModules = {};
 /*jshint globalstrict: true*/
 'use strict';
 (function(idbModules, undefined){
-	// The event interface used for IndexedBD Actions.
-	var Event = function(type, debug){
-		// Returning an object instead of an even as the event's target cannot be set to IndexedDB Objects
-		// We still need to have event.target.result as the result of the IDB request
-		return {
-			"type": type,
-			debug: debug,
-			bubbles: false,
-			cancelable: false,
-			eventPhase: 0,
-			timeStamp: new Date()
-		};
-	};
-	idbModules.Event = Event;
+    // The event interface used for IndexedBD Actions.
+    var Event = function(type, debug){
+        // Returning an object instead of an even as the event's target cannot be set to IndexedDB Objects
+        // We still need to have event.target.result as the result of the IDB request
+        return {
+            "type": type,
+            debug: debug,
+            bubbles: false,
+            cancelable: false,
+            eventPhase: 0,
+            timeStamp: new Date()
+        };
+    };
+    idbModules.Event = Event;
 }(idbModules));
 
 /*jshint globalstrict: true*/
@@ -617,23 +617,17 @@ var idbModules = {};
         var sql = ["SELECT * FROM ", idbModules.util.quote(me.__idbObjectStore.name)];
         var sqlValues = [];
         sql.push("WHERE ", me.__keyColumnName, " NOT NULL");
-        if (me.__range && (me.__range.lower !== undefined || me.__range.upper !== undefined)) {
+        if (me.__range && (me.__range.lower || me.__range.upper)) {
             sql.push("AND");
-
-            if (me.__range.lower == me.__range.upper) {
-                sql.push(me.__keyColumnName + " = ?");
+            if (me.__range.lower) {
+                sql.push(me.__keyColumnName + (me.__range.lowerOpen ? " >" : " >= ") + " ?");
                 sqlValues.push(idbModules.Key.encode(me.__range.lower));
-            } else {
-	            if (me.__range.lower !== undefined) {
-	                sql.push(me.__keyColumnName + (me.__range.lowerOpen ? " >" : " >= ") + " ?");
-	                sqlValues.push(idbModules.Key.encode(me.__range.lower));
-	            }
-	            (me.__range.lower && me.__range.upper) && sql.push("AND");
-	            if (me.__range.upper !== undefined) {
-	                sql.push(me.__keyColumnName + (me.__range.upperOpen ? " < " : " <= ") + " ?");
-	                sqlValues.push(idbModules.Key.encode(me.__range.upper));
-	            }
-	        }
+            }
+            (me.__range.lower && me.__range.upper) && sql.push("AND");
+            if (me.__range.upper) {
+                sql.push(me.__keyColumnName + (me.__range.upperOpen ? " < " : " <= ") + " ?");
+                sqlValues.push(idbModules.Key.encode(me.__range.upper));
+            }
         }
         if (typeof key !== "undefined") {
             me.__lastKeyContinued = key;
@@ -645,7 +639,6 @@ var idbModules = {};
         }
         sql.push("ORDER BY ", me.__keyColumnName);
         sql.push("LIMIT 1 OFFSET " + me.__offset);
-
         idbModules.DEBUG && console.log(sql.join(" "), sqlValues);
         tx.executeSql(sql.join(" "), sqlValues, function(tx, data){
             if (data.rows.length === 1) {
@@ -1048,7 +1041,7 @@ var idbModules = {};
         var indexes = JSON.parse(this.__storeProps.indexList);
         for (var key in indexes) {
             try {
-                paramMap[indexes[key].columnName] = idbModules.Key.encode(eval("value['" + indexes[key].keyPath + "']"));
+                paramMap[indexes[key].columnName] = idbModules.Key.encode(eval("JSON.parse(value)['" + indexes[key].keyPath + "']"));
             } 
             catch (e) {
                 error(e);

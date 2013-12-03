@@ -5,7 +5,6 @@ html, body { height: 100%; }
 
 html {
 	background-color: #111;
-	overflow-x: hidden;
 	overflow-y: scroll;
 }
 
@@ -13,7 +12,6 @@ body {
 	font-family: Roboto, "Segoe UI", Arial, sans-serif;
 
 	max-width: 1024px;
-	min-height: 100%;
 	background-color: #EEE;
 	margin: 0px auto;
 
@@ -21,22 +19,23 @@ body {
 	-webkit-transform: translate3d(0px, 0px, 0px);
 }
 
-[data-role=page] { display: none; }
 
 
 /* =================== */
 /* ====== PAGES ====== */
 /* =================== */
 
-body[data-page=page-practice] {
+[data-role=page] { display: none; }
+
+html[data-page=page-practice] body {
 	background-image: linear-gradient(0deg, #666, #CCC);
 }
 
-body[data-page=page-practice] [data-role=menubar] {
+html[data-page=page-practice] [data-role=menubar] body {
 	border-bottom: 5px solid #333;
 }
 
-body[data-page=page-practice] [data-role=content] {
+html[data-page=page-practice] [data-role=content] body {
 	background: transparent;
 }
 
@@ -45,7 +44,7 @@ body[data-page=page-practice] [data-role=content] {
 /* ====== SPLASH SCREEN ====== */
 /* =========================== */
 
-#splash-screen {
+/*#splash-screen {
 	width: 100%;
 	height: 100%;
 	
@@ -59,7 +58,7 @@ body[data-page=page-practice] [data-role=content] {
 	background-size: 50%;
 	background-repeat: no-repeat;
 }
-
+*/
 
 /* ===================== */
 /* ====== MENUBAR ====== */
@@ -362,7 +361,12 @@ textarea {
 #flashcards label { background: transparent; }
 
 .note { display: none; }
-#page-stack [data-role=content] .actions {
+
+#page-stack .flashcard-actions-container {
+	padding: 0px 50px;
+}
+
+#page-stack .flashcard-actions {
 	width: 100%;
 	table-layout: fixed;
 	border: 5px solid #036;
@@ -372,11 +376,11 @@ textarea {
 	display: none;
 }
 
-#page-stack [data-role=content] .actions td { padding: 0px 2px; }
-#page-stack [data-role=content] .actions td:first-child { padding-left: 0px; }
-#page-stack [data-role=content] .actions td:last-child { padding-right: 0px; }
+#page-stack .flashcard-actions td { padding: 0px 2px; }
+#page-stack .flashcard-actions td:first-child { padding-left: 0px; }
+#page-stack .flashcard-actions td:last-child { padding-right: 0px; }
 
-#page-stack [data-role=content] .actions td .button {
+#page-stack .flashcard-actions td .button {
 	color: #FFF;
 	border: 0px;
 
@@ -386,12 +390,12 @@ textarea {
 	box-shadow: none;
 }
 
-#page-stack [data-role=content] .actions td .button:hover {
+#page-stack .flashcard-actions td .button:hover {
 	background-color: #09c;
 	border-color: #0cf;
 }
 
-#page-stack [data-role=content] .actions td .button .fa { margin-right: 5px; }
+#page-stack .flashcard-actions td .button .fa { margin-right: 5px; }
 
 /* ======================= */
 /* ====== FLASHCARD ====== */
@@ -561,6 +565,14 @@ textarea {
 /* =========================== */
 
 @media only screen and (orientation : portrait) and (max-width : 600px) {
+
+	html { background-color: #EEE; }
+	html, body { height: auto; }
+
+	html[data-page=page-practice] [data-role=content] { background-color: transparent; }
+
+	html[data-page=page-practice],
+	html[data-page=page-practice] body { height: 100%; }
 	
 	hr {
 		margin: 10px 0px 20px 0px;
@@ -614,7 +626,7 @@ textarea {
 		font-size: 1.5em;
 	}
 
-	#practice {
+	#practice, .flashcard-add {
 		float: none;
 		width: 100%;
 		margin-bottom: 20px;
@@ -624,12 +636,24 @@ textarea {
 		display: none;
 	}
 
+	#flashcards {
+		border-left: 0px;
+		border-right: 0px;
+	}
+
+	#page-stack .flashcard-actions {
+		border-left: 0px;
+		border-right: 0px;
+	}
+
+	#page-stack .flashcard-actions-container { padding: 0px; }
+
 	#flashcards,
-	#page-stack [data-role=content] .actions {
+	#page-stack .flashcard-actions {
 		border-spacing: 0px;
 	}
 	
-	#page-stack [data-role=content] .actions td {
+	#page-stack .flashcard-actions td {
 		float: left;
 		width: 100%;
 		padding: 10px 0px;
@@ -637,6 +661,6 @@ textarea {
 
 	#stacks .count { display: none; }
 
-	#page-stack [data-role=content] .actions td:first-child { padding-top: 0px; }
-	#page-stack [data-role=content] .actions td:last-child { padding-bottom: 0px; }
+	#page-stack .flashcard-actions td:first-child { padding-top: 0px; }
+	#page-stack .flashcard-actions td:last-child { padding-bottom: 0px; }
 }
