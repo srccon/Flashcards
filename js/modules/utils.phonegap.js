@@ -56,7 +56,7 @@ define(function() {
 
 		if (PhoneGap.filesystem) { return callback(PhoneGap.filesystem); }
 
-		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(filesystem) {
+		window.requestFileSystem(window.LocalFileSystem.PERSISTENT, 0, function(filesystem) {
 			PhoneGap.filesystem = filesystem;
 			callback(filesystem);
 		});

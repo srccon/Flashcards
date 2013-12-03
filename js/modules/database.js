@@ -136,6 +136,7 @@ define(function() {
 		} else if (key && typeof key == "object" && key.length) {
 
 			range = window.IDBKeyRange.only(key[1]);
+
 			objectStore.index(key[0]).openCursor(range).onsuccess = function(e) {
 
 				var cursor = e.target.result;
