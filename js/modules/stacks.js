@@ -153,6 +153,7 @@ define(function() {
 
 	Stacks.getName = function(id, callback) {
 		App.DB.getData("App", "Stacks", id, function(data) {
+			if (!data) { return; }
 			callback(data.name, id);
 		});
 	};

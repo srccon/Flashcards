@@ -44,6 +44,18 @@ define([
 			return;
 		}
 
+		// Open external links with PhoneGap's InAppBrowser
+		if (App.isPhoneGap) {
+			$("body").on("click", "a[href^='http']", function(e) {
+
+				var url = $(e.currentTarget).attr("href");
+				window.open(url, "_blank", "location=yes");
+
+				e.preventDefault();
+				return false;
+			});
+		}
+
 		// Translates click events into touch events
 		fastclick.attach(document.body);
 
