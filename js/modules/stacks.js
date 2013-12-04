@@ -9,7 +9,6 @@ define(function() {
 	Stacks.initialize = function() {
 
 		App = require("app");
-		Stacks.updateView();
 	};
 
 	/* ==================== */
@@ -23,14 +22,35 @@ define(function() {
 			location.hash = "page-stack:" + App.$(e.currentTarget).attr("data-key");
 		},
 
+		// Long touch to open settings
+		"touchstart #stacks li": function(e) {
+			if (!App.isMobile) { return; }
+
+			var stackname = $(e.currentTarget).find("b").text();
+			var stackID = $(e.currentTarget).attr("data-key");
+
+			Stacks.touchTimeout = window.setTimeout(function() {
+
+				if (confirm("Open Settings for \"" + stackname + "\" ?")) {
+					window.location.hash = "page-stack-settings:" + stackID;
+				}
+
+			}, 500);
+		},
+
+		"touchend #stacks li": function(e) {
+			if (!App.isMobile) { return; }
+			window.clearTimeout(Stacks.touchTimeout);
+		},
+
 		// Create stack
-		"click #new-stack": function(e) {
+		"click .button-new-stack": function(e) {
 			var name = window.prompt("Stack name:", "Vocabulary 1");
 			if (name) { Stacks.create(name); }
 		},
 
 		// Remove stack
-		"click #remove-stack": function(e) {
+		"click .button-remove-stack": function(e) {
 			var stack = App.$("#page-stack h1").text();
 			var stackID = +window.location.hash.split(":")[1];
 
@@ -39,7 +59,7 @@ define(function() {
 		},
 
 		// Rename stack
-		"click #rename-stack": function(e) {
+		"click .button-rename-stack": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
 			var stack = App.$("#page-stack-settings .stack-name").text();
 			var name = window.prompt("Stack name:", stack);
@@ -47,26 +67,31 @@ define(function() {
 		},
 
 		// Practice stack
-		"click #practice": function(e) {
+		"click .button-practice": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
 			location.hash = "page-practice:" + stackID;
 		},
 
 		// Exit practice
-		"click #exit-practice": function(e) {
+		"click .button-exit-practice": function(e) {
 			delete Stacks.practice.flashcards;
 			delete Stacks.practice.index;
 			window.history.back();
 		},
 
+		// Return to stacks
+		"click .button-return-stacks": function(e) {
+			window.location.hash = "#page-stacks";
+		},
+
 		// Return to stack
-		"click .stack-return": function(e) {
+		"click .button-return-stack": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
 			window.location.hash = "#page-stack:" + stackID;
 		},
 
 		// Stack settings
-		"click #stack-settings": function(e) {
+		"click .button-stack-settings": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
 			location.hash = "page-stack-settings:" + stackID;
 		},
@@ -222,12 +247,24 @@ define(function() {
 				if (App._settings.shuffle_flashcards)
 				{ data = App.Utils.array_shuffle(data); }
 
-				// Switch
+				// Switch and replace linebreaks with <br>
 				if (App._settings.switch_front_back) {
+
 					data = data.map(function(v) {
+
 						var front = v.value.front;
-						v.value.front = v.value.back;
-						v.value.back = front;
+						v.value.front = v.value.back.replace(/\n/, "<br>");;
+						v.value.back = front.replace(/\n/, "<br>");;
+
+						return v;
+					});
+
+				// Only replace linebreaks
+				} else {
+
+					data = data.map(function(v) {
+						v.value.front = v.value.front.replace(/\n/, "<br>");
+						v.value.back = v.value.back.replace(/\n/, "<br>");
 
 						return v;
 					});
@@ -240,7 +277,10 @@ define(function() {
 			return;
 		}
 
-		var flashcard = Stacks.practice.flashcards[Stacks.practice.index++];
+		var flashcard = Stacks.practice.flashcards[Stacks.practice.index++],
+		    $front = App.$("#flashcard .front"),
+		    $back = App.$("#flashcard .back"),
+		    tallest;
 
 		// End reached
 		if (!flashcard) {
@@ -252,24 +292,33 @@ define(function() {
 				Stacks.practice.total
 			);
 
-			window.history.back();
+			window.location.hash = "page-stack:" + Stacks.practice.id;
 			return;
 		}
 
+		// Swtich front/back randomly
 		if (App._settings.switch_front_back_randomly && Math.round(Math.random())) {
 			var front = flashcard.value.front;
 			flashcard.value.front = flashcard.value.back;
 			flashcard.value.back = front;
 		}
 
-		// Reset flashcard view
-		App.$("#practice-buttons").hide();
-		App.$("#flashcard .front").css({ rotateX: 5 });
-		App.$("#flashcard .back").css({ rotateX: 180 });
+		// Show/Hide buttons
+		App.$("#practice-buttons").toggle(!!App._settings.always_show_buttons);
+
+		// Reset rotation
+		$front.css({ rotateX: 5 });
+		$back.css({ rotateX: 180 });
 		App.$("#flashcard-shadow").css({ rotateX: 0 });
 
-		App.$("#flashcard .front").html(flashcard.value.front);
-		App.$("#flashcard .back").html(flashcard.value.back);
+		// Insert new data
+		$front.find("span").html(flashcard.value.front);
+		$back.find("span").html(flashcard.value.back);
+
+		// Make each flashcard side of equal size
+		tallest = Math.max($front.height(), $back.height());
+		$front.height(tallest);
+		$back.height(tallest);
 	};
 
 	return Stacks;

@@ -17,24 +17,24 @@
 		<!--====== STACKS ======-->
 		<!--====================-->
 
-		<div data-role="page" id="page-stacks">
-			<div data-role="menubar">
+		<div class="page" id="page-stacks">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 				
 				<div class="actions">
-					<div class="action" id="new-stack"><span class="fa fa-plus fa-2x"></span></div>
+					<div class="action button-new-stack"><span class="fa fa-plus fa-2x"></span></div>
 				</div>
 			</div>
 
-			<div data-role="tabs">
+			<div class="tabs">
 				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
 				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
 				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
 				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 				<em class="note">No stacks available, create one!</em>
 				<ul id="stacks"></ul>
 			</div>
@@ -44,20 +44,20 @@
 		<!--====== STATISTICS ======-->
 		<!--========================-->
 
-		<div data-role="page" id="page-statistics">
-			<div data-role="menubar">
+		<div class="page" id="page-statistics">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 			</div>
 
-			<div data-role="tabs">
+			<div class="tabs">
 				<a href="#page-stacks" class="tab"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
 				<a href="#page-statistics" class="tab active"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
 				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
 				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 				<em class="note">No statistics available, practise some more!</em>
 			</div>
 		</div>
@@ -66,25 +66,25 @@
 		<!--====== SETTINGS ======-->
 		<!--======================-->
 
-		<div data-role="page" id="page-settings">
-			<div data-role="menubar">
+		<div class="page" id="page-settings">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 			</div>
 
-			<div data-role="tabs">
+			<div class="tabs">
 				<a href="#page-stacks" class="tab"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
 				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
 				<a href="#page-settings" class="tab active"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
 				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 
 				<h1>Stacks</h1><hr>
 
-				<span class="button big stretch" id="export">export</span><br><br>
-				<span class="button big stretch" id="import"><input type="file">import</span>
+				<span class="button big stretch button-export">export</span><br><br>
+				<span class="button big stretch button-import"><input type="file">import</span>
 
 				<hr class="transparent">
 				<h1>Practice mode</h1><hr>
@@ -92,12 +92,14 @@
 				<label><input type="checkbox" name="switch_front_back"> <span></span> Switch front/back</label>
 				<label><input type="checkbox" name="switch_front_back_randomly"> <span></span> Switch front/back randomly</label>
 				<label><input type="checkbox" name="shuffle_flashcards"> <span></span> Shuffle flashcards</label>
+				<label><input type="checkbox" name="disable_animation"> <span></span> Disable flashcard animation</label>
+				<label><input type="checkbox" name="always_show_buttons"> <span></span> Always show yep/nope buttons</label>
 
 				<hr class="transparent">
 				<h1>Reset</h1><hr>
 
-				<span class="button big stretch" id="reset_statistics">reset statistics</span><br><br>
-				<span class="button big red stretch" id="reset_all">delete all user data</span>
+				<span class="button big stretch button-reset-statistics">reset statistics</span><br><br>
+				<span class="button big red stretch button-reset-all">delete all user data</span>
 			</div>
 		</div>
 
@@ -105,20 +107,20 @@
 		<!--====== ABOUT ======-->
 		<!--===================-->
 
-		<div data-role="page" id="page-about">
-			<div data-role="menubar">
+		<div class="page" id="page-about">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 			</div>
 
-			<div data-role="tabs">
+			<div class="tabs">
 				<a href="#page-stacks" class="tab"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
 				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
 				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
 				<a href="#page-about" class="tab active"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 
 				<h1>Author</h1><hr>
 
@@ -144,28 +146,29 @@
 		<!--====== STACK ======-->
 		<!--===================-->
 
-		<div data-role="page" id="page-stack" data-template="true">
-			<div data-role="menubar">
+		<div class="page" id="page-stack" data-template="true">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 
 				<div class="actions">
-					<div class="action" id="stack-settings"><span class="fa fa-cog fa-2x"></span></div>
-					<div class="action" id="flashcard-new"><span class="fa fa-plus fa-2x"></span></div>
+					<div class="action button-return-stacks"><span class="fa fa-sign-out fa-2x"></span></div>
+					<div class="action button-new-flashcard"><span class="fa fa-plus fa-2x"></span></div>
+					<div class="action button-stack-settings"><span class="fa fa-cog fa-2x"></span></div>
 				</div>
 			</div>
 
-			<div data-role="tabs">
+			<div class="tabs">
 				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
 				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
 				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
 				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 
 				<h1 class="stack-name" style="float: left;"></h1>
-				<a class="button" id="practice" style="float: right;">practice mode <span class="fa fa-arrow-right" style="margin-left: 5px;"></span></a>
+				<a class="button button-practice" style="float: right;">practice mode <span class="fa fa-arrow-right" style="margin-left: 5px;"></span></a>
 				
 				<hr>
 
@@ -196,24 +199,24 @@
 		<!--====== STACK SETTINGS ======-->
 		<!--============================-->
 
-		<div data-role="page" id="page-stack-settings" data-template="true">
-			<div data-role="menubar">
+		<div class="page" id="page-stack-settings" data-template="true">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 
 				<div class="actions">
-					<a class="action" href="javascript:history.back()"><span class="fa fa-sign-out fa-2x"></span></a>
+					<div class="action button-return-stack"><span class="fa fa-sign-out fa-2x"></span></div>
 				</div>
 			</div>
 
-			<div data-role="tabs">
+			<div class="tabs">
 				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
 				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
 				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
 				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 
 				<h1>Stack settings</h1>
 				&nbsp;<span class="fa fa-angle-double-right"></span>&nbsp; <span class="stack-name"></span>
@@ -221,8 +224,8 @@
 				<hr class="transparent">
 				<h2>Actions</h2><hr>
 
-				<a class="button stretch big" id="rename-stack"><span class="fa fa-pencil"></span> rename stack</a><br><br>
-				<a class="button red stretch big" id="remove-stack"><span class="fa fa-times"></span> remove stack</a>
+				<a class="button stretch big button-rename-stack"><span class="fa fa-pencil"></span> rename stack</a><br><br>
+				<a class="button red stretch big button-remove-stack"><span class="fa fa-times"></span> remove stack</a>
 
 				<hr class="transparent">
 				<h2>Translation buttons</h2><hr>
@@ -241,24 +244,24 @@
 		<!--====== NEW FLASHCARD ======-->
 		<!--===========================-->
 
-		<div data-role="page" id="page-flashcard-new" data-template="true">
-			<div data-role="menubar">
+		<div class="page" id="page-flashcard-new" data-template="true">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 
 				<div class="actions">
-					<a class="action" href="javascript:history.back()"><span class="fa fa-sign-out fa-2x"></span></a>
+					<div class="action button-return-stack"><span class="fa fa-sign-out fa-2x"></span></div>
 				</div>
 			</div>
 
-			<div data-role="tabs">
+			<div class="tabs">
 				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
 				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
 				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
 				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 
 				<h1 class="stack-name" style="float: left;"></h1>
 				<a class="button flashcard-add" style="float: right;">add flashcard</a>
@@ -276,24 +279,24 @@
 		<!--====== EDIT FLASHCARD ======-->
 		<!--============================-->
 
-		<div data-role="page" id="page-flashcard-edit" data-template="true">
-			<div data-role="menubar">
+		<div class="page" id="page-flashcard-edit" data-template="true">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 
 				<div class="actions">
-					<div class="action stack-return"><span class="fa fa-sign-out fa-2x"></span></div>
+					<div class="action button-return-stack"><span class="fa fa-sign-out fa-2x"></span></div>
 				</div>
 			</div>
 
-			<div data-role="tabs">
+			<div class="tabs">
 				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
 				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
 				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
 				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 
 				<h1 class="stack-name" style="float: left;"></h1>
 				<a class="button flashcard-update" style="float: right;">update flashcard</a>
@@ -311,21 +314,21 @@
 		<!--====== PRACTICE ======-->
 		<!--======================-->
 
-		<div data-role="page" id="page-practice" data-template="true">
-			<div data-role="menubar">
+		<div class="page" id="page-practice" data-template="true">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 
 				<div class="actions">
-					<div class="action" id="exit-practice"><span class="fa fa-sign-out fa-2x"></span></div>
+					<div class="action button-exit-practice"><span class="fa fa-sign-out fa-2x"></span></div>
 				</div>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 
 				<div id="flashcard">
-					<div class="front"></div>
-					<div class="back"></div>
+					<div class="front"><span></span></div>
+					<div class="back"><span></span></div>
 				</div>
 
 				<div id="flashcard-shadow"></div>
@@ -342,24 +345,24 @@
 		<!--====== PHONEGAP FILE BROWSER ======-->
 		<!--===================================-->
 
-		<div data-role="page" id="page-file-browser">
-			<div data-role="menubar">
+		<div class="page" id="page-file-browser">
+			<div class="menubar">
 				<img class="logo" src="img/logo.png" height="50px">
 				<span class="title">Flashcards</span>
 
 				<div class="actions">
-					<a class="action" href="javascript:history.back()"><span class="fa fa-sign-out fa-2x"></span></a>
+					<a class="action" href="javascript:window.location.hash='page-settings'"><span class="fa fa-sign-out fa-2x"></span></a>
 				</div>
 			</div>
 
-			<div data-role="tabs">
+			<div class="tabs">
 				<a href="#page-stacks" class="tab"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
 				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
 				<a href="#page-settings" class="tab active"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
 				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div data-role="content">
+			<div class="content">
 
 				<h1>Import</h1>
 				<span class="path"></span>

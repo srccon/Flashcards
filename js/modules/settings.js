@@ -25,14 +25,16 @@ define(function() {
 
 	Settings.events = {
 
-		"click #export": function(e) { Settings.export(); },
+		"click .button-export": function(e) { Settings.export(); },
 
-		"click #import": function(e) {
+		"click .button-import": function(e) {
 			if (!App.isPhoneGap) { return; }
 			window.location.hash = "page-file-browser";
 		},
 
-		"change #import input": function(e) {
+		"change .button-import input": function(e) {
+
+			if (App.isPhoneGap) { return; }
 
 			var reader = new FileReader();
 			var fileName = e.target.files[0].name;
@@ -48,13 +50,13 @@ define(function() {
 			};
 		},
 
-		"click #reset_all": function(e) {
+		"click .button-reset-all": function(e) {
 			if (confirm("Do you really wish to delete your entire stacks, flashcards and statistics?")) {
 				Settings.reset();
 			}
 		},
 
-		"click #reset_statistics": function(e) {
+		"click .button-reset-statistics": function(e) {
 			if (confirm("Do you really wish to delete your statistics?")) {
 				Settings.reset_statistics();
 			}

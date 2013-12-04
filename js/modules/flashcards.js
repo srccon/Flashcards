@@ -24,7 +24,7 @@ define(["transit"], function() {
 		},
 
 		// New flashcard(s)
-		"click #flashcard-new": function(e) {
+		"click .button-new-flashcard": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
 			location.hash = "page-flashcard-new:" + stackID;
 		},
@@ -52,7 +52,7 @@ define(["transit"], function() {
 				keys.push(+$parent.attr("data-key"));
 			});
 
-			if (!keys.length) { return alert("Make a selection first!"); }
+			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
 
 			alert("Not available yet!");
 		},
@@ -67,7 +67,7 @@ define(["transit"], function() {
 				keys.push(+$parent.attr("data-key"));
 			});
 
-			if (!keys.length) { return alert("Make a selection first!"); }
+			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
 
 			if (confirm("Remove selection?"))
 			{ Flashcards.remove(keys); }
@@ -85,7 +85,7 @@ define(["transit"], function() {
 				keys.push(+$parent.attr("data-key"));
 			});
 
-			if (!keys.length) { return alert("Make a selection first!"); }
+			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
 
 			location.hash = "page-flashcard-edit:" + stackID + ":" + keys.shift();
 			Flashcards.update.queue = keys;
@@ -117,18 +117,24 @@ define(["transit"], function() {
 		// Flashcard transition
 		"click #flashcard .front": function(e) {
 
-			$("#flashcard .front").transition({ rotateX: 180 }, 1000);
-			$("#flashcard .back").transition({ rotateX: 365 }, 1000);
-			$("#flashcard-shadow").transition({ rotateX: 180 }, 1000);
+			var time_factor = 1;
+			if (App._settings.disable_animation) { time_factor = 0; }
 
-			$("#practice-buttons").delay(1000).fadeIn(500);
+			$("#flashcard .front").transition({ rotateX: 180 }, 1000 * time_factor);
+			$("#flashcard .back").transition({ rotateX: 365 }, 1000 * time_factor);
+			$("#flashcard-shadow").transition({ rotateX: 180 }, 1000 * time_factor);
+
+			$("#practice-buttons").delay(1000 * time_factor).fadeIn(500 * time_factor);
 		},
 
 		"click #flashcard .back": function(e) {
 
-			$("#flashcard .front").transition({ rotateX: 5 }, 1000);
-			$("#flashcard .back").transition({ rotateX: 180 }, 1000);
-			$("#flashcard-shadow").transition({ rotateX: 0 }, 1000);
+			var time_factor = 1;
+			if (App._settings.disable_animation) { time_factor = 0; }
+
+			$("#flashcard .front").transition({ rotateX: 5 }, 1000 * time_factor);
+			$("#flashcard .back").transition({ rotateX: 180 }, 1000 * time_factor);
+			$("#flashcard-shadow").transition({ rotateX: 0 }, 1000 * time_factor);
 		},
 
 		// Practice buttons
@@ -173,6 +179,8 @@ define(["transit"], function() {
 			
 			App.$("#page-flashcard-new textarea[name=front]").val("");
 			App.$("#page-flashcard-new textarea[name=back]").val("");
+
+			App.Utils.notification("Flashcard added");
 		});
 	};
 

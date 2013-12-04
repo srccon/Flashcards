@@ -27,6 +27,66 @@ define(function() {
 
 	Router.routes = {
 
+		"page-stacks": function() {
+			App.Stacks.updateView();
+		},
+
+		"page-statistics": function() {
+			App.Statistics.updateView();
+		},
+
+		"page-practice": function(id) {
+			App.Stacks.practice(+id);
+		},
+
+		"page-flashcard-new": function(stackID) {
+			App.Stacks.getName(+stackID, function(stackname) {
+				Router.$page.find(".stack-name").html(stackname);
+			});
+		},
+		
+		"page-file-browser": function() {
+			if (!App.isPhoneGap) { return; }
+			App.Utils.PhoneGap.currentDir = "/mnt/sdcard/";
+			App.Utils.PhoneGap.updateView();
+		},
+
+		"page-flashcard-edit": function(stackID, key) {
+
+			// Get stack name
+			App.Stacks.getName(+stackID, function(stackname) {
+
+				// Get all flashcards for that stack
+				App.Flashcards.get(+key, function(data) {
+
+					Router.$page.find(".stack-name").html(stackname);
+					Router.$page.find("textarea[name=front]").val(data.front);
+					Router.$page.find("textarea[name=back]").val(data.back);
+				});
+			});
+		},
+
+		"page-stack-settings": function(stackID) {
+
+			// Get stack name
+			App.Stacks.getName(+stackID, function(stackname) {
+				Router.$page.find(".stack-name").html(stackname);
+
+				var prefs = App._settings.translation_preferences && App._settings.translation_preferences[stackID];
+				var $select = App.$("select.languages");
+
+				App.Flashcards.translate.languages.forEach(function(v, i) {
+					var code = App.Flashcards.translate.language_codes[i];
+					$select.append("<option value='" + code + "'>" + v + "</option>");
+				});
+
+				if (prefs) {
+					App.$("select.from").find("option[value=" + prefs.from + "]").attr("selected", "selected")
+					App.$("select.to").find("option[value=" + prefs.to + "]").attr("selected", "selected")
+				}
+			});
+		},
+
 		"page-stack": function(stackID) {
 
 			// Get stack name
@@ -58,61 +118,6 @@ define(function() {
 					}
 				});
 			});
-		},
-
-		"page-stack-settings": function(stackID) {
-			App.Stacks.getName(+stackID, function(stackname) {
-				Router.$page.find(".stack-name").html(stackname);
-			});
-
-			var prefs = App._settings.translation_preferences && App._settings.translation_preferences[stackID];
-			var $select = App.$("select.languages");
-
-			App.Flashcards.translate.languages.forEach(function(v, i) {
-				var code = App.Flashcards.translate.language_codes[i];
-				$select.append("<option value='" + code + "'>" + v + "</option>");
-			});
-
-			if (prefs) {
-				App.$("select.from").find("option[value=" + prefs.from + "]").attr("selected", "selected")
-				App.$("select.to").find("option[value=" + prefs.to + "]").attr("selected", "selected")
-			}
-		},
-
-
-		"page-practice": function(id) {
-			App.Stacks.practice(+id);
-		},
-
-		"page-flashcard-new": function(stackID) {
-			App.Stacks.getName(+stackID, function(stackname) {
-				Router.$page.find(".stack-name").html(stackname);
-			});
-		},
-
-		"page-flashcard-edit": function(stackID, key) {
-
-			// Get stack name
-			App.Stacks.getName(+stackID, function(stackname) {
-
-				// Get all flashcards for that stack
-				App.Flashcards.get(+key, function(data) {
-
-					Router.$page.find(".stack-name").html(stackname);
-					Router.$page.find("textarea[name=front]").val(data.front);
-					Router.$page.find("textarea[name=back]").val(data.back);
-				});
-			});
-		},
-
-		"page-statistics": function() {
-			App.Statistics.updateView();
-		},
-
-		"page-file-browser": function() {
-			if (!App.isPhoneGap) { return; }
-			App.Utils.PhoneGap.currentDir = "/mnt/sdcard/";
-			App.Utils.PhoneGap.updateView();
 		}
 	};
 
@@ -144,7 +149,7 @@ define(function() {
 		{ Router.routes[hash].apply(this, args); }
 
 		// Route to the new page
-		if ($pageNext.attr("data-role") == "page") {
+		if ($pageNext.hasClass("page")) {
 			App.$("html").attr("data-page", hash);
 			Router.currentPage = hash;
 			$pageNext.show();

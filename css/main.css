@@ -1,41 +1,46 @@
 * { margin: 0px; padding: 0px; }
 *:focus { outline: none; }
 
-html, body { height: 100%; }
-
 html {
 	background-color: #111;
 	overflow-y: scroll;
+	height: 100%;
 }
 
 body {
 	font-family: Roboto, "Segoe UI", Arial, sans-serif;
 
-	max-width: 1024px;
 	background-color: #EEE;
 	margin: 0px auto;
 
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	-webkit-transform: translate3d(0px, 0px, 0px);
-}
+	min-height: 100%;
+	max-width: 800px;
+	position: relative;
 
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	/*-webkit-transform: translate3d(0px, 0px, 0px);*/
+}
 
 
 /* =================== */
 /* ====== PAGES ====== */
 /* =================== */
 
-[data-role=page] { display: none; }
+.page { display: none; }
 
 html[data-page=page-practice] body {
 	background-image: linear-gradient(0deg, #666, #CCC);
 }
 
-html[data-page=page-practice] [data-role=menubar] body {
+html[data-page=page-practice] .menubar body {
 	border-bottom: 5px solid #333;
 }
 
-html[data-page=page-practice] [data-role=content] body {
+html[data-page=page-stack] .content {
+	padding-bottom: 0px;
+}
+
+html[data-page=page-practice] .content {
 	background: transparent;
 }
 
@@ -64,7 +69,7 @@ html[data-page=page-practice] [data-role=content] body {
 /* ====== MENUBAR ====== */
 /* ===================== */
 
-[data-role=menubar] {
+.menubar {
 	color: #FFF;
 	height: 80px;
 	background-color: #069;
@@ -74,12 +79,12 @@ html[data-page=page-practice] [data-role=content] body {
 	border-bottom: 2px solid #000;
 }
 
-[data-role=menubar] .logo {
+.menubar .logo {
 	margin-top: 15px;
 	margin-left: 15px;
 }
 
-[data-role=menubar] .title {
+.menubar .title {
 	color: #FFF;
 	text-shadow: -1px -1px rgba(0, 0, 0, 0.5);
 	font-size: 2em;
@@ -89,12 +94,12 @@ html[data-page=page-practice] [data-role=content] body {
 	top: 24px; left: 75px;
 }
 
-[data-role=menubar] .actions {
+.menubar .actions {
 	display: inline-block;
 	float: right;
 }
 
-[data-role=menubar] .action {
+.menubar .action {
 	color: #FFF;
 	float: right;
 	width: 30px;
@@ -112,7 +117,7 @@ html[data-page=page-practice] [data-role=content] body {
 	z-index: 2;
 }
 
-[data-role=menubar] .action:hover {
+.menubar .action:hover {
 	background-color: #025;
 }
 
@@ -121,7 +126,7 @@ html[data-page=page-practice] [data-role=content] body {
 /* ====== TABS ====== */
 /* ================== */
 
-[data-role=tabs] {
+.tabs {
 	display: table;
 	text-align: center;
 	width: 100%;
@@ -130,9 +135,9 @@ html[data-page=page-practice] [data-role=content] body {
 	z-index: 3;
 }
 
-[data-role=tabs] .fa { margin-right: 5px; }
+.tabs .fa { margin-right: 5px; }
 
-[data-role=tabs] .tab {
+.tabs .tab {
 	color: #999;
 	font-weight: 300;
 	display: table-cell;
@@ -146,11 +151,11 @@ html[data-page=page-practice] [data-role=content] body {
 	text-decoration: none;
 }
 
-[data-role=tabs] .tab:hover {
+.tabs .tab:hover {
 	color: #CCC;
 }
 
-[data-role=tabs] .tab.active {
+.tabs .tab.active {
 	color: #FFF;
 	border-bottom-color: #09C;
 }
@@ -160,7 +165,7 @@ html[data-page=page-practice] [data-role=content] body {
 /* ====== CONTENT ====== */
 /* ===================== */
 
-[data-role=content] {
+.content {
 	color: #333;
 	padding: 50px;
 	background-color: #EEE;
@@ -246,8 +251,6 @@ textarea {
 	box-sizing: border-box;
 }
 
-.button.stretch { width: 100%; }
-
 .button.big {
 	padding: 20px;
 	font-size: 1.2em;
@@ -259,16 +262,35 @@ textarea {
 	background-color: #3D3;
 }
 
-
 .button.red {
 	color: #FFF;
 	border: 1px solid #C00;
 	background-color: #D33;
 }
 
+.button.stretch { width: 100%; }
 .button.green:hover { background-color: #0D0; border: 1px solid #090; }
 .button.red:hover { background-color: #D00; border: 1px solid #900; }
 .button:hover { background-color: #CCC; }
+.note { display: none; }
+
+#notification {
+	position: fixed;
+	top: 0px; left: 0px;
+	z-index: 99;
+
+	color: #FFF;
+	font-size: 1.2em;
+	padding: 15px 30px;
+	
+	min-width: 100px;
+	text-align: center;
+
+	border-radius: 30px;
+
+	background-color: rgba(127, 127, 127, 0.8);
+	display: none;
+}
 
 
 /* ==================== */
@@ -360,10 +382,8 @@ textarea {
 
 #flashcards label { background: transparent; }
 
-.note { display: none; }
-
 #page-stack .flashcard-actions-container {
-	padding: 0px 50px;
+	padding: 0px 50px 50px 50px;
 }
 
 #page-stack .flashcard-actions {
@@ -396,6 +416,7 @@ textarea {
 }
 
 #page-stack .flashcard-actions td .button .fa { margin-right: 5px; }
+
 
 /* ======================= */
 /* ====== FLASHCARD ====== */
@@ -452,7 +473,13 @@ textarea {
 
 	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 	backface-visibility: hidden;
+	display: table;
 	cursor: pointer;
+}
+
+#flashcard span {
+	display: table-cell;
+	vertical-align: middle;
 }
 
 #flashcard .front {
@@ -495,12 +522,12 @@ textarea {
 /* ====== SETTINGS ====== */
 /* ====================== */
 
-#import {
+.button-import {
 	position: relative;
 	z-index: 0;
 }
 
-#import input {
+.button-import input {
 	position: absolute;
 	top: 0px; left: 0px;
 
@@ -559,81 +586,79 @@ textarea {
 }
 
 
-
 /* =========================== */
 /* ====== MEDIA QUERIES ====== */
 /* =========================== */
 
 @media only screen and (orientation : portrait) and (max-width : 600px) {
 
-	html { background-color: #EEE; }
-	html, body { height: auto; }
-
-	html[data-page=page-practice] [data-role=content] { background-color: transparent; }
+	html, body {
+		height: auto;
+		min-height: auto;
+		background-color: #EEE;
+	}
 
 	html[data-page=page-practice],
 	html[data-page=page-practice] body { height: 100%; }
-	
-	hr {
-		margin: 10px 0px 20px 0px;
-	}
 
-	#flashcard > div {
-		font-size: 2em;
-	}
+	html[data-page=page-practice] .content { background-color: transparent; }
+	html[data-page=page-stack] hr { display: none; }
 
-	[data-role=menubar] {
+	hr { margin: 10px 0px 20px 0px; }
+
+	.menubar {
 		border-top: 2px solid #000;
 		border-bottom: 0px;
 	}
 
-	[data-role=menubar] .actions {
-		display: table;
-		float: none;
-		table-layout: fixed;
+	.menubar .actions {
 		width: 100%;
+		float: none;
+		
 		margin-top: 10px;
 		border-spacing: 10px;
+		
+		table-layout: fixed;
 		background-color: #111;
+		display: table;
 	}
 
-	[data-role=menubar] .action {
-		display: table-cell;
-		margin: 0px;
-		text-align: center;
-		padding: 20px 0px;
+	.menubar .action {
 		float: none;
+		text-align: center;
+		
+		margin: 0px;
+		padding: 20px 0px;
 		border-radius: 0px;
+
 		background-color: #333;
+		display: table-cell;
 	}
 
-	[data-role=menubar] .action:hover { background-color: #444; }
+	.menubar .action:hover { background-color: #444; }
+	.button.big { padding: 15px 10px; }
 
-	[data-role=tabs] .fa {
-		font-size: 1.4em;
-	}
+	.tabs .fa { font-size: 1.4em; }
+	.tab-name { display: none; }
 
-	[data-role=content]  {
+	.content  {
 		font-size: 0.9em;
 		padding: 30px;
 	}
 
-	.button.big {
-		padding: 15px 10px;
-	}
-
 	.stack-name {
-		font-size: 1.5em;
+		width: 100%;
+		text-align: center;
+
+		margin: 0.5em 0px 1em 0px;
+		padding-bottom: 0.8em;
+		border-bottom: 2px solid #DDD;
 	}
 
-	#practice, .flashcard-add {
+	.button-practice, .flashcard-add {
 		float: none;
 		width: 100%;
 		margin-bottom: 20px;
-	}
-
-	.tab-name {
-		display: none;
 	}
 
 	#flashcards {
@@ -641,17 +666,16 @@ textarea {
 		border-right: 0px;
 	}
 
+	#flashcard > div { font-size: 2em; }
+
 	#page-stack .flashcard-actions {
 		border-left: 0px;
 		border-right: 0px;
 	}
 
-	#page-stack .flashcard-actions-container { padding: 0px; }
-
 	#flashcards,
-	#page-stack .flashcard-actions {
-		border-spacing: 0px;
-	}
+	#page-stack .flashcard-actions { border-spacing: 0px; }
+	#page-stack .flashcard-actions-container { padding: 0px; }
 	
 	#page-stack .flashcard-actions td {
 		float: left;
@@ -659,8 +683,7 @@ textarea {
 		padding: 10px 0px;
 	}
 
-	#stacks .count { display: none; }
-
 	#page-stack .flashcard-actions td:first-child { padding-top: 0px; }
 	#page-stack .flashcard-actions td:last-child { padding-bottom: 0px; }
+	#stacks .count { display: none; }
 }

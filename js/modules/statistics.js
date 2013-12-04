@@ -56,7 +56,7 @@ define(["chart"], function(Chart) {
 
 					// Hide the note
 					if (display_note) {
-						App.$("#page-statistics").find("[data-role=content]").html("");
+						App.$("#page-statistics").find(".content").html("");
 						display_note = false;
 					}
 
@@ -66,9 +66,9 @@ define(["chart"], function(Chart) {
 					ctx.canvas.height = Math.round(ctx.canvas.width / 1.618);
 
 					// Insert heading and canvas
-					App.$("#page-statistics").find("[data-role=content]").append("<h1>" + stackname + "</h1><hr>");
-					App.$("#page-statistics").find("[data-role=content]").append(ctx.canvas);
-					App.$("#page-statistics").find("[data-role=content]").append("<hr class='transparent'>");
+					App.$("#page-statistics").find(".content").append("<h1>" + stackname + "</h1><hr>");
+					App.$("#page-statistics").find(".content").append(ctx.canvas);
+					App.$("#page-statistics").find(".content").append("<hr class='transparent'>");
 
 					// Define chart variables
 					var labels = [], datasets = [{
