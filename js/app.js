@@ -38,7 +38,7 @@ define([
 
 			require(["shims/indexedDB"], function() {
 				// window.shimIndexedDB.__debug(true);
-				App.initialize();
+				window.indexedDB.init(App.initialize);
 			});
 
 			return;
@@ -46,7 +46,7 @@ define([
 
 		// Open external links with PhoneGap's InAppBrowser
 		if (App.isPhoneGap) {
-			$("body").on("click", "a[href^='http']", function(e) {
+			$("body").on("click", "a[target='_blank']", function(e) {
 
 				var url = $(e.currentTarget).attr("href");
 				window.open(url, "_blank", "location=yes");
@@ -75,9 +75,9 @@ define([
 			Router.initialize();
 
 			// Insert some test data on first runtime
-			if (!window.localStorage.testdata) {
+			if (!Utils.localStorage("testdata")) {
 				DB.createTestData();
-				window.localStorage.testdata = true;
+				Utils.localStorage("testdata", true);
 			}
 		});
 	};
@@ -90,7 +90,7 @@ define([
 			if (App[key].events) {
 				for (event in App[key].events) {
 					pair = event.split(" ");
-					type = pair.shift();
+					type = pair.shift().replace("|", " ");
 					selector = pair.join(" ");
 					$("body").on(type, selector, App[key].events[event])
 				}

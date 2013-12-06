@@ -34,11 +34,10 @@ define(function() {
 				if (confirm("Open Settings for \"" + stackname + "\" ?")) {
 					window.location.hash = "page-stack-settings:" + stackID;
 				}
-
-			}, 500);
+			}, 1000);
 		},
 
-		"touchend #stacks li": function(e) {
+		"touchend|touchcancel|touchleave #stacks li": function(e) {
 			if (!App.isMobile) { return; }
 			window.clearTimeout(Stacks.touchTimeout);
 		},

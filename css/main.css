@@ -585,6 +585,58 @@ textarea {
 	border-radius: 3px;
 }
 
+/* ================== */
+/* ====== MISC ====== */
+/* ================== */
+
+.paypal-button {
+	color: #0E3168;
+	font-size: 14px;
+	font-weight: bold;
+	font-style: italic;
+	font-family: "Arial", bold, italic;
+	
+	text-shadow: 0 1px 0 rgba(255,255,255,.5);
+	white-space: nowrap;
+	overflow: hidden;
+	
+	padding: 4px 19px;
+	border-radius: 13px;
+	border: 1px solid #ffa823;
+	background: #ffa823;
+	cursor: pointer;
+
+	text-decoration: none;
+	display: inline-block;
+	position: relative;
+	z-index: 0;
+}
+
+.paypal-button::before {
+	content: " ";
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	border-radius: 11px;
+	top: 0;
+	left: 0;
+	background: #ffa823;
+	background-image: linear-gradient(180deg, #FFAA00 0%,#FFAA00 80%,#FFF8FC 100%);
+	z-index: -2;
+}
+
+.paypal-button::after {
+	content: " ";
+	position: absolute;
+	width: 98%;
+	height: 60%;
+	border-radius: 40px 40px 38px 38px;
+	top: 0;
+	left: 0;
+	background-image: linear-gradient(180deg, #fefefe 0%, #fed994 100%);
+	z-index: -1;
+	transform: translateX(1%);
+}
 
 /* =========================== */
 /* ====== MEDIA QUERIES ====== */
@@ -655,7 +707,9 @@ textarea {
 		border-bottom: 2px solid #DDD;
 	}
 
-	.button-practice, .flashcard-add {
+	.button-practice,
+	.flashcard-update,
+	.flashcard-add {
 		float: none;
 		width: 100%;
 		margin-bottom: 20px;

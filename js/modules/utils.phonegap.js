@@ -15,7 +15,7 @@ define(function() {
 				PhoneGap.changeDir(directory);
 				PhoneGap.updateView();
 
-			} else { PhoneGap.readFile(entry, App.Settings.import); }
+			} else { PhoneGap.readFile(entry, App.Settings.import_json); }
 		});
 	};
 

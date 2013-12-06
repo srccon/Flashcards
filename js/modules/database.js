@@ -148,7 +148,7 @@ define(function() {
 						key: cursor.primaryKey
 					});
 
-					cursor.continue();
+					cursor["continue"]();
 
 				} else { onsuccess(pairs); }
 			};
@@ -166,7 +166,7 @@ define(function() {
 						key: cursor.key
 					});
 
-					cursor.continue();
+					cursor["continue"]();
 
 				} else { onsuccess(pairs); }
 			};
@@ -238,7 +238,7 @@ define(function() {
 
 		var transaction = Database[dbName].transaction(objectStoreName, "readwrite");
 		var objectStore = transaction.objectStore(objectStoreName);
-		var request = objectStore.delete(key);
+		var request = objectStore["delete"](key);
 
 		request.onsuccess = onsuccess;
 	};

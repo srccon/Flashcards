@@ -25,7 +25,7 @@ define(function() {
 
 	Settings.events = {
 
-		"click .button-export": function(e) { Settings.export(); },
+		"click .button-export": function(e) { Settings.export_json(); },
 
 		"click .button-import": function(e) {
 			if (!App.isPhoneGap) { return; }
@@ -45,7 +45,7 @@ define(function() {
 
 			reader.readAsText(e.target.files[0]);
 			reader.onload = function(e) {
-				Settings.import(e.target.result);
+				Settings.import_json(e.target.result);
 				$target.val("");
 			};
 		},
@@ -82,11 +82,11 @@ define(function() {
 		App._settings = _settings;
 	}
 
-	/* ==================== */
-	/* ====== EXPORT ====== */
-	/* ==================== */
+	/* ========================= */
+	/* ====== EXPORT JSON ====== */
+	/* ========================= */
 
-	Settings.export = function() {
+	Settings.export_json = function() {
 
 		var anchor = document.createElement("a"),
 		    json_data = {},
@@ -157,11 +157,11 @@ define(function() {
 		});
 	};
 
-	/* ==================== */
-	/* ====== IMPORT ====== */
-	/* ==================== */
+	/* ========================= */
+	/* ====== IMPORT JSON ====== */
+	/* ========================= */
 
-	Settings.import = function(json_data) {
+	Settings.import_json = function(json_data) {
 
 		var error = false;
 
