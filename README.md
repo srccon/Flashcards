@@ -1,16 +1,19 @@
 Flashcards (WIP) <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img align="right" alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" /></a>
 ==========
 
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CDLKJK3V8D2R2"><img src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif" align="right" alt="Donate"></a>
+
 A simple flashcard application for android and web browsers.  
 
 * [**Browser version**](http://elias-schuett.de/git/Flashcards/)
 * [**Android app (APK)**](https://dl.dropboxusercontent.com/u/14645664/files/Flashcards.apk)
 * [**Android app (Google Play)**](https://play.google.com/store/apps/details?id=de.elias_schuett.flashcards)
 
-<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-24-24.png" height="320">&nbsp;
-<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-24-35.png" height="320">&nbsp;
-<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-32-34.png" height="320">&nbsp;
-<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-25-13.png" height="320">&nbsp;
+<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-24-24.png" height="300">&nbsp;
+<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-24-35.png" height="300">&nbsp;
+<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-32-34.png" height="300">&nbsp;
+<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/Screenshot_2013-12-02-20-25-13.png" height="300">&nbsp;
 
 
 ## Features
@@ -22,6 +25,7 @@ A simple flashcard application for android and web browsers.
 
 ## ToDo
 
+* Fix bugs on < 4.2 devices
 * Syncing functionality
 * Expand practice mode
 
