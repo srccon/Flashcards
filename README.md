@@ -2,7 +2,7 @@ Flashcards (WIP) <a rel="license" href="http://creativecommons.org/licenses/by-n
 ==========
 
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CDLKJK3V8D2R2"><img src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif" align="right" alt="Donate"></a>
+<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CDLKJK3V8D2R2"><img src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif" align="right" alt="Donate"></a>
 
 A simple flashcard application for android and web browsers.  
 
