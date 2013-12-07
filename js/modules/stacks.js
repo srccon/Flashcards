@@ -17,6 +17,30 @@ define(function() {
 
 	Stacks.events = {
 
+		"click": function(e) {
+
+			var $target = App.$(e.target);
+			if ($target.parent().hasClass("button-android-menu")) { $target = $target.parent(); }
+
+			if ($target.hasClass("button-android-menu")) { return; }
+			App.$(".actions").removeClass("android-menu");
+		},
+
+		"menubutton|click .button-android-menu": function(e) {
+
+			var $actions = App.Router.$page.find(".actions");
+
+			// if (e.type == "click") {
+			// 	$actions.css({
+			// 		top: "4em",
+			// 		width: "70%",
+			// 		bottom: "auto"
+			// 	});
+			// } else { $actions.removeAttr("style"); }
+
+			$actions.toggleClass("android-menu");
+		},
+
 		// Stack link
 		"click #stacks li": function(e) {
 			location.hash = "page-stack:" + App.$(e.currentTarget).attr("data-key");

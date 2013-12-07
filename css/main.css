@@ -2,9 +2,16 @@
 *:focus { outline: none; }
 
 html {
-	background-color: #111;
+	background-color: #056;
 	overflow-y: scroll;
 	height: 100%;
+
+	background-image:
+	repeating-linear-gradient(120deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 1px, transparent 1px, transparent 60px),
+	repeating-linear-gradient(60deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 1px, transparent 1px, transparent 60px),
+	linear-gradient(60deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1)),
+	linear-gradient(120deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1));
+	background-size: 70px 120px;
 }
 
 body {
@@ -15,7 +22,6 @@ body {
 
 	min-height: 100%;
 	max-width: 800px;
-	position: relative;
 
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	/*-webkit-transform: translate3d(0px, 0px, 0px);*/
@@ -28,8 +34,13 @@ body {
 
 .page { display: none; }
 
+html[data-page=page-practice] .content {
+	padding-top: 20%;
+}
+
 html[data-page=page-practice] body {
-	background-image: linear-gradient(0deg, #666, #CCC);
+	background-image: linear-gradient(0deg, #036, #023);
+	position: relative;
 }
 
 html[data-page=page-practice] .menubar body {
@@ -72,10 +83,9 @@ html[data-page=page-practice] .content {
 .menubar {
 	color: #FFF;
 	height: 80px;
-	background-color: #069;
+	background-color: #059;
 	display: table;
 	width: 100%;
-	position: relative;
 	border-bottom: 2px solid #000;
 }
 
@@ -84,14 +94,14 @@ html[data-page=page-practice] .content {
 	margin-left: 15px;
 }
 
-.menubar .title {
+.menubar > .title {
 	color: #FFF;
-	text-shadow: -1px -1px rgba(0, 0, 0, 0.5);
+	text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
 	font-size: 2em;
 	font-weight: 300;
 
-	position: absolute;
-	top: 24px; left: 75px;
+	position: relative;
+	top: -5px; left: 10px;
 }
 
 .menubar .actions {
@@ -101,26 +111,34 @@ html[data-page=page-practice] .content {
 
 .menubar .action {
 	color: #FFF;
-	float: right;
+	text-align: center;
+	text-decoration: none;
+
 	width: 30px;
 	height: 30px;
+
 	padding: 15px;
 	margin-top: 10px;
 	margin-right: 10px;
-	border-radius: 2px;
-	background-color: #047;
-	text-align: center;
-	cursor: pointer;
-	text-decoration: none;
 
+	border-radius: 2px;
+	background-color: #024;
+	border-bottom: 2px solid #07A;
+
+	float: right;
+	cursor: pointer;
 	position: relative;
 	z-index: 2;
 }
 
-.menubar .action:hover {
-	background-color: #025;
-}
+.menubar .action:hover { background-color: #013; }
+.menubar .action .title { display: none; }
 
+.menubar .button-android-menu {
+	background-color: transparent;
+	border: 0px;
+	display: none;
+}
 
 /* ================== */
 /* ====== TABS ====== */
@@ -168,12 +186,12 @@ html[data-page=page-practice] .content {
 .content {
 	color: #333;
 	padding: 50px;
+	font-weight: 500;
 	background-color: #EEE;
 }
 
 h1, h2, h3, h4, h5, h6 {
 	margin-bottom: 20px;
-	text-shadow: 0px 1px #FFF;
 }
 
 a { color: #039; }
@@ -183,8 +201,8 @@ li { padding-bottom: 5px; }
 hr {
 	height: 0px;
 	border: 0px;
-	border-bottom: 2px solid #DDD;
-	margin: 20px 0px 40px 0px;
+	border-bottom: 5px solid #DDD;
+	margin: 10px 0px 40px 0px;
 	clear: both;
 }
 
@@ -348,11 +366,11 @@ textarea {
 
 #flashcards th {
 	color: #FFF;
-	background-color: #069;
+	background-color: #059;
 	text-align: left;
 	padding: 0px 20px;
 
-	box-shadow: inset 0px 2px #09c;
+	box-shadow: inset 0px 2px #09C;
 	border-bottom: 5px solid #CCC;
 }
 
@@ -404,15 +422,15 @@ textarea {
 	color: #FFF;
 	border: 0px;
 
-	border-top: 2px solid #09c;
+	border-top: 2px solid #09C;
 
-	background-color: #069;
+	background-color: #059;
 	box-shadow: none;
 }
 
 #page-stack .flashcard-actions td .button:hover {
-	background-color: #09c;
-	border-color: #0cf;
+	background-color: #09C;
+	border-color: #0CF;
 }
 
 #page-stack .flashcard-actions td .button .fa { margin-right: 5px; }
@@ -440,7 +458,7 @@ textarea {
 	background-image: url("../img/shadow.png");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	opacity: 0.1;
+	opacity: 0.5;
 }
 
 #flashcard > div {
@@ -638,6 +656,7 @@ textarea {
 	transform: translateX(1%);
 }
 
+
 /* =========================== */
 /* ====== MEDIA QUERIES ====== */
 /* =========================== */
@@ -648,6 +667,7 @@ textarea {
 		height: auto;
 		min-height: auto;
 		background-color: #EEE;
+		background-image: none;
 	}
 
 	html[data-page=page-practice],
@@ -658,36 +678,50 @@ textarea {
 
 	hr { margin: 10px 0px 20px 0px; }
 
-	.menubar {
-		border-top: 2px solid #000;
-		border-bottom: 0px;
+	.menubar .actions { display: none; }
+	.menubar .button-android-menu { display: block; }
+	.menubar .action .title { display: inline; }
+	.menubar .button-android-menu:hover { background-color: transparent; }
+
+	.menubar .actions.android-menu {
+		position: absolute;
+		right: 10%; bottom: 0px;
+		z-index: 99;
+
+		width: 80%;
+		display: block;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 	}
 
-	.menubar .actions {
+	.menubar .actions.android-menu .action {
+		color: #666;
+		font-size: 1em;
+		text-align: left;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		
 		width: 100%;
-		float: none;
-		
-		margin-top: 10px;
-		border-spacing: 10px;
-		
-		table-layout: fixed;
-		background-color: #111;
-		display: table;
-	}
+		height: auto;
 
-	.menubar .action {
 		float: none;
-		text-align: center;
-		
+		padding: 15px 20px;
 		margin: 0px;
-		padding: 20px 0px;
 		border-radius: 0px;
-
-		background-color: #333;
-		display: table-cell;
+		background-color: #F9F9F9;
+		border-top: 1px solid #FFF;
+		border-bottom: 1px solid #EEE;
+		
+		box-sizing: border-box;
 	}
 
-	.menubar .action:hover { background-color: #444; }
+	.menubar .actions.android-menu .action:hover { background-color: #FFF; }
+	.menubar .actions.android-menu .action:first-child { border-radius: 2px 2px 0px 0px; }
+	.menubar .actions.android-menu .action .fa {
+		font-size: inherit;
+		margin-right: 0.5em;
+	}
+
 	.button.big { padding: 15px 10px; }
 
 	.tabs .fa { font-size: 1.4em; }
@@ -734,7 +768,7 @@ textarea {
 	#page-stack .flashcard-actions td {
 		float: left;
 		width: 100%;
-		padding: 10px 0px;
+		padding: 2.5px 0px;
 	}
 
 	#page-stack .flashcard-actions td:first-child { padding-top: 0px; }

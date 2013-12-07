@@ -38,7 +38,8 @@ define([
 
 			require(["shims/indexedDB"], function() {
 				// window.shimIndexedDB.__debug(true);
-				window.indexedDB.init(App.initialize);
+				window.indexedDB.init();
+				App.initialize();
 			});
 
 			return;

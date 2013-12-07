@@ -1465,7 +1465,13 @@ var idbModules = {};
         return;
     }
     // The sysDB to keep track of version numbers for databases
-    var sysdb = window.openDatabase("__sysdb__", "", "System Database", DEFAULT_DB_SIZE);
+    var sysdb = window.openDatabase("__sysdb__", 1, "System Database", DEFAULT_DB_SIZE);
+    sysdb.transaction(function(tx){
+        tx.executeSql("CREATE TABLE IF NOT EXISTS dbVersions (name VARCHAR(255), version INT);", [], function(){
+        }, function(){
+            idbModules.util.throwDOMException("Could not create table __sysdb__ to save DB versions");
+        });
+    });
     
     var shimIndexedDB = {
         /**
@@ -1473,18 +1479,6 @@ var idbModules = {};
          * @param {Object} name
          * @param {Object} version
          */
-
-        init: function(callback) {
-            sysdb.transaction(function(tx){
-                tx.executeSql("CREATE TABLE IF NOT EXISTS dbVersions (name VARCHAR(255), version INT);", [], function(){
-                    callback && callback();
-                }, function(){
-                    callback && callback();
-                });
-            });
-        },
-
-
         open: function(name, version){
             var req = new idbModules.IDBOpenRequest();
             var calledDbCreateError = false;
@@ -1501,7 +1495,7 @@ var idbModules = {};
             }
             
             function openDB(oldVersion){
-                var db = window.openDatabase(name, "", name, DEFAULT_DB_SIZE);
+                var db = window.openDatabase(name, 1, name, DEFAULT_DB_SIZE);
                 req.readyState = "done";
                 if (typeof version === "undefined") {
                     version = oldVersion || 1;
@@ -1591,7 +1585,7 @@ var idbModules = {};
                         return;
                     }
                     version = data.rows.item(0).version;
-                    var db = window.openDatabase(name, "", name, DEFAULT_DB_SIZE);
+                    var db = window.openDatabase(name, 1, name, DEFAULT_DB_SIZE);
                     db.transaction(function(tx){
                         tx.executeSql("SELECT * FROM __sys__", [], function(tx, data){
                             var tables = data.rows;
