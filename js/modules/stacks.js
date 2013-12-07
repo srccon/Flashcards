@@ -46,27 +46,6 @@ define(function() {
 			location.hash = "page-stack:" + App.$(e.currentTarget).attr("data-key");
 		},
 
-		// Long touch to open settings
-		"touchstart #stacks li": function(e) {
-			if (!App.isMobile) { return; }
-
-			var stackname = $(e.currentTarget).find("b").text();
-			var stackID = $(e.currentTarget).attr("data-key");
-
-			Stacks.touchTimeout = window.setTimeout(function() {
-				if (confirm("Open Settings for \"" + stackname + "\" ?")) {
-					window.location.hash = "page-stack-settings:" + stackID;
-				}
-			}, 1000);
-
-			e.preventDefault();
-		},
-
-		"touchend|touchcancel|touchleave #stacks li": function(e) {
-			if (!App.isMobile) { return; }
-			window.clearTimeout(Stacks.touchTimeout);
-		},
-
 		// Create stack
 		"click .button-new-stack": function(e) {
 			var name = window.prompt("Stack name:", "Vocabulary 1");
