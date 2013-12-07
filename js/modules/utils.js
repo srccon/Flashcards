@@ -84,5 +84,11 @@ define(function() {
 		return arr;
 	};
 
+	Utils.forceRender = function($elem) {
+		$elem.hide();
+		$elem[0].offsetHeight;
+		$elem.show();
+	};
+
 	return Utils;
 });

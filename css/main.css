@@ -24,7 +24,6 @@ body {
 	max-width: 800px;
 
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	/*-webkit-transform: translate3d(0px, 0px, 0px);*/
 }
 
 
@@ -478,7 +477,7 @@ textarea {
 			      1px  1px 0px #FFF;
 
 	padding: 10% 10%;
-	width:  80%;
+	width: 80%;
 	
 	border: 1px solid #DDD;
 	border-radius: 1px;
@@ -684,7 +683,7 @@ textarea {
 	.menubar .button-android-menu:hover { background-color: transparent; }
 
 	.menubar .actions.android-menu {
-		position: absolute;
+		position: fixed;
 		right: 10%; bottom: 0px;
 		z-index: 99;
 
