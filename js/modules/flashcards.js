@@ -21,16 +21,36 @@ define(["transit"], function() {
 		"click #flashcards input[name=select_all]": function(e) {
 			var checked = $(e.currentTarget).is(":checked");
 			$("#flashcards input[type=checkbox]").prop("checked", checked);
-			$("#flashcards tr").toggleClass("selected", checked);
+			$("#flashcards tr:not(.searchbar)").toggleClass("selected", checked);
 		},
 
 		// Select single
 		"click #flashcards td": function(e) {
+
+			if ($(e.currentTarget).parent().hasClass("searchbar")) { return; }
+
 			var $checkbox = $(e.currentTarget).parent().find("input");
 			var checked = $checkbox.is(":checked");
 
 			$checkbox.prop("checked", !checked);
 			$(e.currentTarget).parent().toggleClass("selected", !checked);
+		},
+
+		// Search
+		"search|keyup .search-wrapper input": function(e) {
+
+			var query = $(e.currentTarget).val().trim();
+			if (!query) { $("#flashcards tr").show(); return; }
+
+			$("#flashcards tr").each(function(i) {
+
+				if (i < 2) { return true; }
+
+				var front = $(this).find("td:eq(1)").text().trim().toLowerCase();
+				var back = $(this).find("td:eq(2)").text().trim().toLowerCase();
+
+				$(this).toggle((front+back).indexOf(query) != -1);
+			});
 		},
 
 		"change #flashcards td input": function(e) {

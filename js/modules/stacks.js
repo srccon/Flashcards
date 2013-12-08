@@ -296,6 +296,8 @@ define(function() {
 				Stacks.practice.total
 			);
 
+			alert("Practice session complete!\nScore: " + Stacks.practice.score + " out of " + Stacks.practice.total);
+
 			window.location.hash = "page-stack:" + Stacks.practice.id;
 			return;
 		}

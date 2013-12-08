@@ -20,6 +20,8 @@ define(function() {
 				left: $(window).width()/2 - $notification[0].offsetWidth/2
 			});
 		});
+
+		// Utils.dialog("Hallo Welt", "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
 	};
 
 	/* ========================== */
@@ -47,6 +49,31 @@ define(function() {
 		  .replace(/>/g, "&gt;")
 		  .replace(/"/g, "&quot;")
 		  .replace(/'/g, "&#039;");
+	};
+
+	/* ==================== */
+	/* ====== DIALOG ====== */
+	/* ==================== */
+
+	Utils.dialog = function(title, content) {
+
+		var $dialog = App.$("#dialog");
+
+		if (!$dialog.length) {
+			$("body").append("<div id='dialog'><div class='title'></div><div class='content'></div></div>");
+			$("body").append("<div id='dialog-modal'>");
+			$dialog = App.$("#dialog");
+		}
+
+		$dialog.find(".title").html(title);
+		$dialog.find(".content").html(content);
+
+		$dialog.css({
+			top: $(window).height()/2 - $dialog.height()/2,
+			left: $(window).width()/2 - $dialog.width()/2
+		}).show();
+
+		$("#dialog-modal").show();
 	};
 
 	/* ========================== */
