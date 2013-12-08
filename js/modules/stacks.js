@@ -276,7 +276,7 @@ define(function() {
 
 				Stacks.practice.flashcards = data;
 				Stacks.practice();
-			});
+			}, true);
 
 			return;
 		}

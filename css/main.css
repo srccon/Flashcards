@@ -478,7 +478,7 @@ textarea {
 
 	background-color: #FFF; 
 	background-image: 
-	linear-gradient(90deg, transparent 3.125em, #abced4 3.125em, #abced4 3.75em, transparent 3.75em),
+	linear-gradient(90deg, transparent 1em, #abced4 1em, #abced4 1.2em, transparent 1.2em),
 	linear-gradient(#F6F6F6 .1em, transparent .1em);
 
 	background-size: 100% 0.8em;
