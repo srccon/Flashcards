@@ -21,6 +21,8 @@ A simple flashcard application for android and web browsers.
 * Statistics
 * Import/Export
 * Clean and accessible UI
+* Word translation
+* Markdown support
 * Syncing [in progress]
 
 ## ToDo
