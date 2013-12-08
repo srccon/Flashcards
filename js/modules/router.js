@@ -116,7 +116,7 @@ define(function() {
 					} else {
 						Router.$page.find(".note").show();
 					}
-				});
+				}, true);
 			});
 		}
 	};

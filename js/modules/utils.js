@@ -9,6 +9,17 @@ define(function() {
 	Utils.initialize = function() {
 
 		App = require("app");
+
+		$(window).on("resize", function(e) {
+
+			var $notification = $("#notification");
+			if (!$notification.length) { return; }
+
+			$notification.css({
+				top: $(window).height() - $notification[0].offsetHeight*2,
+				left: $(window).width()/2 - $notification[0].offsetWidth/2
+			});
+		});
 	};
 
 	/* ========================== */
@@ -58,8 +69,8 @@ define(function() {
 		});
 
 		$notification.css({
-			top: $(window).height() - $notification.height()*4,
-			left: $(window).width()/2 - $notification.width()/2
+			top: $(window).height() - $notification[0].offsetHeight*2,
+			left: $(window).width()/2 - $notification[0].offsetWidth/2
 		});
 
 		$notification.stop(true, true).finish(true, true).animate({
@@ -84,10 +95,30 @@ define(function() {
 		return arr;
 	};
 
+	/* ========================== */
+	/* ====== FORCE RENDER ====== */
+	/* ========================== */
+
 	Utils.forceRender = function($elem) {
 		$elem.hide();
 		$elem[0].offsetHeight;
 		$elem.show();
+	};
+
+	/* ====================== */
+	/* ====== MARKDOWN ====== */
+	/* ====================== */
+
+	Utils.markdown = function(str) {
+
+		// Ruby tags: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby
+
+		return str
+		  .replace(/\[([^}]+)\]{([^{]+)}/g, "<ruby>$1<rp>(</rp><rt>$2</rt><rp>)</rp></ruby>")
+		  .replace(/([^}]+){([^{]+)}/g, "<ruby>$1<rp>(</rp><rt>$2</rt><rp>)</rp></ruby>")
+		  .replace(/\*\*\*(.+)\*\*\*/g, "<b><i>$1</i></b>")
+		  .replace(/\*\*(.+)\*\*/g, "<b>$1</b>")
+		  .replace(/\*(.+)\*/g, "<i>$1</i>");
 	};
 
 	return Utils;

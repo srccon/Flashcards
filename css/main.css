@@ -2,13 +2,14 @@
 *:focus { outline: none; }
 
 html {
-	background-color: #056;
+	background-color: #333;
 	overflow-y: scroll;
 	height: 100%;
+	font-size: 16px;
 
 	background-image:
-	repeating-linear-gradient(120deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 1px, transparent 1px, transparent 60px),
-	repeating-linear-gradient(60deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 1px, transparent 1px, transparent 60px),
+	repeating-linear-gradient(120deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 0.0625em, transparent 0.0625em, transparent 3.75em),
+	repeating-linear-gradient(60deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 0.0625em, transparent 0.0625em, transparent 3.75em),
 	linear-gradient(60deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1)),
 	linear-gradient(120deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1));
 	background-size: 70px 120px;
@@ -38,12 +39,12 @@ html[data-page=page-practice] .content {
 }
 
 html[data-page=page-practice] body {
-	background-image: linear-gradient(0deg, #036, #023);
+	background-image: linear-gradient(0deg, #013, #333);
 	position: relative;
 }
 
 html[data-page=page-practice] .menubar body {
-	border-bottom: 5px solid #333;
+	border-bottom: 0.3125em solid #333;
 }
 
 html[data-page=page-stack] .content {
@@ -81,26 +82,27 @@ html[data-page=page-practice] .content {
 
 .menubar {
 	color: #FFF;
-	height: 80px;
+	height: 5em;
 	background-color: #059;
 	display: table;
 	width: 100%;
-	border-bottom: 2px solid #000;
+	border-bottom: 0.125em solid #000;
 }
 
 .menubar .logo {
-	margin-top: 15px;
-	margin-left: 15px;
+	margin-top: 0.9375em;
+	margin-left: 0.9375em;
+	height: 3.125em;
 }
 
 .menubar > .title {
 	color: #FFF;
-	text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+	text-shadow: 0px 0px 0.3125em rgba(0, 0, 0, 0.5);
 	font-size: 2em;
 	font-weight: 300;
 
 	position: relative;
-	top: -5px; left: 10px;
+	top: -0.3125em; left: 0.625em;
 }
 
 .menubar .actions {
@@ -113,16 +115,16 @@ html[data-page=page-practice] .content {
 	text-align: center;
 	text-decoration: none;
 
-	width: 30px;
-	height: 30px;
+	width: 1.875em;
+	height: 1.875em;
 
-	padding: 15px;
-	margin-top: 10px;
-	margin-right: 10px;
+	padding: 0.9375em;
+	margin-top: 0.625em;
+	margin-right: 0.625em;
 
-	border-radius: 2px;
+	border-radius: 0.125em;
 	background-color: #024;
-	border-bottom: 2px solid #07A;
+	border-bottom: 0.125em solid #07A;
 
 	float: right;
 	cursor: pointer;
@@ -152,7 +154,7 @@ html[data-page=page-practice] .content {
 	z-index: 3;
 }
 
-.tabs .fa { margin-right: 5px; }
+.tabs .fa { margin-right: 0.3125em; }
 
 .tabs .tab {
 	color: #999;
@@ -163,7 +165,7 @@ html[data-page=page-practice] .content {
 	padding: 1.5em;
 
 	background-color: #111;
-	border-bottom: 5px solid #999;
+	border-bottom: 0.3125em solid #999;
 	cursor: pointer;
 	text-decoration: none;
 }
@@ -184,41 +186,41 @@ html[data-page=page-practice] .content {
 
 .content {
 	color: #333;
-	padding: 50px;
+	padding: 3.125em;
 	font-weight: 500;
 	background-color: #EEE;
 }
 
 h1, h2, h3, h4, h5, h6 {
-	margin-bottom: 20px;
+	margin-bottom: 0em;
 }
 
 a { color: #039; }
-ul { margin-left: 20px; }
-li { padding-bottom: 5px; }
+ul { margin-left: 1.25em; }
+li { padding-bottom: 0.3125em; }
 
 hr {
 	height: 0px;
 	border: 0px;
-	border-bottom: 5px solid #DDD;
-	margin: 10px 0px 40px 0px;
+	border-bottom: 0.3125em solid #DDD;
+	margin: 0.625em 0px 2.5em 0px;
 	clear: both;
 }
 
 hr.transparent {
-	height: 10px;
+	height: 0.625em;
 	border: 0px;
 }
 
 label {
 	background-color: #E3E3E3;
-	padding: 20px;
+	padding: 1.25em;
 	display: block;
-	margin-bottom: 10px;
+	margin-bottom: 0.625em;
 	position: relative;
 	cursor: pointer;
 	font-size: 1.2em;
-	border-radius: 5px;
+	border-radius: 0.3125em;
 }
 
 label:hover { background-color: #DDD; }
@@ -227,15 +229,15 @@ label span::before {
 	color: inherit;
 	font-family: FontAwesome;
 	content: "\f096";
-	width: 20px;
+	width: 1.25em;
 	display: inline-block;
 }
 
 label input { display: none; }
 label input:checked + span::before {
 	content: "\f046";
-	margin-left: 2px;
-	margin-right: -2px;
+	margin-left: 0.125em;
+	margin-right: -0.125em;
 }
 
 textarea {
@@ -243,7 +245,7 @@ textarea {
 	font-family: inherit;
 
 	width: 100%;
-	padding: 10px;
+	padding: 0.625em;
 	border: 0px;
 	
 	box-sizing: border-box;
@@ -255,12 +257,12 @@ textarea {
 	color: #333;
 	font-weight: bold;;
 	text-align: center;
-	padding: 10px 20px;
+	padding: 0.625em 1.25em;
 	
-	border-radius: 2px;
-	border: 1px solid #CCC;
-	border-bottom: 1px solid #999;
-	box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+	border-radius: 0.125em;
+	border: 0.0625em solid #CCC;
+	border-bottom: 0.0625em solid #999;
+	box-shadow: 0px 0.0625em 0.1875em rgba(0, 0, 0, 0.2);
 	background-color: #DDD;
 	
 	cursor: pointer;
@@ -269,25 +271,25 @@ textarea {
 }
 
 .button.big {
-	padding: 20px;
+	padding: 1.25em;
 	font-size: 1.2em;
 }
 
 .button.green {
 	color: #FFF;
-	border: 1px solid #0C0;
+	border: 0.0625em solid #0C0;
 	background-color: #3D3;
 }
 
 .button.red {
 	color: #FFF;
-	border: 1px solid #C00;
+	border: 0.0625em solid #C00;
 	background-color: #D33;
 }
 
 .button.stretch { width: 100%; }
-.button.green:hover { background-color: #0D0; border: 1px solid #090; }
-.button.red:hover { background-color: #D00; border: 1px solid #900; }
+.button.green:hover { background-color: #0D0; border: 0.0625em solid #090; }
+.button.red:hover { background-color: #D00; border: 0.0625em solid #900; }
 .button:hover { background-color: #CCC; }
 .note { display: none; }
 
@@ -298,12 +300,12 @@ textarea {
 
 	color: #FFF;
 	font-size: 1.2em;
-	padding: 15px 30px;
+	padding: 0.9375em 1.875em;
 	
-	min-width: 100px;
+	min-width: 6.25em;
 	text-align: center;
 
-	border-radius: 30px;
+	border-radius: 1.875em;
 
 	background-color: rgba(127, 127, 127, 0.8);
 	display: none;
@@ -322,13 +324,13 @@ textarea {
 
 #stacks li {
 	color: #666;
-	padding: 20px;
-	margin: 10px 0px;
+	padding: 1.25em;
+	margin: 0.625em 0px;
 
-	border-left: 5px solid #BBB;
-	box-shadow: inset 0px -2px #CCC;
+	border-left: 0.3125em solid #BBB;
+	box-shadow: inset 0px -0.125em #CCC;
 
-	border-radius: 2px;
+	border-radius: 0.125em;
 	background-color: #DDD;
 	cursor: pointer;
 }
@@ -336,7 +338,7 @@ textarea {
 #stacks li:hover {
 	color: #333;
 	background-color: #CCC;
-	box-shadow: inset 0px -2px #BBB;
+	box-shadow: inset 0px -0.125em #BBB;
 }
 
 #stacks li .fa-arrow-right { float: right; color: #999; }
@@ -348,7 +350,7 @@ textarea {
 #stacks li .count {
 	float: right;
 	font-size: 0.8em;
-	margin-right: 10px;
+	margin-right: 0.625em;
 }
 
 
@@ -360,17 +362,17 @@ textarea {
 	width: 100%;
 	border-spacing: 0px;
 	display: none;
-	border: 5px solid #036;
+	border: 0.3125em solid #036;
 }
 
 #flashcards th {
 	color: #FFF;
 	background-color: #059;
 	text-align: left;
-	padding: 0px 20px;
+	padding: 0px 1.25em;
 
-	box-shadow: inset 0px 2px #09C;
-	border-bottom: 5px solid #CCC;
+	box-shadow: inset 0px 0.125em #09C;
+	border-bottom: 0.3125em solid #036;
 }
 
 #flashcards tr:last-child td {
@@ -390,7 +392,13 @@ textarea {
 #flashcards td {
 	color: #666;
 	background-color: #EEE;
-	padding: 10px 20px;
+	padding: 0.625em 1.25em;
+	cursor: pointer;
+}
+
+#flashcards tr.selected td {
+	color: #FFF !important;
+	background-color: #036 !important;
 }
 
 #flashcards tr:nth-child(odd) td {
@@ -400,20 +408,20 @@ textarea {
 #flashcards label { background: transparent; }
 
 #page-stack .flashcard-actions-container {
-	padding: 0px 50px 50px 50px;
+	padding: 0px 3.125em 3.125em 3.125em;
 }
 
 #page-stack .flashcard-actions {
 	width: 100%;
 	table-layout: fixed;
-	border: 5px solid #036;
+	border: 0.3125em solid #036;
 	background-color: #036;
 	border-top: 0px;
 	border-spacing: 0px;
 	display: none;
 }
 
-#page-stack .flashcard-actions td { padding: 0px 2px; }
+#page-stack .flashcard-actions td { padding: 0px 0.125em; }
 #page-stack .flashcard-actions td:first-child { padding-left: 0px; }
 #page-stack .flashcard-actions td:last-child { padding-right: 0px; }
 
@@ -421,7 +429,7 @@ textarea {
 	color: #FFF;
 	border: 0px;
 
-	border-top: 2px solid #09C;
+	border-top: 0.125em solid #09C;
 
 	background-color: #059;
 	box-shadow: none;
@@ -432,7 +440,7 @@ textarea {
 	border-color: #0CF;
 }
 
-#page-stack .flashcard-actions td .button .fa { margin-right: 5px; }
+#page-stack .flashcard-actions td .button .fa { margin-right: 0.3125em; }
 
 
 /* ======================= */
@@ -440,7 +448,7 @@ textarea {
 /* ======================= */
 
 #flashcard {
-	perspective: 500px;
+	perspective: 31.25em;
 	position: relative;
 	width: 100%;
 }
@@ -452,7 +460,7 @@ textarea {
 	margin-left: 10%;
 	
 	width: 80%;
-	height: 40px;
+	height: 2.5em;
 
 	background-image: url("../img/shadow.png");
 	background-repeat: no-repeat;
@@ -462,39 +470,41 @@ textarea {
 
 #flashcard > div {
 
-	color: #666;
 	font-size: 3em;
-	font-weight: bold;
-	text-align: center;
-
-	text-shadow: -1px  0px 0px #FFF,
-			      1px  0px 0px #FFF,
-			      0px -1px 0px #FFF,
-			      0px  1px 0px #FFF,
-			     -1px -1px 0px #FFF,
-			      1px -1px 0px #FFF,
-			     -1px  1px 0px #FFF,
-			      1px  1px 0px #FFF;
-
-	padding: 10% 10%;
-	width: 80%;
+	width: 100%;
 	
-	border: 1px solid #DDD;
-	border-radius: 1px;
+	border: 0.0625em solid #DDD;
+	border-radius: 0.0625em;
 
 	background-color: #FFF; 
 	background-image: 
-		linear-gradient(90deg, transparent 50px, #abced4 50px, #abced4 60px, transparent 60px),
-		linear-gradient(#F6F6F6 .1em, transparent .1em);
-	background-size: 100% 0.8em;
+	linear-gradient(90deg, transparent 3.125em, #abced4 3.125em, #abced4 3.75em, transparent 3.75em),
+	linear-gradient(#F6F6F6 .1em, transparent .1em);
 
-	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+	background-size: 100% 0.8em;
+	box-shadow: 0px 0.125em 0.3125em rgba(0, 0, 0, 0.1);
 	backface-visibility: hidden;
+
 	display: table;
 	cursor: pointer;
 }
 
 #flashcard span {
+
+	color: #666;
+	padding: 10% 10%;
+	font-weight: bold;
+	text-align: center;
+
+	text-shadow:  -0.0625em 0px 0px #FFF,
+			      0.0625em 0px 0px #FFF,
+			      0px -0.0625em 0px #FFF,
+			      0px 0.0625em 0px #FFF,
+			      -0.0625em -0.0625em 0px #FFF,
+			      0.0625em -0.0625em 0px #FFF,
+			      -0.0625em 0.0625em 0px #FFF,
+			      0.0625em 0.0625em 0px #FFF;
+
 	display: table-cell;
 	vertical-align: middle;
 }
@@ -514,7 +524,7 @@ textarea {
 	height: 4em;
 	font-size: 2em;
 	text-align: center;
-	padding: 40px;
+	padding: 2.5em;
 }
 
 #practice-buttons {
@@ -530,7 +540,7 @@ textarea {
 #practice-buttons .button {
 	font-weight: bold;
 	font-size: 1.5em;
-	padding: 15px 0px;
+	padding: 0.9375em 0px;
 	display: table-cell;
 }
 
@@ -563,16 +573,16 @@ textarea {
 #file-browser li {
 	color: #666;
 	background-color: #DDD;
-	padding: 20px;
+	padding: 1.25em;
 	cursor: pointer;
 
-	border: 2px solid #CCC;
+	border: 0.125em solid #CCC;
 	border-top: 0px;
-	box-shadow: inset 0px 2px #EEE;
+	box-shadow: inset 0px 0.125em #EEE;
 }
 
 #file-browser li:hover { background-color: #CCC; }
-#file-browser li:first-child { margin-top: 0px; border-top: 2px solid #CCC; }
+#file-browser li:first-child { margin-top: 0px; border-top: 0.125em solid #CCC; }
 #file-browser li:last-child { margin-bottom: 0px; }
 
 #page-file-browser .path {
@@ -588,18 +598,18 @@ textarea {
 
 #page-stack-settings table .fa {
 	color: #999;
-	padding-bottom: 15px;
+	padding-bottom: 0.9375em;
 }
 
 #page-stack-settings .languages {
-	padding: 10px;
+	padding: 0.625em;
 	width: 100%;
-	height: 50px;
+	height: 3.125em;
 	font-weight: bold;
 	color: #666;
 	background-color: #FFF;
-	border: 2px solid #E0E0E0;
-	border-radius: 3px;
+	border: 0.125em solid #E0E0E0;
+	border-radius: 0.1875em;
 }
 
 /* ================== */
@@ -613,13 +623,13 @@ textarea {
 	font-style: italic;
 	font-family: "Arial", bold, italic;
 	
-	text-shadow: 0 1px 0 rgba(255,255,255,.5);
+	text-shadow: 0 0.0625em 0 rgba(255,255,255,.5);
 	white-space: nowrap;
 	overflow: hidden;
 	
-	padding: 4px 19px;
-	border-radius: 13px;
-	border: 1px solid #ffa823;
+	padding: 0.25em 1.1875em;
+	border-radius: 0.8125em;
+	border: 0.0625em solid #ffa823;
 	background: #ffa823;
 	cursor: pointer;
 
@@ -634,7 +644,7 @@ textarea {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	border-radius: 11px;
+	border-radius: 0.6875em;
 	top: 0;
 	left: 0;
 	background: #ffa823;
@@ -647,7 +657,7 @@ textarea {
 	position: absolute;
 	width: 98%;
 	height: 60%;
-	border-radius: 40px 40px 38px 38px;
+	border-radius: 2.5em 2.5em 38px 38px;
 	top: 0;
 	left: 0;
 	background-image: linear-gradient(180deg, #fefefe 0%, #fed994 100%);
@@ -662,6 +672,10 @@ textarea {
 
 @media only screen and (orientation : portrait) and (max-width : 600px) {
 
+	html {
+		font-size: 80%;
+	}
+
 	html, body {
 		height: auto;
 		min-height: auto;
@@ -675,7 +689,7 @@ textarea {
 	html[data-page=page-practice] .content { background-color: transparent; }
 	html[data-page=page-stack] hr { display: none; }
 
-	hr { margin: 10px 0px 20px 0px; }
+	hr { margin: 0.625em 0px 1.25em 0px; }
 
 	.menubar .actions { display: none; }
 	.menubar .button-android-menu { display: block; }
@@ -689,7 +703,7 @@ textarea {
 
 		width: 80%;
 		display: block;
-		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+		box-shadow: 0px 0px 0.625em rgba(0, 0, 0, 0.1);
 	}
 
 	.menubar .actions.android-menu .action {
@@ -704,31 +718,31 @@ textarea {
 		height: auto;
 
 		float: none;
-		padding: 15px 20px;
+		padding: 0.9375em 1.25em;
 		margin: 0px;
 		border-radius: 0px;
 		background-color: #F9F9F9;
-		border-top: 1px solid #FFF;
-		border-bottom: 1px solid #EEE;
+		border-top: 0.0625em solid #FFF;
+		border-bottom: 0.0625em solid #EEE;
 		
 		box-sizing: border-box;
 	}
 
 	.menubar .actions.android-menu .action:hover { background-color: #FFF; }
-	.menubar .actions.android-menu .action:first-child { border-radius: 2px 2px 0px 0px; }
+	.menubar .actions.android-menu .action:first-child { border-radius: 0.125em 0.125em 0px 0px; }
 	.menubar .actions.android-menu .action .fa {
 		font-size: inherit;
 		margin-right: 0.5em;
 	}
 
-	.button.big { padding: 15px 10px; }
+	.button.big { padding: 0.9375em 0.625em; }
 
 	.tabs .fa { font-size: 1.4em; }
 	.tab-name { display: none; }
 
 	.content  {
 		font-size: 0.9em;
-		padding: 30px;
+		padding: 1.875em;
 	}
 
 	.stack-name {
@@ -737,7 +751,7 @@ textarea {
 
 		margin: 0.5em 0px 1em 0px;
 		padding-bottom: 0.8em;
-		border-bottom: 2px solid #DDD;
+		border-bottom: 0.125em solid #DDD;
 	}
 
 	.button-practice,
@@ -745,7 +759,7 @@ textarea {
 	.flashcard-add {
 		float: none;
 		width: 100%;
-		margin-bottom: 20px;
+		margin-bottom: 1.25em;
 	}
 
 	#flashcards {
@@ -767,7 +781,7 @@ textarea {
 	#page-stack .flashcard-actions td {
 		float: left;
 		width: 100%;
-		padding: 2.5px 0px;
+		padding: 0.15625em 0px;
 	}
 
 	#page-stack .flashcard-actions td:first-child { padding-top: 0px; }

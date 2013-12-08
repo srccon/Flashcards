@@ -21,6 +21,36 @@ define(["transit"], function() {
 		"click #flashcards input[name=select_all]": function(e) {
 			var checked = $(e.currentTarget).is(":checked");
 			$("#flashcards input[type=checkbox]").prop("checked", checked);
+			$("#flashcards tr").toggleClass("selected", checked);
+		},
+
+		// Select single
+		"click #flashcards td": function(e) {
+			var $checkbox = $(e.currentTarget).parent().find("input");
+			var checked = $checkbox.is(":checked");
+
+			$checkbox.prop("checked", !checked);
+			$(e.currentTarget).parent().toggleClass("selected", !checked);
+		},
+
+		"change #flashcards td input": function(e) {
+			var checked = $(e.currentTarget).is(":checked");
+			$(e.currentTarget).parents("tr").toggleClass("selected", !checked);
+		},
+
+		// Markdown info
+		"click .button-markdown-info": function(e) {
+
+			var text = "Supported markdown:\n\n";
+
+			text += [
+				"Italic: *word*",
+				"Bold: **word**",
+				"Bold and italic: ***word***",
+				"Furigana: 明日{あした}"
+			].join("\n");
+
+			alert(text);
 		},
 
 		// New flashcard(s)
@@ -37,6 +67,9 @@ define(["transit"], function() {
 				front: App.Utils.escapeHTML($("#page-flashcard-new textarea[name=front]").val()),
 				back: App.Utils.escapeHTML($("#page-flashcard-new textarea[name=back]").val())
 			};
+
+			if (!data.front.trim() || !data.back.trim())
+			{ return alert("Your flashcard is not entirely filled out!"); }
 
 			Flashcards.add(data);
 		},
@@ -151,8 +184,16 @@ define(["transit"], function() {
 	/* ====== GET ALL ====== */
 	/* ===================== */
 
-	Flashcards.getAll = function(stackID, callback) {
+	Flashcards.getAll = function(stackID, callback, applyMarkdown) {
 		App.DB.getData("App", "Flashcards", ["stackID", stackID], function(data) {
+
+			if (applyMarkdown) {
+				data.forEach(function(v) {
+					v.value.front = App.Utils.markdown(v.value.front);
+					v.value.back = App.Utils.markdown(v.value.back);
+				});
+			}
+
 			callback(data, stackID);
 		});
 	};
@@ -161,8 +202,16 @@ define(["transit"], function() {
 	/* ====== GET ====== */
 	/* ================= */
 
-	Flashcards.get = function(key, callback) {
-		App.DB.getData("App", "Flashcards", key, callback);
+	Flashcards.get = function(key, callback, applyMarkdown) {
+		App.DB.getData("App", "Flashcards", key, function(data) {
+
+			if (applyMarkdown) {
+				data.front = App.Utils.markdown(data.front);
+				data.back = App.Utils.markdown(data.back);
+			}
+
+			callback(data);
+		});
 	};
 
 	/* ================= */
