@@ -48,25 +48,55 @@ define(function() {
 
 		// Create stack
 		"click .button-new-stack": function(e) {
-			var name = window.prompt("Stack name:", "Vocabulary 1");
-			if (name) { Stacks.create(name); }
+			App.Utils.dialog("Enter stack name", {
+
+				input: {
+					name: "stack-name",
+					value: "Vocabluary 1",
+					focus: true
+				},
+
+				buttons: {
+					ok: Stacks.create,
+					cancel: true
+				}
+			});
 		},
 
 		// Remove stack
 		"click .button-remove-stack": function(e) {
-			var stack = App.$("#page-stack h1").text();
+			var stack = App.$("#page-stack-settings .stack-name").text();
 			var stackID = +window.location.hash.split(":")[1];
 
-			if (confirm("Remove \"" + stack + "\" and all of its flashcards?"))
-			{ Stacks.remove(stackID); }
+			App.Utils.dialog("Confirm", {
+
+				text: "Remove \"" + stack + "\" and all of its flashcards?",
+
+				buttons: {
+					ok: function() { Stacks.remove(stackID); },
+					cancel: true
+				}
+			});
 		},
 
 		// Rename stack
 		"click .button-rename-stack": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
 			var stack = App.$("#page-stack-settings .stack-name").text();
-			var name = window.prompt("Stack name:", stack);
-			if (name) { Stacks.rename(stackID, name); }
+			
+			App.Utils.dialog("Enter stack name", {
+
+				input: {
+					name: "stack-name",
+					value: stack,
+					focus: true
+				},
+
+				buttons: {
+					ok: function() { Stacks.rename(stackID); },
+					cancel: true
+				}
+			});
 		},
 
 		// Practice stack
@@ -183,6 +213,7 @@ define(function() {
 
 	Stacks.create = function(name, callback) {
 
+		if (typeof name != "string") { name = $("#dialog input[name='stack-name']").val().trim(); }
 		name = App.Utils.escapeHTML(name);
 
 		App.DB.addData("App", "Stacks", { name: name }, function(e) {
@@ -224,7 +255,10 @@ define(function() {
 	/* ====== RENAME ====== */
 	/* ==================== */
 
-	Stacks.rename = function(id, name) {
+	Stacks.rename = function(id) {
+
+		var name = $("#dialog input[name='stack-name']").val().trim();
+
 		App.DB.updateData("App", "Stacks", id, { name: name }, function(e) {
 			App.$(".stack[data-key=" + id + "] b").html(name);
 			App.$("#page-stack-settings .stack-name").html(name);
@@ -241,6 +275,16 @@ define(function() {
 		if (id !== undefined) {
 
 			App.Flashcards.getAll(id, function(data) {
+
+				if (!data.length) {
+
+					App.$("#flashcard .front span").html("┗(･ω･;)┛");
+					App.Utils.dialog("No flashcards available!", "Create at least one flashcard to start practicing", function() {
+						window.location.hash = "page-stack:" + id;
+					});
+
+					return;
+				}
 
 				Stacks.practice.id = id;
 				Stacks.practice.total = data.length;
@@ -296,9 +340,11 @@ define(function() {
 				Stacks.practice.total
 			);
 
-			alert("Practice session complete!\nScore: " + Stacks.practice.score + " out of " + Stacks.practice.total);
+			App.Utils.dialog("Session complete!", "<b>Score:</b> " + Stacks.practice.score + " out of " + Stacks.practice.total + "<br><br>(*＾▽＾)／", function() {
 
-			window.location.hash = "page-stack:" + Stacks.practice.id;
+				window.location.hash = "page-stack:" + Stacks.practice.id;
+			});
+
 			return;
 		}
 

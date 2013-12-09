@@ -62,7 +62,7 @@ define(["chart"], function(Chart) {
 
 					// Create canvas
 					var ctx = document.createElement("canvas").getContext("2d");
-					ctx.canvas.width = $("body").width() - 100;
+					ctx.canvas.width = $("body").width() / 100 * 80;
 					ctx.canvas.height = Math.round(ctx.canvas.width / 1.618);
 
 					// Insert heading and canvas

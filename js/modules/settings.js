@@ -41,7 +41,7 @@ define(function() {
 			var extension = fileName.substr(fileName.lastIndexOf('.') + 1);
 			var $target = $(e.currentTarget);
 
-			if (extension != "json") { return alert("Only json files supported!"); }
+			if (extension != "json") { return App.Utils.notification("Only json files supported!"); }
 
 			reader.readAsText(e.target.files[0]);
 			reader.onload = function(e) {
@@ -51,15 +51,28 @@ define(function() {
 		},
 
 		"click .button-reset-all": function(e) {
-			if (confirm("Do you really wish to delete your entire stacks, flashcards and statistics?")) {
-				Settings.reset();
-			}
+
+			App.Utils.dialog("Confirm", {
+
+				text: "Do you really wish to delete your entire stacks, flashcards and statistics?",
+
+				buttons: {
+					ok: function() { Settings.reset(); },
+					cancel: true
+				}
+			});
 		},
 
 		"click .button-reset-statistics": function(e) {
-			if (confirm("Do you really wish to delete your statistics?")) {
-				Settings.reset_statistics();
-			}
+			App.Utils.dialog("Confirm", {
+
+				text: "Do you really wish to delete your statistics?",
+
+				buttons: {
+					ok: function() { Settings.reset_statistics(); },
+					cancel: true
+				}
+			});
 		},
 
 		"change input[type=checkbox]": function(e) {
@@ -116,7 +129,7 @@ define(function() {
 				    path = "flashcards/flashcards_" + dateString + ".json";
 
 				App.Utils.PhoneGap.writeFile(path, out, function() {
-					alert("Created file in: /sdcard/" + path);
+					App.Utils.notification("Created file in: /sdcard/" + path);
 				});
 
 			} else {
@@ -169,7 +182,7 @@ define(function() {
 			try {
 				json_data = JSON.parse(json_data);
 			} catch (err) {
-				alert("Not a valid import file");
+				App.Utils.notification("Not a valid import file");
 				error = true;
 			}
 
@@ -193,15 +206,15 @@ define(function() {
 			var out = [];
 
 			if (imported.length)
-			{ out.push("== Imported ==\n\n" + imported.join("\n")); }
+			{ out.push("<b>Imported</b>:<br><br><ul>" + imported.join("") + "</ul>"); }
 
 			if (merged.length)
-			{ out.push("== Merged ==\n\n" + merged.join("\n")); }
+			{ out.push("<b>Merged</b>:<br><br><ul>" + merged.join("") + "</ul>"); }
 
 			if (!imported.length && !merged.length)
-			{ return alert("Everything up to date!"); }
+			{ return App.Utils.notification("Everything up to date!"); }
 	
-			alert(out.join("\n\n"));
+			App.Utils.dialog("Import", out.join("<br><br>"));
 			window.location.hash = "page-settings";
 		};
 
@@ -216,12 +229,12 @@ define(function() {
 
 				if (stack_names.indexOf(stack) == -1) {
 
-					App.Stacks.create(stack, function(key, stack) {
+					App.Stacks.create(stack, function(key, stackname) {
 
-						var flashcards = json_data[stack];
+						var flashcards = json_data[stackname];
 						flashcards.forEach(function(v) { v.stackID = key; });
 						App.Flashcards.add(flashcards, function() {
-							imported.push(stack);
+							imported.push("<li>" + stackname + "</li>");
 							count++;
 						});
 					});
@@ -251,7 +264,7 @@ define(function() {
 							flashcards.forEach(function(v) { v.stackID = stackID; });
 
 							App.Flashcards.add(flashcards, function() {
-								merged.push(stackname);
+								merged.push("<li>" + stackname + "</li>");
 								count++;
 							});
 						});

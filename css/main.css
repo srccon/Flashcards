@@ -25,6 +25,7 @@ body {
 	max-width: 800px;
 
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	position: relative;
 }
 
 
@@ -53,6 +54,14 @@ html[data-page=page-stack] .page > .content {
 
 html[data-page=page-practice] .page > .content {
 	background: transparent;
+}
+
+html[data-page=page-statistics] h1 {
+	text-align: left;
+}
+
+html[data-page=page-statistics] .content {
+	text-align: center;
 }
 
 
@@ -297,11 +306,10 @@ textarea {
 	position: fixed;
 	top: 0px; left: 0px;
 
-	width: 50%;
+	width: 70%;
 
 	color: #333;
 	font-size: 1em;
-	padding: 1em;
 
 	border-radius: 0.2em;
 	background-color: #FFF;
@@ -309,18 +317,74 @@ textarea {
 
 	z-index: 99;
 	display: none;
+
+	border: 0.3125em solid #036;
+	border-radius: 0.525em;
 }
 
-#dialog .title {
+#dialog .close {
+	position: absolute;
+	right: 1em;
+	top: 1em;
 	font-size: 1.5em;
-	padding-bottom: 0.125em;
-	margin-bottom: 0.5em;
+	color: #FFF;
+	display: inline-block;
+	cursor: pointer;
+}
+
+
+#dialog .title {
+	color: #FFF;
+	font-size: 1.5em;
+
+	padding: 1em;
 	border-bottom: 0.125em solid #EEE;
+
+	background-color: #059;
+	box-shadow: inset 0px 0.125em #09C;
+	border-radius: 0.125em 0.125em 0px 0px;
 }
 
 #dialog .content {
-
+	color: #666;
+	padding: 1em;
+	overflow-y: auto;
+	max-height: 20em;
+	border-radius: 0px 0px 0.125em 0.125em;
 }
+
+#dialog input[type=text] {
+	color: #666;
+	font-size: inherit;
+	width: 100%;
+	padding: 1em;
+	border: 0px;
+	background-color: #F6F6F6;
+	box-sizing: border-box;
+}
+
+#dialog .buttons {
+	border-top: 0.3125em solid #036;
+	background-color: #036;
+	overflow: hidden;
+	display: none;
+}
+
+#dialog .buttons input {
+	color: #FFF;
+	width: 49.5%;
+	padding: 1em;
+	font-size: inherit;
+
+	border: 0px;
+	border-top: 0.125em solid #09C;
+
+	background-color: #059;
+	box-shadow: none;
+	box-sizing: border-box;
+}
+
+#dialog .buttons input:last-child { float: right; }
 
 #dialog-modal {
 	position: fixed;
@@ -350,6 +414,7 @@ textarea {
 
 	background-color: rgba(127, 127, 127, 0.8);
 	display: none;
+	pointer-events: none;
 }
 
 
@@ -596,10 +661,11 @@ textarea {
 
 #page-flashcard-new textarea,
 #page-flashcard-edit textarea {
-	height: 4em;
 	font-size: 2em;
 	text-align: center;
-	padding: 2.5em;
+	padding: 1.5em 1em 0em 1em;
+	height: auto;
+	height: 4em;
 }
 
 #practice-buttons {

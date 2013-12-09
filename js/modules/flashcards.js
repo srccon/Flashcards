@@ -61,16 +61,16 @@ define(["transit"], function() {
 		// Markdown info
 		"click .button-markdown-info": function(e) {
 
-			var text = "Supported markdown:\n\n";
+			var text = "";
 
 			text += [
-				"Italic: *word*",
-				"Bold: **word**",
-				"Bold and italic: ***word***",
-				"Furigana: 明日{あした}"
-			].join("\n");
+				"<li>Italic: *word*</li>",
+				"<li>Bold: **word**</li>",
+				"<li>Bold and italic: ***word***</li>",
+				"<li>Furigana: [明日]{あした}</li>"
+			].join("");
 
-			alert(text);
+			App.Utils.dialog("Markdown", "<ul>" + text + "</ul>");
 		},
 
 		// New flashcard(s)
@@ -89,7 +89,7 @@ define(["transit"], function() {
 			};
 
 			if (!data.front.trim() || !data.back.trim())
-			{ return alert("Your flashcard is not entirely filled out!"); }
+			{ return App.Utils.notification("Your flashcard is not entirely filled out!"); }
 
 			Flashcards.add(data);
 		},
@@ -107,7 +107,7 @@ define(["transit"], function() {
 
 			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
 
-			alert("Not available yet!");
+			App.Utils.notification("Not available yet!");
 		},
 		// Remove flashcard(s)
 		"click .flashcard-remove": function(e) {
@@ -122,8 +122,15 @@ define(["transit"], function() {
 
 			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
 
-			if (confirm("Remove selection?"))
-			{ Flashcards.remove(keys); }
+			App.Utils.dialog("Confirm", {
+
+				text: "Remove selection?",
+
+				buttons: {
+					ok: function() { Flashcards.remove(keys); },
+					cancel: true
+				}
+			});
 		},
 
 		// Edit flashcard(s)
@@ -276,7 +283,7 @@ define(["transit"], function() {
 	Flashcards.translate = function(stackID, text, isFront) {
 
 		var prefs = App._settings.translation_preferences && App._settings.translation_preferences[stackID], from, to, url, $target;
-		if (!prefs) { return alert("Please set your translation preferences in your stack settings first."); }
+		if (!prefs) { return App.Utils.notification("Please set your translation preferences in your stack settings first."); }
 
 		$target = App.Router.$page.find("textarea[name=" + (isFront ? "back" : "front") + "]");
 		$target.val("translating ...");

@@ -13,16 +13,32 @@ define(function() {
 		$(window).on("resize", function(e) {
 
 			var $notification = $("#notification");
-			if (!$notification.length) { return; }
 
-			$notification.css({
-				top: $(window).height() - $notification[0].offsetHeight*2,
-				left: $(window).width()/2 - $notification[0].offsetWidth/2
-			});
+			if ($notification.length) {
+				$notification.css({
+					top: $(window).height() - $notification[0].offsetHeight*2,
+					left: $(window).width()/2 - $notification[0].offsetWidth/2
+				});
+			}
+
+			var $dialog = $("#dialog");
+
+			if ($dialog.length) {
+				$dialog.css({
+					top: $(window).height()/2 - $dialog.height()/2,
+					left: $(window).width()/2 - $dialog.width()/2,
+					width: $("body").width() / 100 * 70
+				});
+			}
 		});
-
-		// Utils.dialog("Hallo Welt", "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
 	};
+
+	Utils.events = {
+		"click #dialog .close, #dialog-modal, #dialog input[type=button]": function() {
+			$("#dialog, #dialog-modal").hide();
+			Utils.dialog.onclose && Utils.dialog.onclose();
+		}
+	}
 
 	/* ========================== */
 	/* ====== LOCALSTORAGE ====== */
@@ -55,25 +71,78 @@ define(function() {
 	/* ====== DIALOG ====== */
 	/* ==================== */
 
-	Utils.dialog = function(title, content) {
+	Utils.dialog = function(title, content, onclose) {
 
-		var $dialog = App.$("#dialog");
+		var $dialog = App.$("#dialog"), $input, $btn_ok;
 
 		if (!$dialog.length) {
-			$("body").append("<div id='dialog'><div class='title'></div><div class='content'></div></div>");
+
+			$("body").append(
+				"<div id='dialog'>" +
+					"<span class='close fa fa-times'></span>" +
+					"<div class='title'></div>" +
+					"<div class='content'></div>" +
+					"<div class='buttons'>" +
+						"<input type='button' class='button' name='dialog-ok' value='ok'>" +
+						"<input type='button' class='button' name='dialog-cancel' value='cancel'>" +
+					"</div>" +
+				"</div>"
+			);
+
 			$("body").append("<div id='dialog-modal'>");
 			$dialog = App.$("#dialog");
 		}
 
 		$dialog.find(".title").html(title);
-		$dialog.find(".content").html(content);
+		$dialog.find(".content").html("");
+		$dialog.find(".buttons").toggle(!!content.buttons);
+
+		if (typeof content == "string") {
+
+			$dialog.find(".content").html(content);
+
+		} else {
+
+			if (content.text) { $dialog.find(".content").html(content.text); }
+
+			if (content.buttons) {
+
+				$btn_ok = $dialog.find(".buttons input[name='dialog-ok']");
+				$btn_ok.off("click").on("click", content.buttons.ok);
+				$btn_ok.toggle(!!content.buttons.ok);
+
+				$dialog.find(".buttons input[name='dialog-cancel']").toggle(!!content.buttons.cancel);
+				$dialog.find(".buttons").show();
+			}
+
+			if (content.input) {
+
+				$input = $("<input type='text'>");
+
+				$input.attr({
+					name: content.input.name,
+					value: content.input.value || ""
+				});
+
+				if (content.input.placeholder)
+				{ $input.attr("placeholder", content.input.placeholder); }
+
+				$dialog.find(".content").append($input);
+			}
+		}
+
+		var width = $("body").width() / 100 * 70;
 
 		$dialog.css({
 			top: $(window).height()/2 - $dialog.height()/2,
-			left: $(window).width()/2 - $dialog.width()/2
+			left: $(window).width()/2 - width/2,
+			width: width
 		}).show();
 
+		Utils.dialog.onclose = onclose;
+
 		$("#dialog-modal").show();
+		if ($input && content.input && content.input.focus) { $input.focus(); }
 	};
 
 	/* ========================== */
