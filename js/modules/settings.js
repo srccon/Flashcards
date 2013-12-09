@@ -176,7 +176,6 @@ define(function() {
 			if (error) { return; }
 		}
 
-		var $stacks = $("#page-stacks li");
 		var stack_names = [];
 		var stack_keys = [];
 		var count = 0;
@@ -206,59 +205,62 @@ define(function() {
 			window.location.hash = "page-settings";
 		};
 
-		$stacks.each(function() {
-			stack_names.push($(this).text().trim());
-			stack_keys.push(+$(this).attr("data-key"));
-		});
+		App.Stacks.get(function(data) {
+			
+			data.forEach(function(v) {
+				stack_names.push(v.value.name);
+				stack_keys.push(v.key);
+			});
 
-		for (var stack in json_data) {
+			for (var stack in json_data) {
 
-			if (stack_names.indexOf(stack) == -1) {
+				if (stack_names.indexOf(stack) == -1) {
 
-				App.Stacks.create(stack, function(key, stack) {
+					App.Stacks.create(stack, function(key, stack) {
 
-					var flashcards = json_data[stack];
-					flashcards.forEach(function(v) { v.stackID = key; });
-					App.Flashcards.add(flashcards, function() {
-						imported.push(stack);
-						count++;
-					});
-				});
-
-			} else {
-
-				var stackID = stack_keys[stack_names.indexOf(stack)];
-
-				App.Flashcards.getAll(stackID, function(data, stackID) {
-					App.Stacks.getName(stackID, function(stackname) {
-
-						var flashcards = json_data[stackname].filter(function(v, i) {
-							
-							var front_same, back_same;
-							var unique = [].every.call(data, function(vv) {
-
-								front_same = v.front == vv.value.front;
-								back_same = v.back == vv.value.back;
-
-								return !(front_same && back_same);
-							});
-
-							return unique;
-						});
-
-						if (!flashcards.length) { count++; return; }
-						flashcards.forEach(function(v) { v.stackID = stackID; });
-
+						var flashcards = json_data[stack];
+						flashcards.forEach(function(v) { v.stackID = key; });
 						App.Flashcards.add(flashcards, function() {
-							merged.push(stackname);
+							imported.push(stack);
 							count++;
 						});
 					});
-				});
-			}
-		}
 
-		interval = window.setInterval(check_fn, 100);
+				} else {
+
+					var stackID = stack_keys[stack_names.indexOf(stack)];
+
+					App.Flashcards.getAll(stackID, function(data, stackID) {
+						App.Stacks.getName(stackID, function(stackname) {
+
+							var flashcards = json_data[stackname].filter(function(v, i) {
+								
+								var front_same, back_same;
+								var unique = [].every.call(data, function(vv) {
+
+									front_same = v.front == vv.value.front;
+									back_same = v.back == vv.value.back;
+
+									return !(front_same && back_same);
+								});
+
+								return unique;
+							});
+
+							if (!flashcards.length) { count++; return; }
+							flashcards.forEach(function(v) { v.stackID = stackID; });
+
+							App.Flashcards.add(flashcards, function() {
+								merged.push(stackname);
+								count++;
+							});
+						});
+					});
+				}
+			}
+
+			interval = window.setInterval(check_fn, 100);
+		});
 	};
 
 	/* =================== */
