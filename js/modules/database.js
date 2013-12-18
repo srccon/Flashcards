@@ -24,10 +24,10 @@ define(function() {
 			// Store database object
 			Database.App = request.result;
 
-			// Create necessary objectsores
-			Database.createObjectStore("App", "Stacks");
-			Database.createObjectStore("App", "Flashcards", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); });
-			Database.createObjectStore("App", "Statistics", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); }, callback, callback);
+			// Create necessary object stores
+			Database.createObjectStore("App", "Stacks",     function(objectStore) { objectStore.createIndex("categoryID", "categoryID", { unique: false }); });
+			Database.createObjectStore("App", "Flashcards", function(objectStore) { objectStore.createIndex("stackID",    "stackID",    { unique: false }); });
+			Database.createObjectStore("App", "Statistics", function(objectStore) { objectStore.createIndex("stackID",    "stackID",    { unique: false }); }, callback, callback);
 		};
 	};
 
@@ -251,22 +251,22 @@ define(function() {
 
 	Database.createTestData = function() {
 
-		App.Stacks.create("Japanese - Greetings", function(id) {
+		App.Stacks.create("Japanese", "Greetings", function(stackID) {
 			App.Flashcards.add([
 				{
-					stackID: id,
+					stackID: stackID,
 					front: "Nice to meet you!",
 					back: "はじめまして！"
 				}, {
-					stackID: id,
+					stackID: stackID,
 					front: "Good morning!",
 					back: "おはよう！"
 				}, {
-					stackID: id,
+					stackID: stackID,
 					front: "Good evening!",
 					back: "こんにちは！"
 				}, {
-					stackID: id,
+					stackID: stackID,
 					front: "Good night.",
 					back: "こんばんは。"
 				}

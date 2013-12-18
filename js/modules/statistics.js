@@ -47,9 +47,9 @@ define(["chart"], function(Chart) {
 
 			// Now fetch the stack name and process the data
 			for (stackID in stackdata) {
-				App.Stacks.getName(+stackID, function(stackname, id) {
+				App.Stacks.get(+stackID, function(stack) {
 
-					var data = stackdata[id];
+					var data = stackdata[stack.id];
 
 					// Not enough data to generate proper statistics
 					if (data.length < 2) { return; }
@@ -66,7 +66,7 @@ define(["chart"], function(Chart) {
 					ctx.canvas.height = Math.round(ctx.canvas.width / 1.618);
 
 					// Insert heading and canvas
-					App.$("#page-statistics").find(".content").append("<h1>" + stackname + "</h1><hr>");
+					App.$("#page-statistics").find(".content").append("<h1>" + stack.name + "</h1><hr>");
 					App.$("#page-statistics").find(".content").append(ctx.canvas);
 					App.$("#page-statistics").find(".content").append("<hr class='transparent'>");
 

@@ -21,7 +21,7 @@ define(["transit"], function() {
 		"click #flashcards input[name=select_all]": function(e) {
 			var checked = $(e.currentTarget).is(":checked");
 			$("#flashcards input[type=checkbox]").prop("checked", checked);
-			$("#flashcards tr:not(.searchbar)").toggleClass("selected", checked);
+			$("#flashcards tr:not(.searchbar):visible").toggleClass("selected", checked);
 		},
 
 		// Select single
@@ -124,7 +124,7 @@ define(["transit"], function() {
 
 			App.Utils.dialog("Confirm", {
 
-				text: "Remove selection?",
+				content: "Remove selection?",
 
 				buttons: {
 					ok: function() { Flashcards.remove(keys); },

@@ -40,8 +40,8 @@ define(function() {
 		},
 
 		"page-flashcard-new": function(stackID) {
-			App.Stacks.getName(+stackID, function(stackname) {
-				Router.$page.find(".stack-name").html(stackname);
+			App.Stacks.get(+stackID, function(stack) {
+				Router.$page.find(".stack-name").html(stack.category + ": " + stack.name);
 			});
 		},
 		
@@ -54,12 +54,12 @@ define(function() {
 		"page-flashcard-edit": function(stackID, key) {
 
 			// Get stack name
-			App.Stacks.getName(+stackID, function(stackname) {
+			App.Stacks.get(+stackID, function(stack) {
 
 				// Get all flashcards for that stack
 				App.Flashcards.get(+key, function(data) {
 
-					Router.$page.find(".stack-name").html(stackname);
+					Router.$page.find(".stack-name").html(stack.category + ": " + stack.name);
 					Router.$page.find("textarea[name=front]").val(data.front);
 					Router.$page.find("textarea[name=back]").val(data.back);
 				});
@@ -69,8 +69,8 @@ define(function() {
 		"page-stack-settings": function(stackID) {
 
 			// Get stack name
-			App.Stacks.getName(+stackID, function(stackname) {
-				Router.$page.find(".stack-name").html(stackname);
+			App.Stacks.get(+stackID, function(stack) {
+				Router.$page.find(".stack-name").html(stack.category + ": " + stack.name);
 
 				var prefs = App._settings.translation_preferences && App._settings.translation_preferences[stackID];
 				var $select = App.$("select.languages");
@@ -90,12 +90,12 @@ define(function() {
 		"page-stack": function(stackID) {
 
 			// Get stack name
-			App.Stacks.getName(+stackID, function(stackname) {
+			App.Stacks.get(+stackID, function(stack) {
 
 				// Get all flashcards for that stack
 				App.Flashcards.getAll(+stackID, function(data) {
 
-					Router.$page.find(".stack-name").html(stackname);
+					Router.$page.find(".stack-name").html(stack.category + ": " + stack.name);
 					var $flashcards = $("#flashcards");
 
 					if (data.length) {

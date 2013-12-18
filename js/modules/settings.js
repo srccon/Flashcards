@@ -41,7 +41,7 @@ define(function() {
 			var extension = fileName.substr(fileName.lastIndexOf('.') + 1);
 			var $target = $(e.currentTarget);
 
-			if (extension != "json") { return App.Utils.notification("Only json files supported!"); }
+			if (extension != "json") { return App.Utils.notification("Only json files supported"); }
 
 			reader.readAsText(e.target.files[0]);
 			reader.onload = function(e) {
@@ -54,7 +54,7 @@ define(function() {
 
 			App.Utils.dialog("Confirm", {
 
-				text: "Do you really wish to delete your entire stacks, flashcards and statistics?",
+				content: "Do you really wish to delete your entire stacks, flashcards and statistics?",
 
 				buttons: {
 					ok: function() { Settings.reset(); },
@@ -66,7 +66,7 @@ define(function() {
 		"click .button-reset-statistics": function(e) {
 			App.Utils.dialog("Confirm", {
 
-				text: "Do you really wish to delete your statistics?",
+				content: "Do you really wish to delete your statistics?",
 
 				buttons: {
 					ok: function() { Settings.reset_statistics(); },
@@ -79,7 +79,12 @@ define(function() {
 			var what = App.$(e.currentTarget).attr("name");
 			var status = App.$(e.currentTarget).is(":checked");
 			Settings.set(what, status);
-		}
+		},
+
+		// Return to settings
+		"click .button-return-settings": function(e) {
+			window.location.hash = "#page-settings";
+		},
 	};
 
 	/* ================= */
@@ -152,9 +157,9 @@ define(function() {
 			interval = window.setInterval(check_fn, 100);
 
 			for (stackID in stackdata) {
-				App.Stacks.getName(+stackID, function(stackname, id) {
+				App.Stacks.get(+stackID, function(stack) {
 
-					var data = stackdata[id];
+					var data = stackdata[stack.id];
 					data = data.map(function(v) {
 						return {
 							front: v.value.front,
@@ -162,7 +167,7 @@ define(function() {
 						};
 					});
 
-					json_data[stackname] = data;
+					json_data[stack.name] = data;
 
 					count++;
 				});
@@ -176,31 +181,35 @@ define(function() {
 
 	Settings.import_json = function(json_data) {
 
-		var error = false;
-
+		// Parse json data
 		if (typeof json_data != "object") {
 			try {
 				json_data = JSON.parse(json_data);
 			} catch (err) {
-				App.Utils.notification("Not a valid import file");
-				error = true;
+				App.Utils.notification("An error occured while parsing the json file");
+				return;
 			}
-
-			if (error) { return; }
 		}
 
+		// Existing stack data holders 
 		var stack_names = [];
 		var stack_keys = [];
+
+		// Counter for async transactions
 		var count = 0;
-		var length = Object.keys(json_data).length;
+		var stack_length = 0;
+
+		Object.keys(json_data).forEach(function(v) {
+			stack_length += Object.keys(json_data[v]).length;
+		});
 
 		var imported = [];
 		var merged = [];
 		var interval;
 
 		var check_fn = function() {
-			
-			if (count < length) { return; }
+
+			if (count < stack_length) { return; }
 			window.clearInterval(interval);
 
 			var out = [];
@@ -218,57 +227,66 @@ define(function() {
 			window.location.hash = "page-settings";
 		};
 
-		App.Stacks.get(function(data) {
+		App.Stacks.getAll(function(data) {
+
+			var category, stack;
 			
 			data.forEach(function(v) {
 				stack_names.push(v.value.name);
 				stack_keys.push(v.key);
 			});
 
-			for (var stack in json_data) {
+			for (category in json_data) {
+				for (stack in json_data[category]) {
 
-				if (stack_names.indexOf(stack) == -1) {
+					// Stack doesn't exist, create it
+					if (stack_names.indexOf(stack) == -1) {
+						App.Stacks.create(category, stack, function(key, category, stackname) {
 
-					App.Stacks.create(stack, function(key, stackname) {
-
-						var flashcards = json_data[stackname];
-						flashcards.forEach(function(v) { v.stackID = key; });
-						App.Flashcards.add(flashcards, function() {
-							imported.push("<li>" + stackname + "</li>");
-							count++;
-						});
-					});
-
-				} else {
-
-					var stackID = stack_keys[stack_names.indexOf(stack)];
-
-					App.Flashcards.getAll(stackID, function(data, stackID) {
-						App.Stacks.getName(stackID, function(stackname) {
-
-							var flashcards = json_data[stackname].filter(function(v, i) {
-								
-								var front_same, back_same;
-								var unique = [].every.call(data, function(vv) {
-
-									front_same = v.front == vv.value.front;
-									back_same = v.back == vv.value.back;
-
-									return !(front_same && back_same);
-								});
-
-								return unique;
-							});
-
-							if (!flashcards.length) { count++; return; }
-							flashcards.forEach(function(v) { v.stackID = stackID; });
+							var flashcards = json_data[category][stackname];
+							flashcards.forEach(function(v) { v.stackID = key; });
 
 							App.Flashcards.add(flashcards, function() {
-								merged.push("<li>" + stackname + "</li>");
+								imported.push("<li>" + stackname + "</li>");
 								count++;
 							});
 						});
-					});
+
+					// Stack exists, merge them
+					} else {
+
+						var stackID = stack_keys[stack_names.indexOf(stack)];
+
+						// Compare flashcards
+						App.Flashcards.getAll(stackID, function(data, stackID) {
+							App.Stacks.get(stackID, function(stack) {
+
+								// Sort out equal flashcards
+								var flashcards = json_data[stack.category][stack.name].filter(function(v, i) {
+									
+									var front_same, back_same;
+									var unique = [].every.call(data, function(vv) {
+
+										front_same = v.front == vv.value.front;
+										back_same = v.back == vv.value.back;
+
+										return !(front_same && back_same);
+									});
+
+									return unique;
+								});
+
+								if (!flashcards.length) { return count++; }
+								flashcards.forEach(function(v) { v.stackID = stackID; });
+
+								// Add new flashcards
+								App.Flashcards.add(flashcards, function() {
+									merged.push("<li>" + stack.name + "</li>");
+									count++;
+								});
+							});
+						});
+					}
 				}
 			}
 

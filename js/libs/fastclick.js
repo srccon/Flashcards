@@ -4,7 +4,7 @@
  * @version 0.6.11
  * @codingstandard ftlabs-jsv2
  * @copyright The Financial Times Limited [All Rights Reserved]
- * @license MIT License (see LICENSE.txt)
+ * @license MIT License (see https://github.com/ftlabs/fastclick/blob/master/LICENSE.txt)
  */
 
 /*jslint browser:true, node:true*/

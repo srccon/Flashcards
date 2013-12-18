@@ -9,14 +9,6 @@ define(function() {
 	Stacks.initialize = function() {
 
 		App = require("app");
-
-		document.addEventListener("menubutton", function(e) {
-
-			var $actions = App.Router.$page.find(".actions");
-			$actions.toggleClass("android-menu");
-			App.Utils.forceRender($("body"));
-
-		}, false);
 	};
 
 	/* ==================== */
@@ -41,8 +33,13 @@ define(function() {
 			App.Utils.forceRender($("body"));
 		},
 
+		// Expand category
+		"click #stacks > li ": function(e) {
+			$(e.currentTarget).toggleClass("expand");
+		},
+
 		// Stack link
-		"click #stacks li": function(e) {
+		"click #stacks > li > ul > li": function(e) {
 			location.hash = "page-stack:" + App.$(e.currentTarget).attr("data-key");
 		},
 
@@ -50,11 +47,8 @@ define(function() {
 		"click .button-new-stack": function(e) {
 			App.Utils.dialog("Enter stack name", {
 
-				input: {
-					name: "stack-name",
-					value: "Vocabluary 1",
-					focus: true
-				},
+				content: "<input type='text' name='stack-category' placeholder='Category'><br><br>" +
+				         "<input type='text' name='stack-name' placeholder='Stackname'>",
 
 				buttons: {
 					ok: Stacks.create,
@@ -70,7 +64,7 @@ define(function() {
 
 			App.Utils.dialog("Confirm", {
 
-				text: "Remove \"" + stack + "\" and all of its flashcards?",
+				content: "Remove \"" + stack + "\" and all of its flashcards?",
 
 				buttons: {
 					ok: function() { Stacks.remove(stackID); },
@@ -86,11 +80,7 @@ define(function() {
 			
 			App.Utils.dialog("Enter stack name", {
 
-				input: {
-					name: "stack-name",
-					value: stack,
-					focus: true
-				},
+				content: "<input type='text' name='stack-name' value='" + stack + "'>",
 
 				buttons: {
 					ok: function() { Stacks.rename(stackID); },
@@ -153,25 +143,44 @@ define(function() {
 
 	Stacks.updateView = function() {
 
-		Stacks.get(function(stacks) {
+		Stacks.getAll(function(stacks) {
 
-			var $stacks = App.$("#stacks");
+			var $stacks = App.$("#stacks"), $category, category;
 			$stacks.html("");
 
 			if (stacks.length) {
 
 				$stacks.parent().find(".note").hide();
+				stacks = stacks.sort(function(a, b) { return a.value.category < b.value.category ? -1 : 1; });
 
-				[].forEach.call(stacks, function(v) {
+				[].forEach.call(stacks, function(v, i) {
 
-					Stacks.countFlashcards(v.key, function(num) {
+					category = v.value.category;
+
+					if (!$stacks.find("li[data-category='" + category + "']").length) {
+
 						$stacks.append(
-							"<li class='stack' data-key='" + v.key + "'>" +
-								"<span class='fa fa-tags' style='margin-right: 10px;'></span>" +
-								" <b>" + v.value.name + "</b> " +
-								"<span class='fa fa-arrow-right'></span>" +
-								"<span class='count'>" + num + " Cards</span>" +
+							"<li data-category='" + category + "'>" +
+								"<div class='category'>" +
+									"<span class='fa fa-fw fa-caret-right'></span> " +
+									category +
+								"</div>" +
+								"<ul></ul>" +
 							"</li>"
+						);
+
+						$category = $stacks.find("li[data-category='" + category + "']");
+					}
+
+					Stacks.countFlashcards(v, function(stack) {
+						$category = $stacks.find("li[data-category='" + stack.value.category + "']");
+						$category.find("ul").append(
+							"<li class='stack' data-key='" + stack.key + "'>" +
+								"<span class='fa fa-tags' style='margin-right: 0.5em;'></span>" +
+								v.value.name +
+								"<span class='fa fa-arrow-right'></span>" +
+								"<span class='count'>" + stack.value.flashcardAmount + " Cards</span>" +
+							"</li^>"
 						);
 					});
 				});
@@ -180,22 +189,24 @@ define(function() {
 		});
 	};
 
-	/* ====================== */
-	/* ====== GET NAME ====== */
-	/* ====================== */
-
-	Stacks.getName = function(id, callback) {
-		App.DB.getData("App", "Stacks", id, function(data) {
-			if (!data) { return; }
-			callback(data.name, id);
-		});
-	};
-
 	/* ================= */
 	/* ====== GET ====== */
 	/* ================= */
 
-	Stacks.get = function(callback) {
+	Stacks.get = function(id, callback) {
+		App.DB.getData("App", "Stacks", id, function(data) {
+			if (!data) { return; }
+
+			data.id = id;
+			callback(data);
+		});
+	};
+
+	/* ===================== */
+	/* ====== GET ALL ====== */
+	/* ===================== */
+
+	Stacks.getAll = function(callback) {
 		App.DB.getData("App", "Stacks", null, callback);
 	};
 
@@ -203,33 +214,58 @@ define(function() {
 	/* ====== COUNT FLASHCARDS ====== */
 	/* ============================== */
 
-	Stacks.countFlashcards = function(stackID, callback) {
-		App.DB.countObjectStoreEntries("App", "Flashcards", ["stackID", stackID], callback);
+	Stacks.countFlashcards = function(stack, callback) {
+		App.DB.countObjectStoreEntries("App", "Flashcards", ["stackID", stack.key], function(num) {
+			stack.value.flashcardAmount = num;
+			callback(stack);
+		});
 	};
 
 	/* ==================== */
 	/* ====== CREATE ====== */
 	/* ==================== */
 
-	Stacks.create = function(name, callback) {
+	Stacks.create = function(category, name, callback) {
 
+		if (typeof category != "string") { category = $("#dialog input[name='stack-category']").val().trim(); }
 		if (typeof name != "string") { name = $("#dialog input[name='stack-name']").val().trim(); }
+
 		name = App.Utils.escapeHTML(name);
 
-		App.DB.addData("App", "Stacks", { name: name }, function(e) {
+		App.DB.addData("App", "Stacks", { category: category, name: name }, function(e) {
 
-			var key = e.target.result;
+			var key = e.target.result,
+			    $stacks = $("#stacks"),
+			    $category = $stacks.find("li[data-category='" + category + "']");
+
 			if (!App.$(".stack").length) { $("#page-stacks .note").hide(); }
 
-				App.$("#stacks").append(
-					"<li class='stack' data-key='" + key + "'>" +
-						"<span class='fa fa-tags' style='margin-right: 10px;'></span>" +
-						" <b>" + name + "</b> " +
-						"<span class='fa fa-arrow-right' style='float: right;'></span>" +
+			if (!$category.length) {
+
+				$stacks.append(
+					"<li data-category='" + category + "'>" +
+						"<div class='category'>" +
+							"<span class='fa fa-fw fa-caret-right'></span> " +
+							category +
+						"</div>" +
+						"<ul></ul>" +
 					"</li>"
 				);
 
-			if (callback) { callback(key, name) }
+				$category = $stacks.find("li[data-category='" + category + "']");
+			}
+
+			$category.find("ul").append(
+				"<li class='stack' data-key='" + key + "'>" +
+					"<span class='fa fa-tags' style='margin-right: 0.5em;'></span>" +
+					name +
+					"<span class='fa fa-arrow-right' style='float: right;'></span>" +
+				"</li>"
+			);
+
+			$category.toggleClass("expand", true);
+
+			if (callback) { callback(key, category, name) }
 		});
 	};
 

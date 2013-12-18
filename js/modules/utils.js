@@ -103,7 +103,7 @@ define(function() {
 
 		} else {
 
-			if (content.text) { $dialog.find(".content").html(content.text); }
+			if (content.content) { $dialog.find(".content").html(content.content); }
 
 			if (content.buttons) {
 

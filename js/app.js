@@ -59,6 +59,15 @@ define([
 		// Translates click events into touch events
 		fastclick.attach(document.body);
 
+		// Menubutton event listener
+		document.addEventListener("menubutton", function(e) {
+
+			var $actions = App.Router.$page.find(".actions");
+			$actions.toggleClass("android-menu");
+			App.Utils.forceRender($("body"));
+
+		}, false);
+
 		Utils.initialize();
 
 		// Initialize the database
