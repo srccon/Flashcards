@@ -9,7 +9,7 @@
 		<link rel="stylesheet" type="text/css" href="css/roboto.css">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 
-		<script type="text/javascript" src="js/libs/prefixfree.js"></script>
+		<script type="text/javascript" src="js_external/prefixfree.js"></script>
 	</head>
 
 	<body>
@@ -86,8 +86,8 @@
 
 				<h1>Stacks</h1><hr>
 
-				<span class="button big stretch button-export">export</span><br><br>
-				<span class="button big stretch button-import"><input type="file">import</span>
+				<span class="button big stretch button-export"><span class='fa fa-sign-out' style='float: left;'></span>export</span><br><br>
+				<span class="button big stretch button-import"><input type="file"><span class='fa fa-sign-in' style='float: left;'></span>import</span>
 
 				<hr class="transparent">
 				<h1>Practice mode</h1><hr>
@@ -101,8 +101,8 @@
 				<hr class="transparent">
 				<h1>Reset</h1><hr>
 
-				<span class="button big stretch button-reset-statistics">reset statistics</span><br><br>
-				<span class="button big red stretch button-reset-all">delete all user data</span>
+				<span class="button big stretch button-reset-statistics"><span class='fa fa-undo' style='float: left;'></span>reset statistics</span><br><br>
+				<span class="button big red stretch button-reset-all"><span class='fa fa-times' style='float: left;'></span>delete all user data</span>
 			</div>
 		</div>
 
@@ -123,27 +123,28 @@
 				<a href="#page-about" class="tab active"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
 			</div>
 
-			<div class="content">
+			<div class="content" style="text-align: center">
 
-				<h1>Author</h1><hr>
+				Developed and designed by <a target="_blank" href="http://elias-schuett.de">Elias Schütt</a>.
 
-				Developed and designed by <a target="_blank" href="http://elias-schuett.de">Elias Schütt</a>.<br><br>
+				<hr class="transparent">
 
 				<a target="_blank" class="paypal-button" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CDLKJK3V8D2R2">Donate</a>
 
 				<hr class="transparent">
-				<h1>Dependencies</h1><hr>
-
-				<ul>	
-					<li><a target="_blank" href="http://requirejs.org/">RequireJS</a></li>
-					<li><a target="_blank" href="http://fontawesome.io/">FontAwesome</a></li>
-					<li><a target="_blank" href="http://www.chartjs.org/">ChartJS</a></li>
-					<li><a target="_blank" href="https://github.com/ftlabs/fastclick">Fastclick</a></li>
-					<li><a target="_blank" href="http://leaverou.github.io/prefixfree/">Prefixfree</a></li>
-					<li><a target="_blank" href="https://github.com/axemclion/IndexedDBShim">IndexedDB Shim</a></li>
-					<li><a target="_blank" href="http://jquery.com/">jQuery</a></li>
-					<li><a target="_blank" href="http://ricostacruz.com/jquery.transit/">Transit - jQuery Plugin</a></li>
-				</ul>
+				<hr class="transparent">
+				<h1>Special Thanks</h1><hr>
+	
+				<div style="width: 50%; margin: 0px auto;">
+					<a target="_blank" href="http://requirejs.org/">RequireJS</a>, 
+					<a target="_blank" href="http://fontawesome.io/">FontAwesome</a>, 
+					<a target="_blank" href="http://www.chartjs.org/">ChartJS</a>, 
+					<a target="_blank" href="https://github.com/ftlabs/fastclick">Fastclick</a>, 
+					<a target="_blank" href="http://leaverou.github.io/prefixfree/">Prefixfree</a>, 
+					<a target="_blank" href="https://github.com/axemclion/IndexedDBShim">IndexedDB Shim</a>, 
+					<a target="_blank" href="http://jquery.com/">jQuery</a>, 
+					<a target="_blank" href="http://ricostacruz.com/jquery.transit/">Transit - jQuery Plugin</a>
+				</div>
 			</div>
 		</div>	
 
@@ -229,23 +230,23 @@
 
 				<h1>Stack settings</h1>
 				&nbsp;<span class="fa fa-angle-double-right"></span>&nbsp; <span class="stack-name"></span>
-
-				<hr class="transparent">
-				<h1>Actions</h1><hr>
-
-				<a class="button button-rename-stack"><span class="fa fa-pencil"></span> rename stack</a><br><br>
-				<a class="button red button-remove-stack"><span class="fa fa-times"></span> remove stack</a>
-
+				
 				<hr class="transparent">
 				<h1>Translation buttons</h1><hr>
 
 				<table>
 					<tr>
-						<td><select class="languages from"><option>From (front)</option></select><br><br></td>
-						<td><span class="fa fa-arrows-h fa-2x"></span></td>
-						<td><select class="languages to"><option>To (back)</option></select><br><br></td>
+						<td width="45%"><select class="languages from"><option>From (front)</option></select><br><br></td>
+						<td><span class="fa fa-arrows-h"></span></td>
+						<td width="45%"><select class="languages to"><option>To (back)</option></select><br><br></td>
 					</tr>
 				</table>
+
+				<hr class="transparent">
+				<h1>Actions</h1><hr>
+
+				<a class="button stretch big button-rename-stack"><span class="fa fa-pencil" style="float: left;"></span>rename stack</a><br><br>
+				<a class="button stretch big red button-remove-stack"><span class="fa fa-times" style="float: left;"></span>remove stack</a>
 			</div>
 		</div>
 
@@ -393,7 +394,7 @@
 			</div>
 		</div>
 
-		<script type="text/javascript" src="js/build.js"></script>
+		<script type="text/javascript" src="js_external/build.js"></script>
 		<!-- // <script type="text/javascript" data-main="js/main.js" src="js/libs/require.js"></script> -->
 	</body>
 </html>

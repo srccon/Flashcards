@@ -272,6 +272,36 @@ define(function() {
 				}
 			]);
 		});
+
+		App.Stacks.create("Japanese", "Animals", function(stackID) {
+				App.Flashcards.add([
+				{
+					stackID: stackID,
+					front: "Dog",
+					back: "犬{いぬ}"
+				},
+				{
+					stackID: stackID,
+					front: "Cat",
+					back: "猫{ねこ}"
+				},
+				{
+					stackID: stackID,
+					front: "Horse",
+					back: "馬{うま}"
+				},
+				{
+					stackID: stackID,
+					front: "Fish",
+					back: "魚{さかな}"
+				},
+				{
+					stackID: stackID,
+					front: "Bird",
+					back: "鳥{とり}"
+				}
+			]);
+		});	
 	};
 
 	return Database;

@@ -76,11 +76,15 @@ define(function() {
 		// Rename stack
 		"click .button-rename-stack": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
-			var stack = App.$("#page-stack-settings .stack-name").text();
+			var pair = App.$("#page-stack-settings .stack-name").text().split(" // ");
+
+			var category = pair.shift();
+			var stack = pair.join("");
 			
 			App.Utils.dialog("Enter stack name", {
 
-				content: "<input type='text' name='stack-name' value='" + stack + "'>",
+				content: "<input type='text' name='stack-category' value='" + category + "'><br><br>" +
+				         "<input type='text' name='stack-name' value='" + stack + "'>",
 
 				buttons: {
 					ok: function() { Stacks.rename(stackID); },
@@ -148,16 +152,21 @@ define(function() {
 			var $stacks = App.$("#stacks"), $category, category;
 			$stacks.html("");
 
+			var categories = {};
+
 			if (stacks.length) {
 
+
 				$stacks.parent().find(".note").hide();
-				stacks = stacks.sort(function(a, b) { return a.value.category < b.value.category ? -1 : 1; });
 
-				[].forEach.call(stacks, function(v, i) {
+				[].forEach.call(stacks, function(v) {
 
-					category = v.value.category;
+					category = v.value.category || "Uncategorized";
+					if (category == "Uncategorized") { v.value.category = category; }
 
-					if (!$stacks.find("li[data-category='" + category + "']").length) {
+					if (!categories[category]) {
+
+						categories[category] = [];
 
 						$stacks.append(
 							"<li data-category='" + category + "'>" +
@@ -168,22 +177,35 @@ define(function() {
 								"<ul></ul>" +
 							"</li>"
 						);
-
-						$category = $stacks.find("li[data-category='" + category + "']");
 					}
 
-					Stacks.countFlashcards(v, function(stack) {
-						$category = $stacks.find("li[data-category='" + stack.value.category + "']");
-						$category.find("ul").append(
-							"<li class='stack' data-key='" + stack.key + "'>" +
-								"<span class='fa fa-tags' style='margin-right: 0.5em;'></span>" +
-								v.value.name +
-								"<span class='fa fa-arrow-right'></span>" +
-								"<span class='count'>" + stack.value.flashcardAmount + " Cards</span>" +
-							"</li^>"
-						);
-					});
+					categories[category].push(v);
 				});
+
+				for (category in categories) {
+					stacks = categories[category];
+					$category = $stacks.find("li[data-category='" + category + "'] .category");
+					$category.append("<span class='count'>" + stacks.length + " Stacks</span>");
+				}
+
+				for (category in categories) {
+					stacks = categories[category];
+
+					stacks.forEach(function(v) {
+						Stacks.countFlashcards(v, function(stack) {
+							$category = $stacks.find("li[data-category='" + stack.value.category + "']");
+
+							$category.find("ul").append(
+								"<li class='stack' data-key='" + stack.key + "'>" +
+									"<span class='fa fa-tags' style='margin-right: 0.5em;'></span>" +
+									v.value.name +
+									"<span class='fa fa-arrow-right'></span>" +
+									"<span class='count'>" + stack.value.flashcardAmount + " Cards</span>" +
+								"</li^>"
+							);
+						});
+					});
+				}
 
 			} else { $stacks.parent().find(".note").show(); }
 		});
@@ -293,11 +315,12 @@ define(function() {
 
 	Stacks.rename = function(id) {
 
+		var category = $("#dialog input[name='stack-category']").val().trim();
 		var name = $("#dialog input[name='stack-name']").val().trim();
 
-		App.DB.updateData("App", "Stacks", id, { name: name }, function(e) {
+		App.DB.updateData("App", "Stacks", id, { category: category, name: name }, function(e) {
 			App.$(".stack[data-key=" + id + "] b").html(name);
-			App.$("#page-stack-settings .stack-name").html(name);
+			App.$("#page-stack-settings .stack-name").html(category + " // " + name);
 		});
 	};
 

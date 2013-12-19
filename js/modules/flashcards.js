@@ -49,7 +49,7 @@ define(["transit"], function() {
 				var front = $(this).find("td:eq(1)").text().trim().toLowerCase();
 				var back = $(this).find("td:eq(2)").text().trim().toLowerCase();
 
-				$(this).toggle((front+back).indexOf(query) != -1);
+				$(this).toggle((front.indexOf(query) == 0) || (back.indexOf(query) == 0));
 			});
 		},
 

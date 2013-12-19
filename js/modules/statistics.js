@@ -73,8 +73,8 @@ define(["chart"], function(Chart) {
 					// Define chart variables
 					var labels = [], datasets = [{
 
-						fillColor: "#777",
-						strokeColor: "#333",
+						fillColor: "#CCC",
+						strokeColor: "#999",
 						data: [],
 						label: "foo"
 
@@ -92,10 +92,11 @@ define(["chart"], function(Chart) {
 					// Create the chart
 					var chart = new Chart(ctx).Line({ labels: labels, datasets: datasets }, {
 						scaleOverride: true,
-						scaleSteps: max_scale,
-						scaleStepWidth: 1,
+						scaleSteps: Math.round(max_scale/2),
+						scaleStepWidth: 2,
 						scaleStartValue: 0,
 						scaleLabel: "<%=value%> Cards",
+						bezierCurve: true,
 						datasetStrokeWidth: 5,
 						animation: false
 					});

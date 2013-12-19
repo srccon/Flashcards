@@ -1,1 +1,1 @@
-node js/libs/r.js -o config.js
+r.js.cmd -o config.js

@@ -167,7 +167,10 @@ define(function() {
 						};
 					});
 
-					json_data[stack.name] = data;
+					if (!json_data[stack.category])
+					{ json_data[stack.category] = {}; }
+
+					json_data[stack.category][stack.name] = data;
 
 					count++;
 				});

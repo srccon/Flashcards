@@ -1,8 +1,13 @@
 ({
 	baseUrl: "js",
 	name: "main",
-	out: "js/build.js",
+	out: "js_external/build.js",
 	include: ["libs/require.js"],
+
+	shim: {
+		"chart": { exports: "Chart" },
+		"transit": { deps: ["jquery"] }
+	},
 
 	paths: {
 		"jquery": "libs/jquery",

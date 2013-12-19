@@ -2,7 +2,7 @@
 *:focus { outline: none; }
 
 html {
-	background-color: #141414;
+	background-color: #333;
 	overflow-y: scroll;
 	height: 100%;
 	font-size: 16px;
@@ -19,6 +19,12 @@ body {
 
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	position: relative;
+
+	background-image:
+	linear-gradient(45deg, rgba(0, 0, 0, 0.02) 30%, transparent 10%, transparent),
+	linear-gradient(60deg, rgba(0, 0, 0, 0.02) 30%, transparent 10%, transparent);
+	background-position: left top;
+	background-repeat: no-repeat;
 }
 
 
@@ -33,12 +39,16 @@ html[data-page=page-practice] .page > .content {
 }
 
 html[data-page=page-practice] body {
-	background-image: linear-gradient(0deg, #013, #333);
+	background-image: linear-gradient(0deg, #123, #222);
 	position: relative;
 }
 
 html[data-page=page-practice] .menubar body {
 	border-bottom: 0.3125em solid #333;
+}
+
+html[data-page=page-stacks] body {
+	background-color: #CCC;
 }
 
 html[data-page=page-stack] .page > .content {
@@ -193,17 +203,18 @@ html[data-page=page-statistics] .content {
 }
 
 h1, h2, h3, h4, h5, h6 {
+	font-weight: 300;
 	margin-bottom: .5em;
 }
 
-a { color: #039; }
+a { color: #000; }
 ul { margin-left: 1.25em; }
 li { padding-bottom: 0.3125em; }
 
 hr {
 	height: 0px;
 	border: 0px;
-	border-bottom: 0.3125em solid #DDD;
+	border-bottom: 0.125em solid #DDD;
 	margin: 0.625em 0px 2.5em 0px;
 	clear: both;
 }
@@ -214,6 +225,8 @@ hr.transparent {
 }
 
 label {
+	color: #666;
+	text-shadow: 0px 1px #E9E9E9;
 	background-color: #E3E3E3;
 	padding: 1.25em;
 	display: block;
@@ -230,15 +243,17 @@ label span::before {
 	color: inherit;
 	font-family: FontAwesome;
 	content: "\f096";
-	width: 1.25em;
+	width: 1em;
+	margin-right: 0.5em;
 	display: inline-block;
+	text-align: center;
 }
 
 label input { display: none; }
 label input:checked + span::before {
 	content: "\f046";
 	margin-left: 0.125em;
-	margin-right: -0.125em;
+	width: 0.875em;
 }
 
 textarea {
@@ -426,23 +441,28 @@ textarea {
 }
 
 #stacks > li .category {
-	color: #666;
+	color: #999;
 	padding: 1.25em;
 	font-weight: bold;
 
-	border-left: 0.3125em solid #BBB;
-	box-shadow: inset 0px -0.125em #CCC;
-
 	border-radius: 0.125em;
-	background-color: #DDD;
+	background-color: #EEE;
 	cursor: pointer;
+
+	background-image: linear-gradient(45deg, #F6F6F6 40%, transparent 10%, transparent);
+	background-position: right top;
+	background-repeat: no-repeat;
 }
+
+#stacks > li .count {
+	color: #888;
+} 
 
 #stacks > li > ul {
 	display: none;
 	list-style: none;
 	margin: 0px;
-	background-color: #FFF;
+	background-color: #F6F6F6;
 	border-radius: 0px 0px 0.125em 0.125em;
 }
 
@@ -461,31 +481,37 @@ textarea {
 
 #stacks > li.expand > ul {
 	display: block;
-	padding: 1em;
+	padding: 0.5em;
 }
 
 #stacks > li.expand > ul > li {
-	color: #666;
-	background-color: #F6F6F6;
-	border: 0.125em solid #EEE;
-	border-bottom: 0px;
+	color: #999;
+	background-color: #FFF;
 	padding: 1.25em;
 	cursor: pointer;
 }
 
+#stacks > li.expand > ul > li:first-child { border-radius: 0.125em 0.125em 0px 0px; }
+#stacks > li.expand > ul > li:last-child { border-radius: 0px 0px 0.125em 0.125em; }
+
+#stacks > li.expand > ul > li:nth-child(even) {
+	background-color: #FCFCFC;
+}
+
 #stacks > li.expand > ul > li:hover {
-	color: #333;
-	background-color: #EEE;
+	color: #FFF;
+	background-color: #CCC;
 }
 
 #stacks > li:first-child { margin-top: 0px; }
 #stacks > li:last-child { margin-bottom: 0px; }
 
-#stacks > li.expand > ul > li:hover .fa-arrow-right { color: #666; }
-#stacks > li.expand > ul > li:last-child { border-bottom: 0.125em solid #EEE; }
+#stacks > li.expand > ul > li:hover .count { color: inherit; }
+#stacks > li.expand > ul > li:hover .fa-arrow-right { color: inherit; }
+#stacks > li.expand > ul > li:last-child { border-bottom: 0px; }
 #stacks > li.expand > ul > li .fa-arrow-right { float: right; color: #999; }
 
-#stacks > li.expand > ul > li .count {
+#stacks li .count {
 	float: right;
 	font-size: 0.8em;
 	margin-right: 0.625em;
@@ -525,13 +551,20 @@ textarea {
 
 #flashcards th label {
 	margin: 0px;
+	color: #FFF;
+	text-shadow: none;
 }
 
 #flashcards td {
 	color: #666;
-	background-color: #EEE;
+	background-color: #FFF;
 	padding: 0.625em 1.25em;
 	cursor: pointer;
+}
+
+#flashcards tr.selected label span::before {
+	color: #FFF;
+	text-shadow: none;
 }
 
 #flashcards tr.selected td {
@@ -540,7 +573,7 @@ textarea {
 }
 
 #flashcards tr:nth-child(odd) td {
-	background-color: #F6F6F6;
+	background-color: #F9F9F9;
 }
 
 #flashcards label { background: transparent; }
@@ -548,6 +581,7 @@ textarea {
 #flashcards input[type=search] {
 	color: #666;
 	font-size: inherit;
+	font-style: italic;
 
 	height: 100%;
 	width: 100%;
@@ -571,8 +605,9 @@ textarea {
 	top: 0.8em; left: 0.8em;
 	z-index: 99;
 	font-size: 1.5em;
+	font-weight: normal;
 
-	color: #999;
+	color: #CCC;
 	content: "\f002";
 	font-family: "FontAwesome";
 	display: inline-block;
@@ -775,9 +810,8 @@ textarea {
 }
 
 #page-stack-settings .languages {
-	padding: 0.625em;
+	padding: 1.5em;
 	width: 100%;
-	height: 3.125em;
 	font-weight: bold;
 	color: #666;
 	background-color: #FFF;
@@ -791,7 +825,7 @@ textarea {
 
 .paypal-button {
 	color: #0E3168;
-	font-size: 14px;
+	font-size: 1em;
 	font-weight: bold;
 	font-style: italic;
 	font-family: "Arial", bold, italic;
@@ -800,11 +834,12 @@ textarea {
 	white-space: nowrap;
 	overflow: hidden;
 	
-	padding: 0.25em 1.1875em;
+	padding: 0.3em 2em;
 	border-radius: 0.8125em;
 	border: 0.0625em solid #ffa823;
 	background: #ffa823;
 	cursor: pointer;
+	border: 0.125em solid #ffa823;
 
 	text-decoration: none;
 	display: inline-block;
@@ -849,13 +884,6 @@ textarea {
 		font-size: 80%;
 	}
 
-	html, body {
-		height: auto;
-		min-height: auto;
-		background-color: #EEE;
-		background-image: none;
-	}
-
 	html[data-page=page-practice],
 	html[data-page=page-practice] body { height: 100%; }
 
@@ -881,7 +909,7 @@ textarea {
 
 	.menubar .actions.android-menu .action {
 		color: #666;
-		font-size: 1em;
+		font-size: 1.2em;
 		text-align: left;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -891,7 +919,7 @@ textarea {
 		height: auto;
 
 		float: none;
-		padding: 0.9375em 1.25em;
+		padding: 1.2em;
 		margin: 0px;
 		border-radius: 0px;
 		background-color: #F9F9F9;
