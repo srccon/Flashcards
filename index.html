@@ -2,399 +2,65 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-		<title>Flashcards</title>
+		<title>Flashcards by Elias Schütt</title>
+		<link rel="stylesheet" type="text/css" href="main.css">
+		<link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
 
-		<link rel="stylesheet" type="text/css" href="css/font-awesome.css">
-		<link rel="stylesheet" type="text/css" href="css/roboto.css">
-		<link rel="stylesheet" type="text/css" href="css/main.css">
-
-		<script type="text/javascript" src="js_external/prefixfree.js"></script>
+		<script type="text/javascript" src="js/prefixfree.js"></script>
 	</head>
-
 	<body>
 
-		<!--====================-->
-		<!--====== STACKS ======-->
-		<!--====================-->
+		<div id="container">
+			<div id="intro">
+				<h1>Flashcards</h1>
+				<p>Easily organizable flashcards for your mobile device. Developed and designed by Elias Schütt.</p>
 
-		<div class="page" id="page-stacks">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-				
-				<div class="actions">
-					<div class="action button-new-stack"><span class="fa fa-plus fa-2x"></span><span class="title">New stack</span></div>
-				</div>
-				
-				<div class="action button-android-menu"><span class="fa fa-ellipsis-v fa-2x"></span></div>
+				<b>Features:</b><br><br>
+				<ul>
+					<li>Clean and accessible UI</li>
+					<li>Import/Export</li>
+					<li>Categories and stacks</li>
+					<li>Flashcard filter</li>
+					<li>Statistics</li>
+					<li>Word translation</li>
+				</ul><br>
+
+				<b>In progress:</b><br><br>
+				<ul>
+					<li>Syncing functionality</li>
+					<li>Advanced practice mode</li>
+					<li>Full android 2.x+ support</li>
+				</ul><br><br>
+
+				<a href="https://play.google.com/store/apps/details?id=de.elias_schuett.flashcards" style="text-decoration: none;">
+					<img alt="Get it on Google Play" src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
+				</a>
 			</div>
 
-			<div class="tabs">
-				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
-				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
-				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
-				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
-			</div>
-
-			<div class="content">
-				<em class="note">No stacks available, create one!</em>
-				<ul id="stacks"></ul>
-			</div>
-		</div>
-
-		<!--========================-->
-		<!--====== STATISTICS ======-->
-		<!--========================-->
-
-		<div class="page" id="page-statistics">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-			</div>
-
-			<div class="tabs">
-				<a href="#page-stacks" class="tab"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
-				<a href="#page-statistics" class="tab active"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
-				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
-				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
-			</div>
-
-			<div class="content">
-				<em class="note">No statistics available, practise some more!</em>
-			</div>
-		</div>
-
-		<!--======================-->
-		<!--====== SETTINGS ======-->
-		<!--======================-->
-
-		<div class="page" id="page-settings">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-			</div>
-
-			<div class="tabs">
-				<a href="#page-stacks" class="tab"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
-				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
-				<a href="#page-settings" class="tab active"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
-				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
-			</div>
-
-			<div class="content">
-
-				<h1>Stacks</h1><hr>
-
-				<span class="button big stretch button-export"><span class='fa fa-sign-out' style='float: left;'></span>export</span><br><br>
-				<span class="button big stretch button-import"><input type="file"><span class='fa fa-sign-in' style='float: left;'></span>import</span>
-
-				<hr class="transparent">
-				<h1>Practice mode</h1><hr>
-
-				<label><input type="checkbox" name="switch_front_back"> <span></span> Switch front/back</label>
-				<label><input type="checkbox" name="switch_front_back_randomly"> <span></span> Switch front/back randomly</label>
-				<label><input type="checkbox" name="shuffle_flashcards"> <span></span> Shuffle flashcards</label>
-				<label><input type="checkbox" name="disable_animation"> <span></span> Disable flashcard animation</label>
-				<label><input type="checkbox" name="always_show_buttons"> <span></span> Always show yep/nope buttons</label>
-
-				<hr class="transparent">
-				<h1>Reset</h1><hr>
-
-				<span class="button big stretch button-reset-statistics"><span class='fa fa-undo' style='float: left;'></span>reset statistics</span><br><br>
-				<span class="button big red stretch button-reset-all"><span class='fa fa-times' style='float: left;'></span>delete all user data</span>
-			</div>
-		</div>
-
-		<!--===================-->
-		<!--====== ABOUT ======-->
-		<!--===================-->
-
-		<div class="page" id="page-about">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-			</div>
-
-			<div class="tabs">
-				<a href="#page-stacks" class="tab"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
-				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
-				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
-				<a href="#page-about" class="tab active"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
-			</div>
-
-			<div class="content" style="text-align: center">
-
-				Developed and designed by <a target="_blank" href="http://elias-schuett.de">Elias Schütt</a>.
-
-				<hr class="transparent">
-
-				<a target="_blank" class="paypal-button" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=CDLKJK3V8D2R2">Donate</a>
-
-				<hr class="transparent">
-				<hr class="transparent">
-				<h1>Special Thanks</h1><hr>
-	
-				<div style="width: 50%; margin: 0px auto;">
-					<a target="_blank" href="http://requirejs.org/">RequireJS</a>, 
-					<a target="_blank" href="http://fontawesome.io/">FontAwesome</a>, 
-					<a target="_blank" href="http://www.chartjs.org/">ChartJS</a>, 
-					<a target="_blank" href="https://github.com/ftlabs/fastclick">Fastclick</a>, 
-					<a target="_blank" href="http://leaverou.github.io/prefixfree/">Prefixfree</a>, 
-					<a target="_blank" href="https://github.com/axemclion/IndexedDBShim">IndexedDB Shim</a>, 
-					<a target="_blank" href="http://jquery.com/">jQuery</a>, 
-					<a target="_blank" href="http://ricostacruz.com/jquery.transit/">Transit - jQuery Plugin</a>
-				</div>
-			</div>
-		</div>	
-
-		<!--===================-->
-		<!--====== STACK ======-->
-		<!--===================-->
-
-		<div class="page" id="page-stack" data-template="true">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-
-				<div class="actions">
-					<div class="action button-return-stacks" title="Return to stacks"><span class="fa fa-sign-out fa-2x"></span><span class="title">Return to stacks</span></div>
-					<div class="action button-new-flashcard" title="New flashcard"><span class="fa fa-plus fa-2x"></span><span class="title">New flashcard</span></div>
-					<div class="action button-practice" title="Practice mode"><span class="fa fa-lightbulb-o fa-2x"></span><span class="title">Practice mode</span></div>
-					<div class="action button-stack-settings" title="Stack Settings"><span class="fa fa-cog fa-2x"></span><span class="title">Stack Settings</span></div>
-				</div>
-
-				<div class="action button-android-menu"><span class="fa fa-ellipsis-v fa-2x"></span></div>
-			</div>
-
-			<div class="tabs">
-				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
-				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
-				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
-				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
-			</div>
-
-			<div class="content">
-
-				<h1 class="stack-name"></h1><hr>
-
-				<em class="note">No flashcards available, create one!</em>
-			</div>
-
-			<div class="flashcard-actions-container">
-				<table id="flashcards">
-					<tr>
-						<th style="width: 20px"><label><input type="checkbox" name="select_all"><span></span></label></th>
-						<th>Front</th>
-						<th>Back</th>
-					</tr>
-					<tr class="searchbar">
-						<td colspan="3"><div class="search-wrapper"><input type="search" placeholder="Filter flashcards"></div></td>
-					</tr>
-				</table>
-
-				<table class="flashcard-actions">
-					<tr>
-						<td><a class="button big stretch flashcard-edit"><span class="fa fa-pencil"></span> edit selection</a></td>
-						<td><a class="button big stretch flashcard-move"><span class="fa fa-share"></span> move selection</a></td>
-						<td><a class="button big red stretch flashcard-remove"><span class="fa fa-times"></span> remove selection</a></td>
-					</tr>
-				</table>
-			</div>
-		</div>
-
-		<!--============================-->
-		<!--====== STACK SETTINGS ======-->
-		<!--============================-->
-
-		<div class="page" id="page-stack-settings" data-template="true">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-
-				<div class="actions">
-					<div class="action button-return-stack"><span class="fa fa-sign-out fa-2x"></span><span class="title">Return to stack</span></div>
-				</div>
-
-				<div class="action button-android-menu"><span class="fa fa-ellipsis-v fa-2x"></span></div>
-			</div>
-
-			<div class="tabs">
-				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
-				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
-				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
-				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
-			</div>
-
-			<div class="content">
-
-				<h1>Stack settings</h1>
-				&nbsp;<span class="fa fa-angle-double-right"></span>&nbsp; <span class="stack-name"></span>
-				
-				<hr class="transparent">
-				<h1>Translation buttons</h1><hr>
-
-				<table>
-					<tr>
-						<td width="45%"><select class="languages from"><option>From (front)</option></select><br><br></td>
-						<td><span class="fa fa-arrows-h"></span></td>
-						<td width="45%"><select class="languages to"><option>To (back)</option></select><br><br></td>
-					</tr>
-				</table>
-
-				<hr class="transparent">
-				<h1>Actions</h1><hr>
-
-				<a class="button stretch big button-rename-stack"><span class="fa fa-pencil" style="float: left;"></span>rename stack</a><br><br>
-				<a class="button stretch big red button-remove-stack"><span class="fa fa-times" style="float: left;"></span>remove stack</a>
-			</div>
-		</div>
-
-		<!--===========================-->
-		<!--====== NEW FLASHCARD ======-->
-		<!--===========================-->
-
-		<div class="page" id="page-flashcard-new" data-template="true">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-
-				<div class="actions">
-					<div class="action button-return-stack"><span class="fa fa-sign-out fa-2x"></span><span class="title">Return to stack</span></div>
-					<div class="action button-markdown-info"><span class="fa fa-question fa-2x"></span><span class="title">Help</span></div>
-				</div>
-
-				<div class="action button-android-menu"><span class="fa fa-ellipsis-v fa-2x"></span></div>
-			</div>
-
-			<div class="tabs">
-				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
-				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
-				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
-				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
-			</div>
-
-			<div class="content">
-
-				<h1 class="stack-name" style="float: left;"></h1>
-				<a class="button flashcard-add" style="float: right;">add flashcard</a>
-				
-				<hr>
-				
-				<a class="button stretch translate big front">translate front</a>
-				<textarea name="front" placeholder="Front"></textarea><br><br>
-
-				<a class="button stretch translate big back">translate back</a>
-				<textarea name="back" placeholder="Back"></textarea>
-			</div>
-		</div>
-
-		<!--============================-->
-		<!--====== EDIT FLASHCARD ======-->
-		<!--============================-->
-
-		<div class="page" id="page-flashcard-edit" data-template="true">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-
-				<div class="actions">
-					<div class="action button-return-stack"><span class="fa fa-sign-out fa-2x"></span><span class="title">Return to stack</span></div>
-					<div class="action button-markdown-info"><span class="fa fa-question fa-2x"></span><span class="title">Help</span></div>
-				</div>
-
-				<div class="action button-android-menu"><span class="fa fa-ellipsis-v fa-2x"></span></div>
-			</div>
-
-			<div class="tabs">
-				<a href="#page-stacks" class="tab active"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
-				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
-				<a href="#page-settings" class="tab"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
-				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
-			</div>
-
-			<div class="content">
-
-				<h1 class="stack-name" style="float: left;"></h1>
-				<a class="button flashcard-update" style="float: right;">update flashcard</a>
-				
-				<hr>
-								
-				<a class="button stretch translate big front">translate front</a>
-				<textarea name="front" placeholder="Front"></textarea><br><br>
-
-				<a class="button stretch translate big back">translate back</a>
-				<textarea name="back" placeholder="Back"></textarea>
-			</div>
-		</div>
-
-		<!--======================-->
-		<!--====== PRACTICE ======-->
-		<!--======================-->
-
-		<div class="page" id="page-practice" data-template="true">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-
-				<div class="actions">
-					<div class="action button-exit-practice"><span class="fa fa-sign-out fa-2x"></span><span class="title">Exit practice mode</span></div>
-				</div>
-
-				<div class="action button-android-menu"><span class="fa fa-ellipsis-v fa-2x"></span></div>
-			</div>
-
-			<div class="content">
-
-				<div id="flashcard">
-					<div class="front"><span></span></div>
-					<div class="back"><span></span></div>
-				</div>
-
-				<div id="flashcard-shadow"></div>
-
-				<div id="practice-buttons" style="display: none">
-					<span class="button red">nope</span>
-					<span class="button green">yep</span>
+			<div id="nexus7">
+				<div id="slider">
+					<ul>
+						<li><img src="screenshots/1.png"></li>
+						<li><img src="screenshots/2.png"></li>
+						<li><img src="screenshots/3.png"></li>
+						<li><img src="screenshots/4.png"></li>
+						<li><img src="screenshots/5.png"></li>
+					</ul>
 				</div>
 			</div>
 		</div>
 
+		<script src="js/jquery.min.js"></script>
+		<script src="js/unslider.min.js"></script>
 
-		<!--===================================-->
-		<!--====== PHONEGAP FILE BROWSER ======-->
-		<!--===================================-->
-
-		<div class="page" id="page-file-browser">
-			<div class="menubar">
-				<img class="logo" src="img/logo.png">
-				<span class="title">Flashcards</span>
-
-				<div class="actions">
-					<div class="action button-return-settings" title="Return to stacks"><span class="fa fa-sign-out fa-2x"></span><span class="title">Return to stacks</span></div>
-				</div>
-
-				<div class="action button-android-menu"><span class="fa fa-ellipsis-v fa-2x"></span></div>
-			</div>
-
-			<div class="tabs">
-				<a href="#page-stacks" class="tab"><span class="fa fa-inbox"></span> <span class='tab-name'>Stacks</span></a>
-				<a href="#page-statistics" class="tab"><span class="fa fa-bar-chart-o "></span> <span class='tab-name'>Statistics</span></a>
-				<a href="#page-settings" class="tab active"><span class="fa fa-cog"></span> <span class='tab-name'>Settings</span></a>
-				<a href="#page-about" class="tab"><span class="fa fa-info-circle"></span> <span class='tab-name'>About</span></a>
-			</div>
-
-			<div class="content">
-
-				<h1>Import</h1>
-				<span class="path"></span>
-				<hr>
-
-				<ul id="file-browser"></ul>
-			</div>
-		</div>
-
-		<script type="text/javascript" src="js_external/build.js"></script>
-		<!-- // <script type="text/javascript" data-main="js/main.js" src="js/libs/require.js"></script> -->
+		<script type="text/javascript">
+			$("#slider").unslider({
+				speed: 500,
+				delay: 3000,
+				keys: false,
+				dots: false,
+				fluid: false
+			});
+		</script>
 	</body>
 </html>

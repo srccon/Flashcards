@@ -1,0 +1,124 @@
+* { margin: 0px; padding: 0px; }
+
+html {
+	height: 100%;
+	background-color: #EEE;
+	background-image:
+	linear-gradient(180deg, #000, transparent),
+	url("bg.jpg");
+	background-size: cover, cover;
+}
+
+body {
+	color: #333;
+	margin: 0px auto;
+
+	width: 800px;
+	height: 100%;
+
+	font-size: 16px;
+	font-family: Roboto, "Segoe Ui", Arial, sans-serif;
+}
+
+#container {
+	position: relative;
+	top: 7em;
+}
+
+h1 {
+	color: #333;
+	text-shadow: 0px 1px #FFF;
+	font-weight: 300;
+	font-size: 3em;
+	border-bottom: 2px solid #EEE;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+
+#intro {
+	color: #999;
+	font-size: 14px;
+	font-weight: 300;
+	width: 370px;
+
+	position: relative;
+	top: 4em;
+	padding: 2em;
+	background-color: #FFF;
+	background-image: 
+	linear-gradient(-90deg, rgba(0, 0, 0, 0.1) 5%, transparent 15%),
+	linear-gradient(45deg, rgba(0, 0, 0, 0.015) 30%, transparent 10%, transparent),
+	linear-gradient(75deg, rgba(0, 0, 0, 0.015) 30%, transparent 10%, transparent);
+	background-position: right right, left top, left top;
+	background-repeat: no-repeat;
+	border-radius: 5px;
+}
+
+#intro b {
+	font-weight: 500;
+	color: #666;
+}
+
+#intro ul {
+	margin-left: 30px;
+}
+
+a {
+	color: #09C;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+p {
+	padding: 1em 0em;
+}
+
+#nexus7 {
+	background-image: url("nexus7.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+
+	width: 1009px;
+	height: 1633px;
+
+	transform-origin: top right;
+	transform: scale(0.4);
+}
+
+#nexus7 div {
+	position: relative;
+	top: 13.4%;
+	left: 10.36%;
+
+	width: 79.5% !important;
+	height: 72% !important;
+	border: 0px;
+	overflow: hidden;
+}
+
+#slider {
+	position: relative;
+	overflow: auto;
+}
+
+#slider ul {
+	margin-top: -4%;
+	list-style: none;
+}
+#slider ul li {
+	width: 100%;
+	height: 100%;
+	float: left;
+}
+
+#slider ul li img {
+	width: 100%;
+	height: 1280px;
+	background-color: #000;
+}
