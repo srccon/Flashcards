@@ -35,6 +35,10 @@ define(function() {
 			App.Statistics.updateView();
 		},
 
+		"page-quiz": function(id) {
+			App.Stacks.quiz(+id);
+		},
+
 		"page-practice": function(id) {
 			App.Stacks.practice(+id);
 		},

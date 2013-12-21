@@ -93,16 +93,59 @@ define(function() {
 			});
 		},
 
-		// Practice stack
+		// Practice mode
 		"click .button-practice": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
 			location.hash = "page-practice:" + stackID;
+		},
+
+		// Practice buttons
+		"click #practice-buttons .button": function(e) {
+
+			if ($(e.currentTarget).hasClass("green"))
+			{ App.Stacks.practice.score++; }
+
+			App.Stacks.practice();
 		},
 
 		// Exit practice
 		"click .button-exit-practice": function(e) {
 			delete Stacks.practice.flashcards;
 			delete Stacks.practice.index;
+			window.history.back();
+		},
+
+		// Quiz buttons
+		"click #quiz .quiz-answer": function(e) {
+
+			if (Stacks.quiz.pending) { return; }
+			Stacks.quiz.pending = true;
+
+			var $target = $(e.currentTarget);
+			var correct = $target.attr("data-correct") == "true";
+
+			if (!correct) { Stacks.quiz.question.failed = true; }
+			$target.addClass(correct ? "correct" : "false");
+
+			window.setTimeout(function() {
+				Stacks.quiz.pending = false;
+				$target.removeClass(correct ? "correct" : "false");
+				if (!Stacks.quiz.question.failed) { App.Stacks.quiz.score++; }
+				if (correct) { Stacks.quiz(); }
+			}, 500);
+		},
+
+		// Quiz mode
+		"click .button-quiz": function(e) {
+			var stackID = +window.location.hash.split(":")[1];
+			location.hash = "page-quiz:" + stackID;
+		},
+
+
+		// Exit quiz
+		"click .button-exit-quiz": function(e) {
+			delete Stacks.quiz.flashcards;
+			delete Stacks.quiz.index;
 			window.history.back();
 		},
 
@@ -138,7 +181,9 @@ define(function() {
 
 			App._settings.translation_preferences[stackID][isFrom ? "from" : "to"] = code;
 			App.Utils.localStorage("settings", App._settings);
-		}
+		},
+
+
 	};
 
 	/* ========================= */
@@ -430,6 +475,120 @@ define(function() {
 		tallest = Math.max($front.height(), $back.height());
 		$front.height(tallest);
 		$back.height(tallest);
+	};
+
+	/* ================== */
+	/* ====== QUIZ ====== */
+	/* ================== */
+
+	Stacks.quiz = function(id) {
+
+		// Fetch flashcards
+		if (id !== undefined) {
+
+			App.Flashcards.getAll(id, function(data) {
+
+				if (data.length < 4) {
+
+					App.Utils.dialog("Not enough flashcards available!", "Create at least four flashcard to the quiz", function() {
+						window.location.hash = "page-stack:" + id;
+					});
+
+					return;
+				}
+
+				Stacks.quiz.id = id;
+				Stacks.quiz.total = data.length;
+				Stacks.quiz.index = 0;
+				Stacks.quiz.score = 0;
+				
+				// Shuffle
+				if (App._settings.shuffle_flashcards)
+				{ data = App.Utils.array_shuffle(data); }
+
+				// Switch and replace linebreaks with <br>
+				if (App._settings.switch_front_back) {
+
+					data = data.map(function(v) {
+
+						var front = v.value.front;
+						v.value.front = v.value.back.replace(/\n/, "<br>");;
+						v.value.back = front.replace(/\n/, "<br>");;
+
+						return v;
+					});
+
+				// Only replace linebreaks
+				} else {
+
+					data = data.map(function(v) {
+						v.value.front = v.value.front.replace(/\n/, "<br>");
+						v.value.back = v.value.back.replace(/\n/, "<br>");
+
+						return v;
+					});
+				}
+
+				Stacks.quiz.flashcards = data;
+				Stacks.quiz();
+			}, true);
+
+			return;
+		}
+
+
+		Stacks.quiz.question = Stacks.quiz.flashcards[Stacks.quiz.index++];
+		var $question = App.$("#quiz .quiz-question"), $answers = App.$("#quiz .quiz-answer");
+		$answers.removeAttr("data-correct");
+
+		// End reached
+		if (!Stacks.quiz.question) {
+			delete Stacks.quiz.flashcards;
+
+			App.Statistics.registerPracticeSession(
+				Stacks.quiz.id,
+				Stacks.quiz.score,
+				Stacks.quiz.total
+			);
+
+			App.Utils.dialog("Session complete!", "<b>Score:</b> " + Stacks.quiz.score + " out of " + Stacks.quiz.total + "<br><br>(*＾▽＾)／", function() {
+
+				window.location.hash = "page-stack:" + Stacks.quiz.id;
+			});
+
+			return;
+		}
+
+		// Swtich front/back randomly
+		Stacks.quiz.question.flipped = App._settings.switch_front_back_randomly && Math.round(Math.random());
+
+		if (Stacks.quiz.question.flipped) {
+			var front = flashcard.value.front;
+			flashcard.value.front = flashcard.value.back;
+			flashcard.value.back = front;
+		}
+
+		var right_answer = Array.prototype.splice.call($answers, App.Utils.rand(0, 3), 1),
+		    indices, index, val, i;
+
+		// Insert new data
+		$question.html(Stacks.quiz.question.value.front);
+		$(right_answer).html(Stacks.quiz.question.value.back);
+		$(right_answer).attr("data-correct", "true");
+
+		indices = [Stacks.quiz.index-1];
+		index = Stacks.quiz.index-1;
+
+		for (i = 0; i < 3; i++) {
+
+			while (indices.indexOf(index) != -1)
+			{ index = App.Utils.rand(0, Stacks.quiz.total-1); }
+
+			indices.push(index);
+			val = Stacks.quiz.flashcards[index].value[Stacks.quiz.question.flipped ? "front" : "back"];
+
+			$(Array.prototype.pop.call($answers)).html(val);
+		}
 	};
 
 	return Stacks;

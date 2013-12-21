@@ -144,6 +144,8 @@
 					<a target="_blank" href="https://github.com/axemclion/IndexedDBShim">IndexedDB Shim</a>, 
 					<a target="_blank" href="http://jquery.com/">jQuery</a>, 
 					<a target="_blank" href="http://ricostacruz.com/jquery.transit/">Transit - jQuery Plugin</a>
+
+					<br><br>Marvin Zerulla (quiz background)
 				</div>
 			</div>
 		</div>	
@@ -160,7 +162,6 @@
 				<div class="actions">
 					<div class="action button-return-stacks" title="Return to stacks"><span class="fa fa-sign-out fa-2x"></span><span class="title">Return to stacks</span></div>
 					<div class="action button-new-flashcard" title="New flashcard"><span class="fa fa-plus fa-2x"></span><span class="title">New flashcard</span></div>
-					<div class="action button-practice" title="Practice mode"><span class="fa fa-lightbulb-o fa-2x"></span><span class="title">Practice mode</span></div>
 					<div class="action button-stack-settings" title="Stack Settings"><span class="fa fa-cog fa-2x"></span><span class="title">Stack Settings</span></div>
 				</div>
 
@@ -182,6 +183,14 @@
 			</div>
 
 			<div class="flashcard-actions-container">
+
+				<table style="width: 100%">
+					<tr>
+						<td width="50%" style="padding-right: 0.5em;"><a class="button button-practice stretch"><span class="fa fa-lightbulb-o" style="float: left; margin-top: 2px;"></span>pracice mode</a></td>
+						<td width="50%" style="padding-left: 0.5em;"><a class="button button-quiz stretch"><span class="fa fa-th-large" style="float: left; margin-top: 2px;"></span>quiz mode</a></td>
+					</tr>
+				</table><br>
+
 				<table id="flashcards">
 					<tr>
 						<th style="width: 20px"><label><input type="checkbox" name="select_all"><span></span></label></th>
@@ -360,6 +369,39 @@
 			</div>
 		</div>
 
+		<!--==================-->
+		<!--====== QUIZ ======-->
+		<!--==================-->
+
+		<div class="page" id="page-quiz" data-template="true">
+			<div class="menubar">
+				<img class="logo" src="img/logo.png">
+				<span class="title">Flashcards</span>
+
+				<div class="actions">
+					<div class="action button-exit-quiz"><span class="fa fa-sign-out fa-2x"></span><span class="title">Exit quiz mode</span></div>
+				</div>
+
+				<div class="action button-android-menu"><span class="fa fa-ellipsis-v fa-2x"></span></div>
+			</div>
+
+			<div class="content">
+
+				<table id="quiz">
+					<tr>
+						<td colspan="2" class="quiz-question"></td>
+					</tr>
+					<tr>
+						<td class="quiz-answer"></td>
+						<td class="quiz-answer"></td>
+					</tr>
+					<tr>
+						<td class="quiz-answer"></td>
+						<td class="quiz-answer"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
 
 		<!--===================================-->
 		<!--====== PHONEGAP FILE BROWSER ======-->

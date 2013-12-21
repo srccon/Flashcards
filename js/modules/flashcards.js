@@ -109,6 +109,7 @@ define(["transit"], function() {
 
 			App.Utils.notification("Not available yet!");
 		},
+
 		// Remove flashcard(s)
 		"click .flashcard-remove": function(e) {
 
@@ -195,15 +196,6 @@ define(["transit"], function() {
 			$("#flashcard .front").transition({ rotateX: 5 }, 1000 * time_factor);
 			$("#flashcard .back").transition({ rotateX: 180 }, 1000 * time_factor);
 			$("#flashcard-shadow").transition({ rotateX: 0 }, 1000 * time_factor);
-		},
-
-		// Practice buttons
-		"click #practice-buttons .button": function(e) {
-
-			if ($(e.currentTarget).hasClass("green"))
-			{ App.Stacks.practice.score++; }
-
-			App.Stacks.practice();
 		}
 	};
 

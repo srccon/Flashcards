@@ -33,12 +33,25 @@ define(function() {
 		});
 	};
 
+	/* ==================== */
+	/* ====== EVENTS ====== */
+	/* ==================== */
+
 	Utils.events = {
 		"click #dialog .close, #dialog-modal, #dialog input[type=button]": function() {
 			$("#dialog, #dialog-modal").hide();
 			Utils.dialog.onclose && Utils.dialog.onclose();
 		}
-	}
+	};
+
+	/* ================== */
+	/* ====== RAND ====== */
+	/* ================== */
+
+	Utils.rand = function(min, max, toFloat) {
+		var random = Math.random() * (max-min) + min;
+		return toFloat ? random : Math.round(random);
+	};
 
 	/* ========================== */
 	/* ====== LOCALSTORAGE ====== */

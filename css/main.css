@@ -2,10 +2,13 @@
 *:focus { outline: none; }
 
 html {
-	background-color: #333;
+	background-color: #000;
 	overflow-y: scroll;
 	height: 100%;
 	font-size: 16px;
+
+	background-image: url("../img/bg.jpg");
+	background-size: cover;
 }
 
 body {
@@ -34,7 +37,8 @@ body {
 
 .page { display: none; }
 
-html[data-page=page-practice] .page > .content {
+html[data-page=page-practice] .page > .content,
+html[data-page=page-quiz] .page > .content {
 	padding-top: 20%;
 }
 
@@ -43,8 +47,17 @@ html[data-page=page-practice] body {
 	position: relative;
 }
 
-html[data-page=page-practice] .menubar body {
-	border-bottom: 0.3125em solid #333;
+html[data-page=page-quiz] {
+	background-image: url("../img/bg-quiz.jpg");
+}
+
+html[data-page=page-quiz] body {
+	background-image: none;
+	background-color: transparent;
+}
+
+html[data-page=page-quiz] .menubar {
+	border-radius: 0px 0px 0.3125em 0.3125em;
 }
 
 html[data-page=page-stacks] body {
@@ -55,7 +68,8 @@ html[data-page=page-stack] .page > .content {
 	padding-bottom: 0px;
 }
 
-html[data-page=page-practice] .page > .content {
+html[data-page=page-practice] .page > .content,
+html[data-page=page-quiz] .page > .content {
 	background: transparent;
 }
 
@@ -750,6 +764,56 @@ textarea {
 	font-size: 1.5em;
 	padding: 0.9375em 0px;
 	display: table-cell;
+}
+
+
+#quiz {
+	width: 100%;
+	border-spacing: 1em;
+	table-layout: fixed;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+#quiz td {
+	color: #666;
+	text-align: center;
+}
+
+.quiz-question {
+	font-size: 2em;
+	padding: 1em 0em !important;
+
+	background-image:
+	linear-gradient(10deg, rgba(0, 0, 0, 0.02) 30%, transparent 10%, transparent),
+	linear-gradient(35deg, rgba(0, 0, 0, 0.02) 30%, transparent 10%, transparent);
+	background-position: left top;
+	background-repeat: no-repeat;
+
+	background-color: #F6F6F6;
+	text-shadow: 0px 1px #FFF;
+	font-weight: bold;
+}
+
+.quiz-answer {
+	color: #333;
+	padding: 2.2em 2em 1.8em 2em;
+	font-style: 1.5em:;
+	background-color: #EEE;
+	text-shadow: 0px 1px #F6F6F6;
+	cursor: pointer;
+}
+
+.quiz-answer.correct {
+	color: #FFF !important;
+	text-shadow: none;
+	background-color: #3D3;
+}
+
+.quiz-answer.false {
+	color: #FFF !important;
+	text-shadow: none;
+	background-color: #D33;
+
 }
 
 
