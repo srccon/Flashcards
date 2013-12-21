@@ -250,7 +250,7 @@ define(function() {
 							flashcards.forEach(function(v) { v.stackID = key; });
 
 							App.Flashcards.add(flashcards, function() {
-								imported.push("<li>" + stackname + "</li>");
+								imported.push("<li>" + category + " // " + stackname + "</li>");
 								count++;
 							});
 						});

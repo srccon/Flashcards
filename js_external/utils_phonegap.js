@@ -26,14 +26,14 @@ define(function() {
 			$("#page-file-browser .path").html(PhoneGap.currentDir);
 
 			if (PhoneGap.currentDir != "/") {
-				$fileBrowser.append("<li data-directory='..'><span class='fa fa-arrow-left'></span> <em>parent directory</em></li>");
+				$fileBrowser.append("<li data-directory='..'><span class='fa fa-arrow-left' style='margin-right: 0.5em'></span> <em>parent directory</em></li>");
 			}
 
 			entries.forEach(function(v) {
 				if (v.isDirectory)
-				$fileBrowser.append("<li data-directory='" + v.name + "'>" + v.name + "<span class='fa fa-arrow-right' style='float: right;'></span></li>");
+				$fileBrowser.append("<li data-directory='" + v.name + "'><span class='fa fa-folder'></span> " + v.name + "<span class='fa fa-arrow-right' style='float: right;'></span></li>");
 				else
-				$fileBrowser.append("<li>" + v.name + "</li>");
+				$fileBrowser.append("<li><span class='fa fa-file' style='margin-right: 0.5em'></span> " + v.name + "</li>");
 			});
 
 			if (callback) { callback(); }

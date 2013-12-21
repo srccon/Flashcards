@@ -40,7 +40,7 @@ define(function() {
 
 		// Stack link
 		"click #stacks > li > ul > li": function(e) {
-			location.hash = "page-stack:" + App.$(e.currentTarget).attr("data-key");
+			window.location.hash = "page-stack:" + App.$(e.currentTarget).attr("data-key");
 		},
 
 		// Create stack
@@ -96,7 +96,7 @@ define(function() {
 		// Practice mode
 		"click .button-practice": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
-			location.hash = "page-practice:" + stackID;
+			window.location.hash = "page-practice:" + stackID;
 		},
 
 		// Practice buttons
@@ -110,9 +110,10 @@ define(function() {
 
 		// Exit practice
 		"click .button-exit-practice": function(e) {
+			var stackID = +window.location.hash.split(":")[1];
 			delete Stacks.practice.flashcards;
 			delete Stacks.practice.index;
-			window.history.back();
+			window.location.hash = "page-stack:" + stackID;
 		},
 
 		// Quiz buttons
@@ -138,15 +139,16 @@ define(function() {
 		// Quiz mode
 		"click .button-quiz": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
-			location.hash = "page-quiz:" + stackID;
+			window.location.hash = "page-quiz:" + stackID;
 		},
 
 
 		// Exit quiz
 		"click .button-exit-quiz": function(e) {
+			var stackID = +window.location.hash.split(":")[1];
 			delete Stacks.quiz.flashcards;
 			delete Stacks.quiz.index;
-			window.history.back();
+			window.location.hash = "page-stack:" + stackID;
 		},
 
 		// Return to stacks
@@ -163,7 +165,7 @@ define(function() {
 		// Stack settings
 		"click .button-stack-settings": function(e) {
 			var stackID = +window.location.hash.split(":")[1];
-			location.hash = "page-stack-settings:" + stackID;
+			window.location.hash = "page-stack-settings:" + stackID;
 		},
 
 		// Stack settings

@@ -9,6 +9,7 @@ html {
 
 	background-image: url("../img/bg.jpg");
 	background-size: cover;
+	background-attachment: fixed;
 }
 
 body {
@@ -942,6 +943,12 @@ textarea {
 /* ====== MEDIA QUERIES ====== */
 /* =========================== */
 
+@media only screen and (orientation : portrait) and (max-width : 800px) {
+	html {
+		background-image: none;
+	}
+}
+
 @media only screen and (orientation : portrait) and (max-width : 600px) {
 
 	html {
@@ -1019,7 +1026,6 @@ textarea {
 		border-bottom: 0.125em solid #DDD;
 	}
 
-	.button-practice,
 	.flashcard-update,
 	.flashcard-add {
 		float: none;
