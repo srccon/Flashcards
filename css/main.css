@@ -385,6 +385,16 @@ textarea {
 	box-sizing: border-box;
 }
 
+#dialog select {
+	color: #666;
+	font-size: inherit;
+	width: 100%;
+	padding: 1em;
+	background-color: #EEE;
+	border: 1px solid #CCC;
+	box-sizing: border-box;
+}
+
 #dialog .buttons {
 	border-top: 0.3125em solid #036;
 	background-color: #036;

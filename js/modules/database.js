@@ -130,16 +130,17 @@ define(function() {
 		var transaction = Database[dbName].transaction(objectStoreName);
 		var objectStore = transaction.objectStore(objectStoreName);
 		var pairs = [], range;
+		var filter = key && typeof key == "object" && key.length;
 
 		if (typeof key == "number") {
 
 			objectStore.get(key).onsuccess = function(e) { onsuccess(e.target.result); };
 
-		} else if (key && typeof key == "object" && key.length) {
+		} else if (key && typeof key == "object" && key.length == undefined) {
 
-			range = window.IDBKeyRange.only(key[1]);
+			range = window.IDBKeyRange.only(key.value);
 
-			objectStore.index(key[0]).openCursor(range).onsuccess = function(e) {
+			objectStore.index(key.index).openCursor(range).onsuccess = function(e) {
 
 				var cursor = e.target.result;
 
@@ -162,6 +163,11 @@ define(function() {
 				var cursor = e.target.result;
 
 				if (cursor) {
+
+					if (filter && key.indexOf(cursor.key) == -1) {
+						cursor["continue"]();
+						return;
+					}
 
 					pairs.push({
 						value: cursor.value,
@@ -240,9 +246,29 @@ define(function() {
 
 		var transaction = Database[dbName].transaction(objectStoreName, "readwrite");
 		var objectStore = transaction.objectStore(objectStoreName);
-		var request = objectStore["delete"](key);
+		var request, range;
 
-		request.onsuccess = onsuccess;
+		if (typeof key == "object" && key.length == undefined) {
+
+			range = window.IDBKeyRange.only(key.value);
+			objectStore.index(key.index).openKeyCursor(range).onsuccess = function(e) {
+
+				var cursor = e.target.result;
+
+				if (cursor) {
+
+					if (key.keys.indexOf(cursor.primaryKey) != -1)
+					{ objectStore.delete(cursor.primaryKey); }
+
+					cursor["continue"]();
+
+				} else { onsuccess(); }
+			};
+
+		} else {
+			request = objectStore["delete"](key);
+			request.onsuccess = onsuccess;
+		}
 	};
 
 	/* =============================== */
@@ -263,11 +289,11 @@ define(function() {
 					back: "おはよう！"
 				}, {
 					stackID: stackID,
-					front: "Good evening!",
+					front: "Good afternoon!",
 					back: "こんにちは！"
 				}, {
 					stackID: stackID,
-					front: "Good night.",
+					front: "Good evening.",
 					back: "こんばんは。"
 				}
 			]);

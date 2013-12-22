@@ -492,7 +492,7 @@ define(function() {
 
 				if (data.length < 4) {
 
-					App.Utils.dialog("Not enough flashcards available!", "Create at least four flashcard to the quiz", function() {
+					App.Utils.dialog("Not enough flashcards available!", "Create at least four flashcard to start the quiz", function() {
 						window.location.hash = "page-stack:" + id;
 					});
 

@@ -94,34 +94,18 @@ define(["transit"], function() {
 			Flashcards.add(data);
 		},
 
-		// Move flashcard(s)
-		"click .flashcard-move": function(e) {
-
-			var $checkboxes = App.$("#page-stack #flashcards td input:checked");
-			var keys = [];
-
-			$checkboxes.each(function() {
-				var $parent = $(this).parents("tr");
-				keys.push(+$parent.attr("data-key"));
-			});
-
-			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
-
-			App.Utils.notification("Not available yet!");
-		},
-
 		// Remove flashcard(s)
 		"click .flashcard-remove": function(e) {
 
 			var $checkboxes = App.$("#page-stack #flashcards td input:checked");
 			var keys = [];
 
+			if (!$checkboxes.length) { return App.Utils.notification("Nothing selected"); }
+
 			$checkboxes.each(function() {
 				var $parent = $(this).parents("tr");
 				keys.push(+$parent.attr("data-key"));
 			});
-
-			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
 
 			App.Utils.dialog("Confirm", {
 
@@ -141,15 +125,46 @@ define(["transit"], function() {
 			var $checkboxes = App.$("#page-stack #flashcards td input:checked");
 			var keys = [];
 
+			if (!$checkboxes.length) { return App.Utils.notification("Nothing selected"); }
+
 			$checkboxes.each(function() {
 				var $parent = $(this).parents("tr");
 				keys.push(+$parent.attr("data-key"));
 			});
 
-			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
-
 			location.hash = "page-flashcard-edit:" + stackID + ":" + keys.shift();
 			Flashcards.update.queue = keys;
+		},
+
+		// Move flashcard(s)
+		"click .flashcard-move": function(e) {
+
+			var $checkboxes = App.$("#page-stack #flashcards td input:checked");
+			var stackname = App.$("#page-stack .stack-name").text().trim();
+
+			if (!$checkboxes.length) { return App.Utils.notification("Nothing selected"); }
+
+			App.Stacks.getAll(function(stacks) {
+
+				var $select = $("<select></select>"), destination;
+
+				[].forEach.call(stacks, function(v) {
+					destination = v.value.category + " // " + v.value.name;
+					if (destination == stackname)
+					{ $select.append("<option data-key='" + v.key + "' selected='selected'>" + destination + "</option>"); }
+					else
+					{ $select.append("<option data-key='" + v.key + "'>" + destination + "</option>"); }
+				});
+
+				App.Utils.dialog("Select destination", {
+
+					content: $select[0].outerHTML,
+					buttons: {
+						ok: Flashcards.move,
+						cancel: true
+					}
+				});
+			});
 		},
 
 		// Update flashcard(s)
@@ -204,7 +219,7 @@ define(["transit"], function() {
 	/* ===================== */
 
 	Flashcards.getAll = function(stackID, callback, applyMarkdown) {
-		App.DB.getData("App", "Flashcards", ["stackID", stackID], function(data) {
+		App.DB.getData("App", "Flashcards", { index: "stackID", value: stackID }, function(data) {
 
 			if (applyMarkdown) {
 				data.forEach(function(v) {
@@ -321,6 +336,41 @@ define(["transit"], function() {
 		// Remove key(s)
 		keys.forEach(function(key) {
 			App.DB.removeData("App", "Flashcards", key, function() { fn(key); });
+		});
+	};
+
+	/* ================== */
+	/* ====== MOVE ====== */
+	/* ================== */
+
+	Flashcards.move = function() {
+
+		var destination = $("#dialog select option:selected").text();
+		var currentStackID = +window.location.hash.split(":")[1];
+		var newStackID = +$("#dialog select option:selected").attr("data-key");
+		var $checkboxes = App.$("#page-stack #flashcards td input:checked");
+		var keys = [];
+
+		$checkboxes.each(function() {
+			var $parent = $(this).parents("tr");
+			keys.push(+$parent.attr("data-key"));
+		});
+
+		App.DB.getData("App", "Flashcards", keys, function(data) {
+
+			var flashcards = [];
+
+			[].forEach.call(data, function(v) {
+				v.value.stackID = newStackID;
+				flashcards.push(v.value);
+			});
+
+			App.DB.removeData("App", "Flashcards", { index: "stackID", value: currentStackID, keys: keys }, function(e) {
+				App.DB.addData("App", "Flashcards", flashcards, function(e) {
+					$checkboxes.parents("tr").remove();
+					App.Utils.notification("Moved " + keys.length + " flashcards to " + destination);
+				});
+			});
 		});
 	};
 
