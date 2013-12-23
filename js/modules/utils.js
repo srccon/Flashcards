@@ -230,5 +230,13 @@ define(function() {
 		  .replace(/\*(.+)\*/g, "<i>$1</i>");
 	};
 
+	/* ============================= */
+	/* ====== TRANSLATE RANGE ====== */
+	/* ============================= */
+
+	Utils.translateRange = function(val, a0, b0, a1, b1) {
+		return ((val-a0)/(b0-a0)) * (b1-a1) + a1
+	};
+
 	return Utils;
 });

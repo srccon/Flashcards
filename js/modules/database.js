@@ -138,7 +138,7 @@ define(function() {
 
 		} else if (key && typeof key == "object" && key.length == undefined) {
 
-			range = window.IDBKeyRange.only(key.value);
+			range = window.IDBKeyRange.only(key.range);
 
 			objectStore.index(key.index).openCursor(range).onsuccess = function(e) {
 
@@ -227,15 +227,37 @@ define(function() {
 	Database.updateData = function(dbName, objectStoreName, key, newData, onsuccess) {
 
 		var transaction = Database[dbName].transaction(objectStoreName, "readwrite");
-		var objectStore = transaction.objectStore(objectStoreName);
+		var objectStore = transaction.objectStore(objectStoreName), request;
 
-		var request = objectStore.get(+key).onsuccess = function(e) {
+		if (typeof key == "object" && key.length == undefined) {
 
-			var data = e.target.result, attr;
-			for (attr in newData) { data[attr] = newData[attr]; }
+			range = window.IDBKeyRange.only(key.range);
+			objectStore.index(key.index).openCursor(range).onsuccess = function(e) {
 
-			objectStore.put(data, +key).onsuccess = onsuccess;
-		};
+				var cursor = e.target.result, attr;
+
+				if (cursor) {
+
+					if (key.keys.indexOf(cursor.primaryKey) != -1) {
+						for (attr in newData) { cursor.value[attr] = newData[attr]; }
+						cursor.update(cursor.value);
+					}
+
+					cursor["continue"]();
+
+				} else { onsuccess(); }
+			};
+
+		} else {
+
+			request = objectStore.get(+key).onsuccess = function(e) {
+
+				var data = e.target.result, attr;
+				for (attr in newData) { data[attr] = newData[attr]; }
+
+				objectStore.put(data, +key).onsuccess = onsuccess;
+			};
+		}
 	};
 
 	/* ========================= */
@@ -250,7 +272,7 @@ define(function() {
 
 		if (typeof key == "object" && key.length == undefined) {
 
-			range = window.IDBKeyRange.only(key.value);
+			range = window.IDBKeyRange.only(key.range);
 			objectStore.index(key.index).openKeyCursor(range).onsuccess = function(e) {
 
 				var cursor = e.target.result;

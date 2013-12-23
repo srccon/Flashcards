@@ -35,7 +35,7 @@ define(["chart"], function(Chart) {
 		// Get all statistics
 		App.Statistics.get(function(data) {
 
-			var stackdata = [];
+			var stackdata = [], stackID;
 
 			// Sort them into their own stack array
 			[].forEach.call(data, function(v) {

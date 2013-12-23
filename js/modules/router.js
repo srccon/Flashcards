@@ -16,9 +16,33 @@ define(function() {
 			Router.templates[$(this).attr("id")] = $(this).html();
 		});
 
-		// Setup routing
 		window.addEventListener("hashchange", Router.route, false);
 		Router.route();
+	};
+
+	/* ==================== */
+	/* ====== EVENTS ====== */
+	/* ==================== */
+
+	Router.events = {
+
+		// Show android menu
+		"click .button-android-menu": function(e) {
+
+			var $actions = App.Router.$page.find(".actions");
+			$actions.toggleClass("android-menu");
+			App.Utils.forceRender($("body"));
+		},
+
+		// Hide android menu
+		"click": function(e) {
+
+			var $target = App.$(e.target);
+			if ($target.parent().hasClass("button-android-menu")) { $target = $target.parent(); }
+
+			if ($target.hasClass("button-android-menu")) { return; }
+			App.$(".actions").removeClass("android-menu");
+		}
 	};
 
 	/* ==================== */
@@ -36,11 +60,11 @@ define(function() {
 		},
 
 		"page-quiz": function(id) {
-			App.Stacks.quiz(+id);
+			App.Stacks.quiz.initialize(+id);
 		},
 
 		"page-practice": function(id) {
-			App.Stacks.practice(+id);
+			App.Stacks.practice.initialize(+id);
 		},
 
 		"page-flashcard-new": function(stackID) {
@@ -115,13 +139,19 @@ define(function() {
 						});
 
 						Router.$page.find(".note").hide();
-						Router.$page.find(".flashcard-actions").show();
+						Router.$page.find(".flashcard-actions-container").show();
 						$flashcards.show();
 					} else {
 						Router.$page.find(".note").show();
 					}
 				}, true);
 			});
+		}
+	};
+
+	Router.registerArgs = function(page, args) {
+		if (["stack", "practice", "quiz", "flashcard-edit", "flashcard-new"].indexOf(page) != -1) {
+			App.Stacks.current = +window.location.hash.split(":")[1];
 		}
 	};
 
@@ -147,6 +177,9 @@ define(function() {
 
 		// Hide the previous page
 		$pageCurrent.hide();
+
+		// Register arguments in sub modules
+		Router.registerArgs(hash.substr(5));
 
 		// Call route function
 		if (Router.routes[hash])

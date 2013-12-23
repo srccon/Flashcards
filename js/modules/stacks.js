@@ -17,22 +17,6 @@ define(function() {
 
 	Stacks.events = {
 
-		"click|touchstart": function(e) {
-
-			var $target = App.$(e.target);
-			if ($target.parent().hasClass("button-android-menu")) { $target = $target.parent(); }
-
-			if ($target.hasClass("button-android-menu")) { return; }
-			App.$(".actions").removeClass("android-menu");
-		},
-
-		"click .button-android-menu": function(e) {
-
-			var $actions = App.Router.$page.find(".actions");
-			$actions.toggleClass("android-menu");
-			App.Utils.forceRender($("body"));
-		},
-
 		// Expand category
 		"click #stacks > li ": function(e) {
 			$(e.currentTarget).toggleClass("expand");
@@ -45,6 +29,7 @@ define(function() {
 
 		// Create stack
 		"click .button-new-stack": function(e) {
+
 			App.Utils.dialog("Enter stack name", {
 
 				content: "<input type='text' name='stack-category' placeholder='Category'><br><br>" +
@@ -57,27 +42,10 @@ define(function() {
 			});
 		},
 
-		// Remove stack
-		"click .button-remove-stack": function(e) {
-			var stack = App.$("#page-stack-settings .stack-name").text();
-			var stackID = +window.location.hash.split(":")[1];
-
-			App.Utils.dialog("Confirm", {
-
-				content: "Remove \"" + stack + "\" and all of its flashcards?",
-
-				buttons: {
-					ok: function() { Stacks.remove(stackID); },
-					cancel: true
-				}
-			});
-		},
-
 		// Rename stack
 		"click .button-rename-stack": function(e) {
-			var stackID = +window.location.hash.split(":")[1];
-			var pair = App.$("#page-stack-settings .stack-name").text().split(" // ");
 
+			var pair = App.$("#page-stack-settings .stack-name").text().split(" // ");
 			var category = pair.shift();
 			var stack = pair.join("");
 			
@@ -87,33 +55,40 @@ define(function() {
 				         "<input type='text' name='stack-name' value='" + stack + "'>",
 
 				buttons: {
-					ok: function() { Stacks.rename(stackID); },
+					ok: function() { Stacks.rename(App.Stacks.current); },
 					cancel: true
 				}
 			});
 		},
 
+		// Remove stack
+		"click .button-remove-stack": function(e) {
+
+			var stack = App.$("#page-stack-settings .stack-name").text();
+
+			App.Utils.dialog("Confirm", {
+				content: "Remove \"" + stack + "\" and all of its flashcards?",
+				buttons: { ok: function() { Stacks.remove(App.Stacks.current); }, cancel: true }
+			});
+		},
+
 		// Practice mode
 		"click .button-practice": function(e) {
-			var stackID = +window.location.hash.split(":")[1];
-			window.location.hash = "page-practice:" + stackID;
+			window.location.hash = "page-practice:" + App.Stacks.current;
 		},
 
 		// Practice buttons
 		"click #practice-buttons .button": function(e) {
 
 			if ($(e.currentTarget).hasClass("green"))
-			{ App.Stacks.practice.score++; }
+			{ Stacks.practice.score++; }
 
-			App.Stacks.practice();
+			Stacks.practice.advance();
 		},
 
 		// Exit practice
 		"click .button-exit-practice": function(e) {
-			var stackID = +window.location.hash.split(":")[1];
-			delete Stacks.practice.flashcards;
-			delete Stacks.practice.index;
-			window.location.hash = "page-stack:" + stackID;
+			Stacks.practice.abort();
 		},
 
 		// Quiz buttons
@@ -131,24 +106,20 @@ define(function() {
 			window.setTimeout(function() {
 				Stacks.quiz.pending = false;
 				$target.removeClass(correct ? "correct" : "false");
-				if (!Stacks.quiz.question.failed) { App.Stacks.quiz.score++; }
-				if (correct) { Stacks.quiz(); }
+				if (!Stacks.quiz.question.failed) { Stacks.quiz.score++; }
+				if (correct) { Stacks.quiz.advance(); }
 			}, 500);
 		},
 
 		// Quiz mode
 		"click .button-quiz": function(e) {
-			var stackID = +window.location.hash.split(":")[1];
-			window.location.hash = "page-quiz:" + stackID;
+			window.location.hash = "page-quiz:" + App.Stacks.current;
 		},
 
 
 		// Exit quiz
 		"click .button-exit-quiz": function(e) {
-			var stackID = +window.location.hash.split(":")[1];
-			delete Stacks.quiz.flashcards;
-			delete Stacks.quiz.index;
-			window.location.hash = "page-stack:" + stackID;
+			Stacks.quiz.abort();
 		},
 
 		// Return to stacks
@@ -158,20 +129,18 @@ define(function() {
 
 		// Return to stack
 		"click .button-return-stack": function(e) {
-			var stackID = +window.location.hash.split(":")[1];
-			window.location.hash = "#page-stack:" + stackID;
+			window.location.hash = "#page-stack:" + App.Stacks.current;
 		},
 
 		// Stack settings
 		"click .button-stack-settings": function(e) {
-			var stackID = +window.location.hash.split(":")[1];
-			window.location.hash = "page-stack-settings:" + stackID;
+			window.location.hash = "page-stack-settings:" + App.Stacks.current;
 		},
 
 		// Stack settings
-		"change select.languages": function(e) {
+		"change .languages": function(e) {
 
-			var stackID = +window.location.hash.split(":")[1];
+			var stackID = App.Stacks.current;
 			var isFrom = $(e.currentTarget).hasClass("from");
 			var code = $(e.currentTarget).val();
 
@@ -183,9 +152,7 @@ define(function() {
 
 			App._settings.translation_preferences[stackID][isFrom ? "from" : "to"] = code;
 			App.Utils.localStorage("settings", App._settings);
-		},
-
-
+		}
 	};
 
 	/* ========================= */
@@ -196,13 +163,12 @@ define(function() {
 
 		Stacks.getAll(function(stacks) {
 
-			var $stacks = App.$("#stacks"), $category, category;
-			$stacks.html("");
-
-			var categories = {};
+			var $stacks = App.$("#stacks").html(""),
+			    $category,
+			    categories = {},
+			    category;
 
 			if (stacks.length) {
-
 
 				$stacks.parent().find(".note").hide();
 
@@ -267,7 +233,7 @@ define(function() {
 			if (!data) { return; }
 
 			data.id = id;
-			callback(data);
+			callback && callback(data);
 		});
 	};
 
@@ -286,7 +252,7 @@ define(function() {
 	Stacks.countFlashcards = function(stack, callback) {
 		App.DB.countObjectStoreEntries("App", "Flashcards", ["stackID", stack.key], function(num) {
 			stack.value.flashcardAmount = num;
-			callback(stack);
+			callback && callback(stack);
 		});
 	};
 
@@ -299,6 +265,7 @@ define(function() {
 		if (typeof category != "string") { category = $("#dialog input[name='stack-category']").val().trim(); }
 		if (typeof name != "string") { name = $("#dialog input[name='stack-name']").val().trim(); }
 
+		category = App.Utils.escapeHTML(category);
 		name = App.Utils.escapeHTML(name);
 
 		App.DB.addData("App", "Stacks", { category: category, name: name }, function(e) {
@@ -334,7 +301,7 @@ define(function() {
 
 			$category.toggleClass("expand", true);
 
-			if (callback) { callback(key, category, name) }
+			callback && callback(key, category, name);
 		});
 	};
 
@@ -365,6 +332,9 @@ define(function() {
 		var category = $("#dialog input[name='stack-category']").val().trim();
 		var name = $("#dialog input[name='stack-name']").val().trim();
 
+		category = App.Utils.escapeHTML(category);
+		name = App.Utils.escapeHTML(name);
+
 		App.DB.updateData("App", "Stacks", id, { category: category, name: name }, function(e) {
 			App.$(".stack[data-key=" + id + "] b").html(name);
 			App.$("#page-stack-settings .stack-name").html(category + " // " + name);
@@ -375,10 +345,11 @@ define(function() {
 	/* ====== PRACTICE ====== */
 	/* ====================== */
 
-	Stacks.practice = function(id) {
+	Stacks.practice = (function() {
 
-		// Fetch flashcards
-		if (id !== undefined) {
+		var api = {};
+
+		function initialize(id) {
 
 			App.Flashcards.getAll(id, function(data) {
 
@@ -425,19 +396,11 @@ define(function() {
 				}
 
 				Stacks.practice.flashcards = data;
-				Stacks.practice();
+				Stacks.practice.advance();
 			}, true);
-
-			return;
 		}
 
-		var flashcard = Stacks.practice.flashcards[Stacks.practice.index++],
-		    $front = App.$("#flashcard .front"),
-		    $back = App.$("#flashcard .back"),
-		    tallest;
-
-		// End reached
-		if (!flashcard) {
+		function end() {
 			delete Stacks.practice.flashcards;
 
 			App.Statistics.registerPracticeSession(
@@ -446,47 +409,82 @@ define(function() {
 				Stacks.practice.total
 			);
 
-			App.Utils.dialog("Session complete!", "<b>Score:</b> " + Stacks.practice.score + " out of " + Stacks.practice.total + "<br><br>(*＾▽＾)／", function() {
-
-				window.location.hash = "page-stack:" + Stacks.practice.id;
-			});
-
-			return;
+			var score = Math.round(100/Stacks.practice.total*Stacks.practice.score);
+			var message = Stacks.resultMessages[Math.round(App.Utils.translateRange(score, 0, 100, 0, 4))];
+		
+			App.Utils.dialog(
+				"Session complete!",
+				"<b>Score:</b> " + (Stacks.practice.score) + "/" + Stacks.practice.total + " (" + score + "%)<br><br>" + message,
+				function() { window.location.hash = "page-stack:" + Stacks.practice.id; }
+			);
 		}
 
-		// Swtich front/back randomly
-		if (App._settings.switch_front_back_randomly && Math.round(Math.random())) {
-			var front = flashcard.value.front;
-			flashcard.value.front = flashcard.value.back;
-			flashcard.value.back = front;
+		function abort() {
+			delete Stacks.practice.flashcards;
+			delete Stacks.practice.index;
+			window.location.hash = "page-stack:" + App.Stacks.current;
 		}
 
-		// Show/Hide buttons
-		App.$("#practice-buttons").toggle(!!App._settings.always_show_buttons);
+		function updateStats() {
+			$("#page-practice .stats").html("Flashcard " + (Stacks.practice.index) + " of " + Stacks.practice.total + "<br>");
+		}
 
-		// Reset rotation
-		$front.css({ rotateX: 5 });
-		$back.css({ rotateX: 180 });
-		App.$("#flashcard-shadow").css({ rotateX: 0 });
+		function advance() {
 
-		// Insert new data
-		$front.find("span").html(flashcard.value.front);
-		$back.find("span").html(flashcard.value.back);
+			var flashcard = Stacks.practice.flashcards[Stacks.practice.index++],
+			    $front = App.$("#flashcard .front"),
+			    $back = App.$("#flashcard .back"),
+			    tallest;
 
-		// Make each flashcard side of equal size
-		tallest = Math.max($front.height(), $back.height());
-		$front.height(tallest);
-		$back.height(tallest);
-	};
+			// End reached
+			if (!flashcard) { return end(); }
+
+			// Swtich front/back randomly
+			if (App._settings.switch_front_back_randomly && Math.round(Math.random())) {
+				var front = flashcard.value.front;
+				flashcard.value.front = flashcard.value.back;
+				flashcard.value.back = front;
+			}
+
+			// Show/Hide buttons
+			App.$("#practice-buttons").toggle(!!App._settings.always_show_buttons);
+
+			// Reset rotation
+			$front.css({ rotateX: 5 });
+			$back.css({ rotateX: 180 });
+			App.$("#flashcard-shadow").css({ rotateX: 0 });
+
+			// Insert new data
+			$front.find("span").html(flashcard.value.front);
+			$back.find("span").html(flashcard.value.back);
+
+			// Make each flashcard side of equal size
+			tallest = Math.max($front.height(), $back.height());
+			$front.height(tallest);
+			$back.height(tallest);
+
+			updateStats();
+		}
+
+		api = {
+			initialize: initialize,
+			advance: advance,
+			abort: abort
+		};
+
+		return api;
+
+	}());
 
 	/* ================== */
 	/* ====== QUIZ ====== */
 	/* ================== */
 
-	Stacks.quiz = function(id) {
+	Stacks.quiz = (function() {
 
-		// Fetch flashcards
-		if (id !== undefined) {
+		var api = {};
+
+		function initialize(id) {
 
 			App.Flashcards.getAll(id, function(data) {
 
@@ -532,19 +530,11 @@ define(function() {
 				}
 
 				Stacks.quiz.flashcards = data;
-				Stacks.quiz();
+				Stacks.quiz.advance();
 			}, true);
-
-			return;
 		}
 
-
-		Stacks.quiz.question = Stacks.quiz.flashcards[Stacks.quiz.index++];
-		var $question = App.$("#quiz .quiz-question"), $answers = App.$("#quiz .quiz-answer");
-		$answers.removeAttr("data-correct");
-
-		// End reached
-		if (!Stacks.quiz.question) {
+		function end() {
 			delete Stacks.quiz.flashcards;
 
 			App.Statistics.registerPracticeSession(
@@ -553,45 +543,94 @@ define(function() {
 				Stacks.quiz.total
 			);
 
-			App.Utils.dialog("Session complete!", "<b>Score:</b> " + Stacks.quiz.score + " out of " + Stacks.quiz.total + "<br><br>(*＾▽＾)／", function() {
-
-				window.location.hash = "page-stack:" + Stacks.quiz.id;
-			});
-
-			return;
+			var score = Math.round(100/Stacks.quiz.total*Stacks.quiz.score);
+			var message = Stacks.resultMessages[Math.round(App.Utils.translateRange(score, 0, 100, 0, 4))];
+		
+			App.Utils.dialog(
+				"Session complete!",
+				"<b>Score:</b> " + (Stacks.quiz.score) + "/" + Stacks.quiz.total + " (" + score + "%)<br><br>" + message,
+				function() { window.location.hash = "page-stack:" + Stacks.quiz.id; }
+			);
 		}
 
-		// Swtich front/back randomly
-		Stacks.quiz.question.flipped = App._settings.switch_front_back_randomly && Math.round(Math.random());
-
-		if (Stacks.quiz.question.flipped) {
-			var front = flashcard.value.front;
-			flashcard.value.front = flashcard.value.back;
-			flashcard.value.back = front;
+		function abort() {
+			delete Stacks.quiz.flashcards;
+			delete Stacks.quiz.index;
+			window.location.hash = "page-stack:" + App.Stacks.current;
 		}
 
-		var right_answer = Array.prototype.splice.call($answers, App.Utils.rand(0, 3), 1),
-		    indices, index, val, i;
-
-		// Insert new data
-		$question.html(Stacks.quiz.question.value.front);
-		$(right_answer).html(Stacks.quiz.question.value.back);
-		$(right_answer).attr("data-correct", "true");
-
-		indices = [Stacks.quiz.index-1];
-		index = Stacks.quiz.index-1;
-
-		for (i = 0; i < 3; i++) {
-
-			while (indices.indexOf(index) != -1)
-			{ index = App.Utils.rand(0, Stacks.quiz.total-1); }
-
-			indices.push(index);
-			val = Stacks.quiz.flashcards[index].value[Stacks.quiz.question.flipped ? "front" : "back"];
-
-			$(Array.prototype.pop.call($answers)).html(val);
+		function updateStats() {
+			$("#page-quiz .stats").html((Stacks.quiz.index) + " of " + Stacks.quiz.total + "<br>");
 		}
-	};
+
+		function advance() {
+			Stacks.quiz.question = Stacks.quiz.flashcards[Stacks.quiz.index++];
+			var $question = App.$("#quiz .quiz-question"), $answers = App.$("#quiz .quiz-answer");
+			$answers.removeAttr("data-correct");
+
+			// End reached
+			if (!Stacks.quiz.question) { return end();}
+
+			// Swtich front/back randomly
+			Stacks.quiz.question.flipped = App._settings.switch_front_back_randomly && Math.round(Math.random());
+
+			if (Stacks.quiz.question.flipped) {
+				var front = flashcard.value.front;
+				flashcard.value.front = flashcard.value.back;
+				flashcard.value.back = front;
+			}
+
+			var right_answer = Array.prototype.splice.call($answers, App.Utils.rand(0, 3), 1),
+			    indices, index, val, i;
+
+			// Insert new data
+			$question.html(Stacks.quiz.question.value.front);
+			$(right_answer).html(Stacks.quiz.question.value.back);
+			$(right_answer).attr("data-correct", "true");
+
+			indices = [Stacks.quiz.index-1];
+			index = Stacks.quiz.index-1;
+
+			for (i = 0; i < 3; i++) {
+
+				while (indices.indexOf(index) != -1)
+				{ index = App.Utils.rand(0, Stacks.quiz.total-1); }
+
+				indices.push(index);
+				val = Stacks.quiz.flashcards[index].value[Stacks.quiz.question.flipped ? "front" : "back"];
+
+				$(Array.prototype.pop.call($answers)).html(val);
+			}
+
+			updateStats();
+		}
+
+		api = {
+			initialize: initialize,
+			advance: advance,
+			abort: abort
+		};
+
+		return api;
+
+	}());
+
+	Stacks.resultMessages = [
+		// >= 0%
+		"Uh ou.. keep trying my friend!",
+
+		// >= 20%+
+		"I think you can do better!",
+
+		// >= 40%+
+		"We're getting there!",
+
+		// >= 60%+
+		"Almost there!",
+
+		// >= 80%+
+		"Well done!"
+	];
 
 	return Stacks;
 });

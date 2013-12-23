@@ -53,43 +53,35 @@ define(["transit"], function() {
 			});
 		},
 
-		"change #flashcards td input": function(e) {
-			var checked = $(e.currentTarget).is(":checked");
-			$(e.currentTarget).parents("tr").toggleClass("selected", !checked);
-		},
-
 		// Markdown info
 		"click .button-markdown-info": function(e) {
-
-			var text = "";
-
-			text += [
-				"<li>Italic: *word*</li>",
-				"<li>Bold: **word**</li>",
-				"<li>Bold and italic: ***word***</li>",
-				"<li>Furigana: [明日]{あした}</li>"
-			].join("");
-
-			App.Utils.dialog("Markdown", "<ul>" + text + "</ul>");
+			App.Utils.dialog("Markdown",
+				"<table class='help-markdown'>" +
+					"<tr><th>Description</th><th>Markdown</th><th>Result</th></tr>" +
+					"<tr><td>Italic</td><td>*word*</td><td><i>word</i></td></tr>" +
+					"<tr><td>Bold</td><td>**word**</td><td><b>word</b></td></tr>" +
+					"<tr><td>Bold and italic</td><td>***word***</td><td><b><i>word</i></b></td></tr>" +
+					"<tr><td>Furigana</td><td>[明日]{あした}</td><td><ruby>明日<rp>(</rp><rt>あした</rt><rp>)</rp></ruby></td></tr>" +
+				"</table>"
+			);
 		},
 
 		// New flashcard(s)
 		"click .button-new-flashcard": function(e) {
-			var stackID = +window.location.hash.split(":")[1];
-			location.hash = "page-flashcard-new:" + stackID;
+			location.hash = "page-flashcard-new:" + App.Stacks.current;
 		},
 
 		// Add flashcard(s)
 		"click .flashcard-add": function(e) {
 
 			var data = {
-				stackID: +window.location.hash.split(":")[1],
+				stackID: App.Stacks.current,
 				front: App.Utils.escapeHTML($("#page-flashcard-new textarea[name=front]").val()),
 				back: App.Utils.escapeHTML($("#page-flashcard-new textarea[name=back]").val())
 			};
 
 			if (!data.front.trim() || !data.back.trim())
-			{ return App.Utils.notification("Your flashcard is not entirely filled out!"); }
+			{ return App.Utils.notification("Front and/or back is empty"); }
 
 			Flashcards.add(data);
 		},
@@ -97,20 +89,10 @@ define(["transit"], function() {
 		// Remove flashcard(s)
 		"click .flashcard-remove": function(e) {
 
-			var $checkboxes = App.$("#page-stack #flashcards td input:checked");
-			var keys = [];
-
-			if (!$checkboxes.length) { return App.Utils.notification("Nothing selected"); }
-
-			$checkboxes.each(function() {
-				var $parent = $(this).parents("tr");
-				keys.push(+$parent.attr("data-key"));
-			});
+			var keys = Flashcards.getSelection();
 
 			App.Utils.dialog("Confirm", {
-
 				content: "Remove selection?",
-
 				buttons: {
 					ok: function() { Flashcards.remove(keys); },
 					cancel: true
@@ -121,18 +103,8 @@ define(["transit"], function() {
 		// Edit flashcard(s)
 		"click .flashcard-edit": function(e) {
 
-			var stackID = +window.location.hash.split(":")[1];
-			var $checkboxes = App.$("#page-stack #flashcards td input:checked");
-			var keys = [];
-
-			if (!$checkboxes.length) { return App.Utils.notification("Nothing selected"); }
-
-			$checkboxes.each(function() {
-				var $parent = $(this).parents("tr");
-				keys.push(+$parent.attr("data-key"));
-			});
-
-			location.hash = "page-flashcard-edit:" + stackID + ":" + keys.shift();
+			var keys = Flashcards.getSelection();
+			location.hash = "page-flashcard-edit:" + App.Stacks.current + ":" + keys.shift();
 			Flashcards.update.queue = keys;
 		},
 
@@ -183,11 +155,10 @@ define(["transit"], function() {
 		// Translate flashcard
 		"click .translate": function(e) {
 
-			var stackID = +window.location.hash.split(":")[1];
 			var isFront = $(e.currentTarget).hasClass("front");
 			var text = App.Router.$page.find("textarea[name=" + (isFront ? "front" : "back") + "]").val();
 
-			Flashcards.translate(stackID, text, isFront);
+			Flashcards.translate(App.Stacks.current, text, isFront);
 		},
 
 		// Flashcard transition
@@ -219,7 +190,7 @@ define(["transit"], function() {
 	/* ===================== */
 
 	Flashcards.getAll = function(stackID, callback, applyMarkdown) {
-		App.DB.getData("App", "Flashcards", { index: "stackID", value: stackID }, function(data) {
+		App.DB.getData("App", "Flashcards", { index: "stackID", range: stackID }, function(data) {
 
 			if (applyMarkdown) {
 				data.forEach(function(v) {
@@ -246,6 +217,24 @@ define(["transit"], function() {
 
 			callback(data);
 		});
+	};
+
+	/* =========================== */
+	/* ====== GET SELECTION ====== */
+	/* =========================== */
+
+	Flashcards.getSelection = function() {
+		var $checkboxes = App.$("#flashcards td input:checked");
+		var keys = [];
+
+		if (!$checkboxes.length) { return App.Utils.notification("Nothing selected"); }
+
+		$checkboxes.each(function() {
+			var $parent = $(this).parents("tr");
+			keys.push(+$parent.attr("data-key"));
+		});
+
+		return keys;
 	};
 
 	/* ================= */
@@ -275,15 +264,13 @@ define(["transit"], function() {
 
 		App.DB.updateData("App", "Flashcards", key, newData, function() {
 
-			var stackID = +window.location.hash.split(":")[1];
-
 			if (Flashcards.update.queue && Flashcards.update.queue.length) {
 				var key = Flashcards.update.queue.shift();
-				location.hash = "page-flashcard-edit:" + stackID + ":" + key;
+				location.hash = "page-flashcard-edit:" + App.Stacks.current + ":" + key;
 				return;
 			}
 
-			window.location.hash = "#page-stack:" + stackID;
+			window.location.hash = "#page-stack:" + App.Stacks.current;
 		});
 	};
 
@@ -324,9 +311,9 @@ define(["transit"], function() {
 			if (!no_UI) {
 				App.$("#page-stack tr[data-key=" + key + "]").remove();
 
-				if (App.$("#page-stack tr").length < 3) {
+				if (App.$("#page-stack tr").length < 5) {
 					$("#page-stack .note").show();
-					App.$("#flashcards, .flashcard-actions").hide();
+					App.$(".flashcard-actions-container").hide();
 				}
 			}
 			
@@ -346,32 +333,29 @@ define(["transit"], function() {
 	Flashcards.move = function() {
 
 		var destination = $("#dialog select option:selected").text();
-		var currentStackID = +window.location.hash.split(":")[1];
-		var newStackID = +$("#dialog select option:selected").attr("data-key");
+		var stackID = +$("#dialog select option:selected").attr("data-key");
 		var $checkboxes = App.$("#page-stack #flashcards td input:checked");
-		var keys = [];
+		var keys = Flashcards.getSelection();
 
-		$checkboxes.each(function() {
-			var $parent = $(this).parents("tr");
-			keys.push(+$parent.attr("data-key"));
-		});
+		App.DB.updateData("App", "Flashcards", {
 
-		App.DB.getData("App", "Flashcards", keys, function(data) {
+				index: "stackID",
+				range: App.Stacks.current,
+				keys: keys
 
-			var flashcards = [];
+			}, { stackID: stackID },
 
-			[].forEach.call(data, function(v) {
-				v.value.stackID = newStackID;
-				flashcards.push(v.value);
-			});
+			function(e) {
+				$checkboxes.parents("tr").remove();
 
-			App.DB.removeData("App", "Flashcards", { index: "stackID", value: currentStackID, keys: keys }, function(e) {
-				App.DB.addData("App", "Flashcards", flashcards, function(e) {
-					$checkboxes.parents("tr").remove();
-					App.Utils.notification("Moved " + keys.length + " flashcards to " + destination);
-				});
-			});
-		});
+				if (App.$("#page-stack tr").length < 5) {
+					$("#page-stack .note").show();
+					App.$(".flashcard-actions-container").hide();
+				}
+
+				App.Utils.notification("Moved " + keys.length + " flashcards to " + destination);
+			}
+		);
 	};
 
 	return Flashcards;

@@ -51,11 +51,8 @@ define(function() {
 		},
 
 		"click .button-reset-all": function(e) {
-
 			App.Utils.dialog("Confirm", {
-
 				content: "Do you really wish to delete your entire stacks, flashcards and statistics?",
-
 				buttons: {
 					ok: function() { Settings.reset(); },
 					cancel: true
@@ -65,9 +62,7 @@ define(function() {
 
 		"click .button-reset-statistics": function(e) {
 			App.Utils.dialog("Confirm", {
-
 				content: "Do you really wish to delete your statistics?",
-
 				buttons: {
 					ok: function() { Settings.reset_statistics(); },
 					cancel: true
@@ -98,7 +93,7 @@ define(function() {
 
 		App.Utils.localStorage("settings", _settings);
 		App._settings = _settings;
-	}
+	};
 
 	/* ========================= */
 	/* ====== EXPORT JSON ====== */
@@ -109,9 +104,8 @@ define(function() {
 		var anchor = document.createElement("a"),
 		    json_data = {},
 		    count = 0,
-		    stackdata, interval, out;
-
-		var check_fn = function() {
+		    stackdata, interval, out,
+		    check_fn = function() {
 
 			if (count != Object.keys(stackdata).length) { return; }
 			window.clearInterval(interval);
@@ -194,23 +188,15 @@ define(function() {
 			}
 		}
 
-		// Existing stack data holders 
-		var stack_names = [];
-		var stack_keys = [];
+		var stack_names = [],
+		    stack_keys = [],
+		    imported = [],
+		    merged = [],
+		    count = 0,
+		    stack_length = 0,
+		    interval,
 
-		// Counter for async transactions
-		var count = 0;
-		var stack_length = 0;
-
-		Object.keys(json_data).forEach(function(v) {
-			stack_length += Object.keys(json_data[v]).length;
-		});
-
-		var imported = [];
-		var merged = [];
-		var interval;
-
-		var check_fn = function() {
+		    check_fn = function() {
 
 			if (count < stack_length) { return; }
 			window.clearInterval(interval);
@@ -229,6 +215,10 @@ define(function() {
 			App.Utils.dialog("Import", out.join("<br><br>"));
 			window.location.hash = "page-settings";
 		};
+
+		Object.keys(json_data).forEach(function(v) {
+			stack_length += Object.keys(json_data[v]).length;
+		});
 
 		App.Stacks.getAll(function(data) {
 
