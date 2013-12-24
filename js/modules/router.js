@@ -150,7 +150,7 @@ define(function() {
 	};
 
 	Router.registerArgs = function(page, args) {
-		if (["stack", "practice", "quiz", "flashcard-edit", "flashcard-new"].indexOf(page) != -1) {
+		if (["stack", "stack-settings", "practice", "quiz", "flashcard-edit", "flashcard-new"].indexOf(page) != -1) {
 			App.Stacks.current = +window.location.hash.split(":")[1];
 		}
 	};

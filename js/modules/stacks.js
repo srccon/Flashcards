@@ -242,7 +242,10 @@ define(function() {
 	/* ===================== */
 
 	Stacks.getAll = function(callback) {
-		App.DB.getData("App", "Stacks", null, callback);
+		App.DB.getData("App", "Stacks", null, function(data) {
+			data = data.sort(function(a, b) { return a.value.category < b.value.category ? -1 : 1; });
+			callback(data);
+		});
 	};
 
 	/* ============================== */

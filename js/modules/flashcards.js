@@ -90,6 +90,7 @@ define(["transit"], function() {
 		"click .flashcard-remove": function(e) {
 
 			var keys = Flashcards.getSelection();
+			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
 
 			App.Utils.dialog("Confirm", {
 				content: "Remove selection?",
@@ -104,6 +105,8 @@ define(["transit"], function() {
 		"click .flashcard-edit": function(e) {
 
 			var keys = Flashcards.getSelection();
+			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
+
 			location.hash = "page-flashcard-edit:" + App.Stacks.current + ":" + keys.shift();
 			Flashcards.update.queue = keys;
 		},
@@ -122,10 +125,7 @@ define(["transit"], function() {
 
 				[].forEach.call(stacks, function(v) {
 					destination = v.value.category + " // " + v.value.name;
-					if (destination == stackname)
-					{ $select.append("<option data-key='" + v.key + "' selected='selected'>" + destination + "</option>"); }
-					else
-					{ $select.append("<option data-key='" + v.key + "'>" + destination + "</option>"); }
+					$select.append("<option data-key='" + v.key + "'>" + destination + "</option>");
 				});
 
 				App.Utils.dialog("Select destination", {
@@ -199,6 +199,7 @@ define(["transit"], function() {
 				});
 			}
 
+			data = data.sort(function(a, b) { return a.value.front < b.value.front ? -1 : 1; });
 			callback(data, stackID);
 		});
 	};

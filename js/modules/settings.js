@@ -70,7 +70,7 @@ define(function() {
 			});
 		},
 
-		"change input[type=checkbox]": function(e) {
+		"change #page-settings input[type=checkbox]": function(e) {
 			var what = App.$(e.currentTarget).attr("name");
 			var status = App.$(e.currentTarget).is(":checked");
 			Settings.set(what, status);

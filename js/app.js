@@ -36,7 +36,7 @@ define([
 		// Load indexedDB shim if needed
 		if (!window.indexedDB) {
 
-			require(["js_external/indexedDB"], function() {
+			require(["js_external/indexedDB.js"], function() {
 				// window.shimIndexedDB.__debug(true);
 				App.initialize();
 			});
