@@ -916,13 +916,14 @@ textarea {
 }
 
 #page-stack-settings .languages {
-	padding: 1.5em;
+	padding: 1em;
 	width: 100%;
 	font-weight: bold;
 	color: #666;
 	background-color: #FFF;
 	border: 0.125em solid #E0E0E0;
 	border-radius: 0.1875em;
+	-webkit-appearance: listbox;
 }
 
 /* ================== */
