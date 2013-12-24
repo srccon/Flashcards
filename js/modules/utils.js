@@ -218,16 +218,16 @@ define(function() {
 	/* ====== MARKDOWN ====== */
 	/* ====================== */
 
-	Utils.markdown = function(str) {
+	Utils.markdown = function(str, remove) {
 
 		// Ruby tags: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby
 
 		return str
-		  .replace(/\[([^}]+)\]{([^{]+)}/g, "<ruby>$1<rp>(</rp><rt>$2</rt><rp>)</rp></ruby>")
-		  .replace(/([^}]+){([^{]+)}/g, "<ruby>$1<rp>(</rp><rt>$2</rt><rp>)</rp></ruby>")
-		  .replace(/\*\*\*(.+)\*\*\*/g, "<b><i>$1</i></b>")
-		  .replace(/\*\*(.+)\*\*/g, "<b>$1</b>")
-		  .replace(/\*(.+)\*/g, "<i>$1</i>");
+		  .replace(/\[([^}]+)\]{([^{]+)}/g, remove ? "$1" : "<ruby>$1<rp>(</rp><rt>$2</rt><rp>)</rp></ruby>")
+		  .replace(/([^}]+){([^{]+)}/g, remove ? "$1" : "<ruby>$1<rp>(</rp><rt>$2</rt><rp>)</rp></ruby>")
+		  .replace(/\*\*\*(.+)\*\*\*/g, remove ? "$1" : "<b><i>$1</i></b>")
+		  .replace(/\*\*(.+)\*\*/g, remove ? "$1" : "<b>$1</b>")
+		  .replace(/\*(.+)\*/g, remove ? "$1" : "<i>$1</i>");
 	};
 
 	/* ============================= */
@@ -236,6 +236,20 @@ define(function() {
 
 	Utils.translateRange = function(val, a0, b0, a1, b1) {
 		return ((val-a0)/(b0-a0)) * (b1-a1) + a1
+	};
+
+	/* =================== */
+	/* ====== SPEAK ====== */
+	/* =================== */
+
+	Utils.speak = function(text, langCode, rate) {
+		if (!(window.speechSynthesis || window.SpeechSynthesisUtterance)) { return; }
+		
+		var u = new window.SpeechSynthesisUtterance();
+		u.text = text;
+		u.lang = langCode;
+		u.rate = rate || 1.0;
+		window.speechSynthesis.speak(u);
 	};
 
 	return Utils;

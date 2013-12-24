@@ -99,9 +99,22 @@ define(function() {
 
 			var $target = $(e.currentTarget);
 			var correct = $target.attr("data-correct") == "true";
+			var flipped = App.Stacks.quiz.question.flipped;
+			var langCode, text, prefs;
 
 			if (!correct) { Stacks.quiz.question.failed = true; }
 			$target.addClass(correct ? "correct" : "false");
+
+			if (correct && App._settings.tts) {
+
+				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.quiz.id];
+				
+				if (prefs) {
+					langCode = flipped ? prefs.from : prefs.to;
+					text = App.Utils.markdown(App.Stacks.quiz.question.value[flipped ? "front" : "back"], true);
+					App.Utils.speak(text, langCode);
+				}
+			}
 
 			window.setTimeout(function() {
 				Stacks.quiz.pending = false;
@@ -400,7 +413,7 @@ define(function() {
 
 				Stacks.practice.flashcards = data;
 				Stacks.practice.advance();
-			}, true);
+			});
 		}
 
 		function end() {
@@ -437,13 +450,16 @@ define(function() {
 			var flashcard = Stacks.practice.flashcards[Stacks.practice.index++],
 			    $front = App.$("#flashcard .front"),
 			    $back = App.$("#flashcard .back"),
-			    tallest;
+			    tallest, prefs, langCode, text;
 
 			// End reached
 			if (!flashcard) { return end(); }
 
+			App.Stacks.practice.flashcard = flashcard;
+			App.Stacks.practice.flashcard.flipped = App._settings.switch_front_back_randomly && Math.round(Math.random());
+
 			// Swtich front/back randomly
-			if (App._settings.switch_front_back_randomly && Math.round(Math.random())) {
+			if (App.Stacks.practice.flashcard.flipped) {
 				var front = flashcard.value.front;
 				flashcard.value.front = flashcard.value.back;
 				flashcard.value.back = front;
@@ -458,8 +474,8 @@ define(function() {
 			App.$("#flashcard-shadow").css({ rotateX: 0 });
 
 			// Insert new data
-			$front.find("span").html(flashcard.value.front);
-			$back.find("span").html(flashcard.value.back);
+			$front.find("span").html(App.Utils.markdown(flashcard.value.front));
+			$back.find("span").html(App.Utils.markdown(flashcard.value.back));
 
 			// Make each flashcard side of equal size
 			tallest = Math.max($front.height(), $back.height());
@@ -467,6 +483,17 @@ define(function() {
 			$back.height(tallest);
 
 			updateStats();
+
+			if (App._settings.tts) {
+
+				prefs = App._settings.translation_preferences && App._settings.translation_preferences[Stacks.practice.id];
+				
+				if (prefs) {
+					langCode = App.Stacks.practice.flashcard.flipped ? prefs.to : prefs.from;
+					text = App.Utils.markdown(flashcard.value.front, true);
+					App.Utils.speak(text, langCode);
+				}
+			}
 		}
 
 		api = {
@@ -567,24 +594,25 @@ define(function() {
 		}
 
 		function advance() {
+			
 			Stacks.quiz.question = Stacks.quiz.flashcards[Stacks.quiz.index++];
-			var $question = App.$("#quiz .quiz-question"), $answers = App.$("#quiz .quiz-answer");
+			if (!Stacks.quiz.question) { return end(); }
+
+			var $question = App.$("#quiz .quiz-question"),
+			    $answers = App.$("#quiz .quiz-answer"),
+			    flipped = App._settings.switch_front_back_randomly && Math.round(Math.random());
+			
 			$answers.removeAttr("data-correct");
+			Stacks.quiz.question.flipped = flipped;
 
-			// End reached
-			if (!Stacks.quiz.question) { return end();}
-
-			// Swtich front/back randomly
-			Stacks.quiz.question.flipped = App._settings.switch_front_back_randomly && Math.round(Math.random());
-
-			if (Stacks.quiz.question.flipped) {
+			if (flipped) {
 				var front = flashcard.value.front;
 				flashcard.value.front = flashcard.value.back;
 				flashcard.value.back = front;
 			}
 
 			var right_answer = Array.prototype.splice.call($answers, App.Utils.rand(0, 3), 1),
-			    indices, index, val, i;
+			    indices, index, val, i, langCode, text, prefs;
 
 			// Insert new data
 			$question.html(Stacks.quiz.question.value.front);
@@ -600,12 +628,23 @@ define(function() {
 				{ index = App.Utils.rand(0, Stacks.quiz.total-1); }
 
 				indices.push(index);
-				val = Stacks.quiz.flashcards[index].value[Stacks.quiz.question.flipped ? "front" : "back"];
+				val = Stacks.quiz.flashcards[index].value[flipped ? "front" : "back"];
 
 				$(Array.prototype.pop.call($answers)).html(val);
 			}
 
 			updateStats();
+
+			if (App._settings.tts) {
+
+				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.quiz.id];
+				
+				if (prefs) {
+					langCode = flipped ? prefs.to : prefs.from;
+					text = App.Utils.markdown(App.Stacks.quiz.question.value[flipped ? "back" : "front"], true);
+					App.Utils.speak(text, langCode);
+				}
+			}
 		}
 
 		api = {

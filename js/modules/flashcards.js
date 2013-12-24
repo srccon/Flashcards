@@ -164,7 +164,7 @@ define(["transit"], function() {
 		// Flashcard transition
 		"click #flashcard .front": function(e) {
 
-			var time_factor = 1;
+			var time_factor = 1, langCode, text, prefs;
 			if (App._settings.disable_animation) { time_factor = 0; }
 
 			$("#flashcard .front").transition({ rotateX: 180 }, 1000 * time_factor);
@@ -172,16 +172,38 @@ define(["transit"], function() {
 			$("#flashcard-shadow").transition({ rotateX: 180 }, 1000 * time_factor);
 
 			$("#practice-buttons").delay(1000 * time_factor).fadeIn(500 * time_factor);
+
+			if (App._settings.tts) {
+
+				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.practice.id];
+				
+				if (prefs) {
+					langCode = App.Stacks.practice.flashcard.flipped ? prefs.from : prefs.to;
+					text = App.Utils.markdown(App.Stacks.practice.flashcard.value.back, true);
+					App.Utils.speak(text, langCode);
+				}
+			}
 		},
 
 		"click #flashcard .back": function(e) {
 
-			var time_factor = 1;
+			var time_factor = 1, langCode, text, prefs;
 			if (App._settings.disable_animation) { time_factor = 0; }
 
 			$("#flashcard .front").transition({ rotateX: 5 }, 1000 * time_factor);
 			$("#flashcard .back").transition({ rotateX: 180 }, 1000 * time_factor);
 			$("#flashcard-shadow").transition({ rotateX: 0 }, 1000 * time_factor);
+
+			if (App._settings.tts) {
+
+				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.practice.id];
+				
+				if (prefs) {
+					langCode = App.Stacks.practice.flashcard.flipped ? prefs.to : prefs.from;
+					text = App.Utils.markdown(App.Stacks.practice.flashcard.value.front, true);
+					App.Utils.speak(text, langCode);
+				}
+			}
 		}
 	};
 
