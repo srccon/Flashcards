@@ -18,12 +18,14 @@ A simple flashcard application for android and web browsers.
 
 ## Features
 
-* Statistics
-* Import/Export
 * Clean and accessible UI
+* Import/Export
+* Categories and stacks
+* Quiz mode
+* Flashcard filter
+* Statistics
 * Word translation
-* Markdown support
-* Syncing [in progress]
+* Text To Speech
 
 ## ToDo
 
