@@ -187,7 +187,7 @@ define(function() {
 
 		// Route to the new page
 		if ($pageNext.hasClass("page")) {
-			App.$("html").attr("data-page", hash);
+			App.$("html").attr("class", hash);
 			Router.currentPage = hash;
 			$pageNext.show();
 		}
