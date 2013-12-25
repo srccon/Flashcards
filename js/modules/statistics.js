@@ -66,7 +66,7 @@ define(["chart"], function(Chart) {
 					ctx.canvas.height = Math.round(ctx.canvas.width / 1.618);
 
 					// Insert heading and canvas
-					App.$("#page-statistics").find(".content").append("<h1>" + stack.name + "</h1><hr>");
+					App.$("#page-statistics").find(".content").append("<h1>" + stack.category + " // " + stack.name + "</h1><hr>");
 					App.$("#page-statistics").find(".content").append(ctx.canvas);
 					App.$("#page-statistics").find(".content").append("<hr class='transparent'>");
 

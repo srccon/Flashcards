@@ -26,7 +26,7 @@ html {
 }
 
 body {
-	font-family: sans-serif-light, Roboto, "Segoe UI", Arial, sans-serif;
+	font-family: sans-serif-light, Roboto, "Segoe UI", sans-serif;
 
 	background-color: #F6F6F6;
 	margin: 0px auto;
@@ -35,7 +35,6 @@ body {
 	max-width: 800px;
 
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	position: relative;
 
 	background-image:
 	linear-gradient(45deg, rgba(0, 0, 0, 0.02) 30%, transparent 10%, transparent),
@@ -712,6 +711,7 @@ textarea {
 	perspective: 31.25em;
 	position: relative;
 	width: 100%;
+	font-family: Roboto, "Segoe UI", sans-serif;
 }
 
 #flashcard-shadow {
