@@ -1,9 +1,12 @@
 define(function() {
 
-	var PhoneGap = {};
+	var PhoneGap = {}, App;
 	PhoneGap.currentDir = "/mnt/sdcard/";
 
 	PhoneGap.initialize = function() {
+
+		App = require("app");
+		
 		$("body").on("click", "#file-browser li", function(e) {
 
 			var $entry = $(e.currentTarget);
