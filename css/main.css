@@ -453,8 +453,8 @@ textarea {
 
 	color: #FFF;
 	text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5);
-	font-size: 1.2em;
-	padding: 0.7em 1em;
+	font-size: 1em;
+	padding: 1em 1.3em;
 	
 	min-width: 6.25em;
 	text-align: center;
@@ -466,6 +466,19 @@ textarea {
 	pointer-events: none;
 }
 
+.tts {
+	margin-top: 15%;
+	top: 3em;
+	right: 1em;
+	background-color: #FFF;
+	border-radius: 50%;
+	padding: 0.5em;
+	color: #000;
+	cursor: pointer;
+	opacity: 0.2;
+}
+
+.tts:hover { opacity: 0.4; }
 
 /* ==================== */
 /* ====== STACKS ====== */

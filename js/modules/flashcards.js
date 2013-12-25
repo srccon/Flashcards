@@ -164,8 +164,12 @@ define(["transit"], function() {
 		// Flashcard transition
 		"click #flashcard .front": function(e) {
 
-			var time_factor = 1, langCode, text, prefs;
+			var time_factor = 1,
+			    flipped = App.Stacks.practice.flashcard.flipped,
+			    langCode, text, prefs;
+
 			if (App._settings.disable_animation) { time_factor = 0; }
+			App.Stacks.practice.flashcard.flipped = !App.Stacks.practice.flashcard.flipped;
 
 			$("#flashcard .front").transition({ rotateX: 180 }, 1000 * time_factor);
 			$("#flashcard .back").transition({ rotateX: 365 }, 1000 * time_factor);
@@ -173,13 +177,13 @@ define(["transit"], function() {
 
 			$("#practice-buttons").delay(1000 * time_factor).fadeIn(500 * time_factor);
 
-			if (App._settings.tts) {
+			if (App._settings.tts_auto) {
 
 				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.practice.id];
 				
 				if (prefs) {
-					langCode = App.Stacks.practice.flashcard.flipped ? prefs.from : prefs.to;
-					text = App.Utils.markdown(App.Stacks.practice.flashcard.value.back, true);
+					langCode = flipped ? prefs.from : prefs.to;
+					text = App.Utils.markdown(App.Stacks.practice.flashcard.value[flipped ? "front" : "back"], true);
 					App.Utils.speak(text, langCode);
 				}
 			}
@@ -187,20 +191,24 @@ define(["transit"], function() {
 
 		"click #flashcard .back": function(e) {
 
-			var time_factor = 1, langCode, text, prefs;
+			var time_factor = 1,
+			    flipped = App.Stacks.practice.flashcard.flipped,
+			    langCode, text, prefs;
+
 			if (App._settings.disable_animation) { time_factor = 0; }
+			App.Stacks.practice.flashcard.flipped = !App.Stacks.practice.flashcard.flipped;
 
 			$("#flashcard .front").transition({ rotateX: 5 }, 1000 * time_factor);
 			$("#flashcard .back").transition({ rotateX: 180 }, 1000 * time_factor);
 			$("#flashcard-shadow").transition({ rotateX: 0 }, 1000 * time_factor);
 
-			if (App._settings.tts) {
+			if (App._settings.tts_auto) {
 
 				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.practice.id];
 				
 				if (prefs) {
 					langCode = App.Stacks.practice.flashcard.flipped ? prefs.to : prefs.from;
-					text = App.Utils.markdown(App.Stacks.practice.flashcard.value.front, true);
+					text = App.Utils.markdown(App.Stacks.practice.flashcard.value[flipped ? "front" : "back"], true);
 					App.Utils.speak(text, langCode);
 				}
 			}
@@ -300,7 +308,7 @@ define(["transit"], function() {
 	Flashcards.translate = function(stackID, text, isFront) {
 
 		var prefs = App._settings.translation_preferences && App._settings.translation_preferences[stackID], from, to, url, $target;
-		if (!prefs) { return App.Utils.notification("Please set your translation preferences in your stack settings first."); }
+		if (!prefs) { return App.Utils.notification("Please set your translation preferences in your stack settings first"); }
 
 		$target = App.Router.$page.find("textarea[name=" + (isFront ? "back" : "front") + "]");
 		$target.val("translating ...");

@@ -242,13 +242,16 @@ define(function() {
 	/* ====== SPEAK ====== */
 	/* =================== */
 
-	Utils.speak = function(text, langCode, rate) {
+	Utils.speak = function(text, langCode, callback) {
 		if (!(window.speechSynthesis || window.SpeechSynthesisUtterance)) { return; }
 		
 		var u = new window.SpeechSynthesisUtterance();
+		
 		u.text = text;
 		u.lang = langCode;
-		u.rate = rate || 1.0;
+		u.rate = 1.0;
+
+		if (callback) { u.onend = callback; }
 		window.speechSynthesis.speak(u);
 	};
 

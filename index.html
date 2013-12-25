@@ -8,6 +8,7 @@
 		<link rel="stylesheet" type="text/css" href="css/font-awesome.css">
 		<link rel="stylesheet" type="text/css" href="css/roboto.css">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
+
 		<link rel="apple-touch-icon" href="apple-touch-icon.png">
 		<link rel="icon" type="image/x-icon" href="favicon.ico" />
 
@@ -96,7 +97,7 @@
 				<hr class="transparent">
 				<h1>Practice mode</h1><hr>
 
-				<label><input type="checkbox" name="tts"> <span></span> Enable text to speech</label>
+				<label><input type="checkbox" name="tts_auto"> <span></span> Automatically play text to speech</label>
 				<label><input type="checkbox" name="switch_front_back"> <span></span> Switch front/back</label>
 				<label><input type="checkbox" name="switch_front_back_randomly"> <span></span> Switch front/back randomly</label>
 				<label><input type="checkbox" name="shuffle_flashcards"> <span></span> Shuffle flashcards</label>
@@ -254,6 +255,8 @@
 					</tr>
 				</table>
 
+				<a class="button stretch button-apply-lang-all">apply language preferences to all stacks in this category</a><br><br>
+
 				<hr class="transparent">
 				<h1>Actions</h1><hr>
 
@@ -366,6 +369,10 @@
 				</div>
 
 				<div id="flashcard-shadow"></div>
+
+				<div style="text-align: center;">
+					<span class="tts fa fa-volume-up fa-2x"></span>
+				</div>
 
 				<div id="practice-buttons" style="display: none">
 					<span class="button red">nope</span>
