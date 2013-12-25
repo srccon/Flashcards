@@ -164,6 +164,9 @@ define(["transit"], function() {
 		// Flashcard transition
 		"click #flashcard .front": function(e) {
 
+			if (App.Stacks.practice.pending) { return; }
+			App.Stacks.practice.pending = true;
+
 			var time_factor = 1,
 			    flipped = App.Stacks.practice.flashcard.flipped,
 			    langCode, text, prefs;
@@ -171,11 +174,14 @@ define(["transit"], function() {
 			if (App._settings.disable_animation) { time_factor = 0; }
 			App.Stacks.practice.flashcard.flipped = !App.Stacks.practice.flashcard.flipped;
 
-			$("#flashcard .front").transition({ rotateX: 180 }, 1000 * time_factor);
-			$("#flashcard .back").transition({ rotateX: 365 }, 1000 * time_factor);
-			$("#flashcard-shadow").transition({ rotateX: 180 }, 1000 * time_factor);
+			$("#flashcard .front").transition({ rotateX: 180 }, 750 * time_factor, function() {
+				App.Stacks.practice.pending = false;
+			});
 
-			$("#practice-buttons").delay(1000 * time_factor).fadeIn(500 * time_factor);
+			$("#flashcard .back").transition({ rotateX: 365 }, 750 * time_factor);
+			$("#flashcard-shadow").transition({ rotateX: 180 }, 750 * time_factor);
+
+			$("#practice-buttons").delay(750 * time_factor).fadeIn(500 * time_factor);
 
 			if (App._settings.tts_auto) {
 
@@ -191,6 +197,9 @@ define(["transit"], function() {
 
 		"click #flashcard .back": function(e) {
 
+			if (App.Stacks.practice.pending) { return; }
+			App.Stacks.practice.pending = true;
+
 			var time_factor = 1,
 			    flipped = App.Stacks.practice.flashcard.flipped,
 			    langCode, text, prefs;
@@ -198,9 +207,12 @@ define(["transit"], function() {
 			if (App._settings.disable_animation) { time_factor = 0; }
 			App.Stacks.practice.flashcard.flipped = !App.Stacks.practice.flashcard.flipped;
 
-			$("#flashcard .front").transition({ rotateX: 5 }, 1000 * time_factor);
-			$("#flashcard .back").transition({ rotateX: 180 }, 1000 * time_factor);
-			$("#flashcard-shadow").transition({ rotateX: 0 }, 1000 * time_factor);
+			$("#flashcard .front").transition({ rotateX: 5 }, 750 * time_factor, function() {
+				App.Stacks.practice.pending = false;
+			});
+
+			$("#flashcard .back").transition({ rotateX: 180 }, 750 * time_factor);
+			$("#flashcard-shadow").transition({ rotateX: 0 }, 750 * time_factor);
 
 			if (App._settings.tts_auto) {
 

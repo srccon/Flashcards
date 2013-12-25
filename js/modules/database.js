@@ -2,7 +2,7 @@ define(function() {
 
 	// Documentation: https://developer.mozilla.org/en-US/docs/IndexedDB
 
-	var Database = {};
+	var Database = {}, App;
 
 	/* ======================== */
 	/* ====== INITIALIZE ====== */

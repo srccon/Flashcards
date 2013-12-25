@@ -243,7 +243,9 @@ define(function() {
 	/* =================== */
 
 	Utils.speak = function(text, langCode, callback) {
-		if (!(window.speechSynthesis || window.SpeechSynthesisUtterance)) { return; }
+		
+		if (!(window.speechSynthesis || window.SpeechSynthesisUtterance))
+		{ return callback && callback(); }
 		
 		var u = new window.SpeechSynthesisUtterance();
 		
