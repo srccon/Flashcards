@@ -131,7 +131,6 @@ define(function() {
 			window.location.hash = "page-quiz:" + Stacks.current;
 		},
 
-
 		// Exit quiz
 		"click .button-exit-quiz": function(e) {
 			Stacks.quiz.abort();

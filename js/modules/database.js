@@ -145,7 +145,7 @@ define(function() {
 				var cursor = e.target.result;
 
 				if (cursor) {
-
+					
 					pairs.push({
 						value: cursor.value,
 						key: cursor.primaryKey
