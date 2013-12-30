@@ -325,6 +325,8 @@ define(function() {
 
 		App.DB.addData("App", "Stacks", { category: category, name: name }, function(e) {
 
+			category = category || "Uncategorized";
+
 			var key = e.target.result,
 			    $stacks = $("#stacks"),
 			    $category = $stacks.find("li[data-category='" + category + "']");
@@ -351,6 +353,7 @@ define(function() {
 					"<span class='fa fa-tags' style='margin-right: 0.5em;'></span>" +
 					name +
 					"<span class='fa fa-arrow-right' style='float: right;'></span>" +
+					"<span class='count'>0 Cards</span>" +
 				"</li>"
 			);
 

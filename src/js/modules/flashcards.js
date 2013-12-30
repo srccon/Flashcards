@@ -124,6 +124,7 @@ define(["transit"], function() {
 				var $select = $("<select></select>"), destination;
 
 				[].forEach.call(stacks, function(v) {
+					if (v.key == App.Stacks.current) { return true; }
 					destination = v.value.category + " // " + v.value.name;
 					$select.append("<option data-key='" + v.key + "'>" + destination + "</option>");
 				});
@@ -380,6 +381,27 @@ define(["transit"], function() {
 		var $checkboxes = App.$("#page-stack #flashcards td input:checked");
 		var keys = Flashcards.getSelection();
 
+		var fn_finish = function(e) {
+			$checkboxes.parents("tr").remove();
+
+			if (App.$("#page-stack tr").length < 5) {
+				$("#page-stack .note").show();
+				App.$(".flashcard-actions-container").hide();
+			}
+
+			App.Utils.notification("Moved " + keys.length + " flashcards to " + destination);
+		};
+
+		// Workaround....
+		if (window.shimIndexedDB) {
+
+			keys.forEach(function(v) {
+				Flashcards.update(v, { stackID: stackID });
+			});
+
+			return fn_finish();
+		}
+
 		App.DB.updateData("App", "Flashcards", {
 
 				index: "stackID",
@@ -388,16 +410,7 @@ define(["transit"], function() {
 
 			}, { stackID: stackID },
 
-			function(e) {
-				$checkboxes.parents("tr").remove();
-
-				if (App.$("#page-stack tr").length < 5) {
-					$("#page-stack .note").show();
-					App.$(".flashcard-actions-container").hide();
-				}
-
-				App.Utils.notification("Moved " + keys.length + " flashcards to " + destination);
-			}
+			fn_finish
 		);
 	};
 

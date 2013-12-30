@@ -62,6 +62,10 @@ html.page-practice body {
 	position: relative;
 }
 
+html.page-about body {
+	position: relative;
+}
+
 html.page-quiz #bg {
 	background-image: url("../img/bg-quiz.jpg");
 }
@@ -409,6 +413,7 @@ textarea {
 	background-color: #EEE;
 	border: 1px solid #CCC;
 	box-sizing: border-box;
+	-webkit-appearance: listbox;
 }
 
 #dialog .buttons {
