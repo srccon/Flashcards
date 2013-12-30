@@ -103,7 +103,9 @@ define(function() {
 
 		var anchor = document.createElement("a"),
 		    json_data, stackdata, count, interval,
-		    fn_export, fn_process, fn_check, fn_serve;
+		    
+		    fn_export, fn_process,
+		    fn_check, fn_serve;
 
 		fn_export = function() {
 
@@ -197,7 +199,11 @@ define(function() {
 	Settings.import_json = (function() {
 
 		var json_data, imported, merged,
-		    count, stack_length, interval;
+		    count, stack_length, interval,
+
+		    fn_import, fn_stack_create,
+		    fn_merge, fn_check, fn_report;
+
 
 		fn_import = function(data) {
 
