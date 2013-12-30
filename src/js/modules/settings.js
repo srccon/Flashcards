@@ -17,6 +17,11 @@ define(function() {
 			if (typeof App._settings[setting] == "boolean" && $elem.length)
 			{ $elem.attr("checked", App._settings[setting]); }
 		}
+
+		if (App.Utils.localStorage("reset") == "true") {
+			App.Utils.localStorage("reset", "false");
+			App.Utils.notification("Reset successful");
+		}
 	};
 
 	/* ==================== */
@@ -108,6 +113,8 @@ define(function() {
 		    fn_check, fn_serve;
 
 		fn_export = function() {
+
+			App.Utils.notification("Exporting...");
 
 			App.Flashcards.get(null, function(data) {
 
@@ -206,6 +213,8 @@ define(function() {
 
 
 		fn_import = function(data) {
+
+			App.Utils.notification("Importing...");
 
 			json_data = data;
 
@@ -337,7 +346,13 @@ define(function() {
 	Settings.reset = function() {
 		window.indexedDB.deleteDatabase("App");
 		window.localStorage.clear();
-		window.location.reload();
+
+		App.Utils.notification("Resetting...");
+
+		window.setTimeout(function() {
+			App.Utils.localStorage("reset", "true");
+			window.location.reload();
+		}, 1000);
 	};
 
 	/* ============================== */
@@ -345,9 +360,12 @@ define(function() {
 	/* ============================== */
 
 	Settings.reset_statistics = function() {
+
+		App.Utils.notification("Resetting...");
+
 		App.DB.deleteObjectStore("App", "Statistics", null, function() {
 			App.DB.createObjectStore("App", "Statistics", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); }, function() {
-
+				App.Utils.localStorage("reset", "true");
 				window.location.reload();
 			});
 		});
