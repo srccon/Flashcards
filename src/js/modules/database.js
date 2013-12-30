@@ -136,7 +136,7 @@ define(function() {
 
 			objectStore.get(key).onsuccess = function(e) { onsuccess(e.target.result); };
 
-		} else if (key && typeof key == "object" && key.length == undefined) {
+		} else if (key && typeof key == "object" && key.length === undefined) {
 
 			range = window.IDBKeyRange.only(key.range);
 
@@ -229,7 +229,7 @@ define(function() {
 		var transaction = Database[dbName].transaction(objectStoreName, "readwrite");
 		var objectStore = transaction.objectStore(objectStoreName), request;
 
-		if (typeof key == "object" && key.length == undefined) {
+		if (typeof key == "object" && key.length === undefined) {
 
 			range = window.IDBKeyRange.only(key.range);
 			objectStore.index(key.index).openCursor(range).onsuccess = function(e) {
@@ -270,7 +270,7 @@ define(function() {
 		var objectStore = transaction.objectStore(objectStoreName);
 		var request, range;
 
-		if (typeof key == "object" && key.length == undefined) {
+		if (typeof key == "object" && key.length === undefined) {
 
 			range = window.IDBKeyRange.only(key.range);
 			objectStore.index(key.index).openKeyCursor(range).onsuccess = function(e) {

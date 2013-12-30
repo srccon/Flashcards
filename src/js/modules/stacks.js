@@ -216,9 +216,23 @@ define(function() {
 		Stacks.getAll(function(stacks) {
 
 			var $stacks = App.$("#stacks").html(""),
-			    $category,
-			    categories = {},
-			    category;
+			    $category, categories = {},
+			    category, fn_insert;
+
+			fn_insert = function(v) {
+				Stacks.countFlashcards(v, function(stack) {
+					$category = $stacks.find("li[data-category='" + stack.value.category + "']");
+
+					$category.find("ul").append(
+						"<li class='stack' data-key='" + stack.key + "'>" +
+							"<span class='fa fa-tags' style='margin-right: 0.5em;'></span>" +
+							v.value.name +
+							"<span class='fa fa-arrow-right'></span>" +
+							"<span class='count'>" + stack.value.flashcardAmount + " Cards</span>" +
+						"</li^>"
+					);
+				});
+			};
 
 			if (stacks.length) {
 
@@ -226,7 +240,7 @@ define(function() {
 
 				[].forEach.call(stacks, function(v) {
 
-					category = v.value.category || "Uncategorized";
+					var category = v.value.category || "Uncategorized";
 					if (category == "Uncategorized") { v.value.category = category; }
 
 					if (!categories[category]) {
@@ -255,21 +269,7 @@ define(function() {
 
 				for (category in categories) {
 					stacks = categories[category];
-
-					stacks.forEach(function(v) {
-						Stacks.countFlashcards(v, function(stack) {
-							$category = $stacks.find("li[data-category='" + stack.value.category + "']");
-
-							$category.find("ul").append(
-								"<li class='stack' data-key='" + stack.key + "'>" +
-									"<span class='fa fa-tags' style='margin-right: 0.5em;'></span>" +
-									v.value.name +
-									"<span class='fa fa-arrow-right'></span>" +
-									"<span class='count'>" + stack.value.flashcardAmount + " Cards</span>" +
-								"</li^>"
-							);
-						});
-					});
+					stacks.forEach(fn_insert);
 				}
 
 			} else { $stacks.parent().find(".note").show(); }

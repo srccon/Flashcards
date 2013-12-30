@@ -99,107 +99,211 @@ define(function() {
 	/* ====== EXPORT JSON ====== */
 	/* ========================= */
 
-	Settings.export_json = function() {
+	Settings.export_json = (function() {
 
 		var anchor = document.createElement("a"),
-		    json_data = {},
-		    count = 0,
-		    stackdata, interval, out,
-		    check_fn = function() {
+		    json_data, stackdata, count, interval,
+		    fn_export, fn_process, fn_check, fn_serve;
+
+		fn_export = function() {
+
+			App.Flashcards.get(null, function(data) {
+
+				var stackID;
+				json_data = {};
+				stackdata = [];
+				count = 0;
+
+				[].forEach.call(data, function(v) {
+					if (!stackdata[v.value.stackID]) { stackdata[v.value.stackID] = []; }
+					stackdata[v.value.stackID].push(v);
+				});
+
+				interval = window.setInterval(fn_check, 100);
+
+				for (stackID in stackdata)
+				{ App.Stacks.get(+stackID, fn_process); }
+			});
+		};
+
+		fn_process = function(stack) {
+
+			var data = stackdata[stack.id];
+
+			data = data.map(function(v) {
+				return {
+					front: v.value.front,
+					back: v.value.back
+				};
+			});
+
+			if (!json_data[stack.category]) { json_data[stack.category] = {}; }
+			json_data[stack.category][stack.name] = data;
+
+			count++;
+		};
+
+		fn_check = function() {
 
 			if (count != Object.keys(stackdata).length) { return; }
 			window.clearInterval(interval);
+			fn_serve();
+		};
 
-			out = JSON.stringify(json_data, null, "\t");
+		fn_serve = function() {
+			var out = JSON.stringify(json_data, null, "\t");
 
 			if (App.isPhoneGap) {
 
 				var date = new Date(),
 
 				    year = date.getUTCFullYear(),
-				    month = date.getUTCMonth()+1; month = month < 10 ? "0" + month : month,
-				    day = date.getUTCDate(); day = day < 10 ? "0" + day : day,
+				    month = date.getUTCMonth()+1,
+				    day = date.getUTCDate(),
 				    
-				    hours = date.getUTCHours(); hours = hours < 10 ? "0" + hours : hours,
-				    minutes = date.getUTCMinutes(); minutes = minutes < 10 ? "0" + minutes : minutes,
-				    seconds = date.getUTCSeconds(); seconds = seconds < 10 ? "0" + seconds : seconds,
+				    hours = date.getUTCHours(),
+				    minutes = date.getUTCMinutes(),
+				    seconds = date.getUTCSeconds(),
+				    dateString;
 
-				    dateString = year + "-" + month + "-" + day + "_" + hours + "-" + minutes + "-" + seconds,
-				    path = "flashcards/flashcards_" + dateString + ".json";
+				month = month < 10 ? "0" + month : month;
+				day = day < 10 ? "0" + day : day;
+				hours = hours < 10 ? "0" + hours : hours;
+				minutes = minutes < 10 ? "0" + minutes : minutes;
+				seconds = seconds < 10 ? "0" + seconds : seconds;
+
+				dateString = year + "-" + month + "-" + day + "_" + hours + "-" + minutes + "-" + seconds;
+				path = "flashcards/flashcards_" + dateString + ".json";
 
 				App.Utils.PhoneGap.writeFile(path, out, function() {
 					App.Utils.notification("Created file in: /sdcard/" + path);
 				});
 
 			} else {
-
 				anchor.href = "data:application/json;charset=UTF-8;," + encodeURIComponent(out);
 				anchor.download = "flashcards.json";
 				anchor.click();
 			}
 		};
 
-		App.Flashcards.get(null, function(data) {
+		return fn_export;
 
-			stackdata = [];
-
-			[].forEach.call(data, function(v) {
-				if (!stackdata[v.value.stackID]) { stackdata[v.value.stackID] = []; }
-				stackdata[v.value.stackID].push(v);
-			});
-
-			interval = window.setInterval(check_fn, 100);
-
-			for (stackID in stackdata) {
-				App.Stacks.get(+stackID, function(stack) {
-
-					var data = stackdata[stack.id];
-					data = data.map(function(v) {
-						return {
-							front: v.value.front,
-							back: v.value.back
-						};
-					});
-
-					if (!json_data[stack.category])
-					{ json_data[stack.category] = {}; }
-
-					json_data[stack.category][stack.name] = data;
-
-					count++;
-				});
-			}
-		});
-	};
+	}());
 
 	/* ========================= */
 	/* ====== IMPORT JSON ====== */
 	/* ========================= */
 
-	Settings.import_json = function(json_data) {
+	Settings.import_json = (function() {
 
-		// Parse json data
-		if (typeof json_data != "object") {
-			try {
-				json_data = JSON.parse(json_data);
-			} catch (err) {
-				App.Utils.notification("An error occured while parsing the json file");
-				return;
+		var json_data, imported, merged,
+		    count, stack_length, interval;
+
+		fn_import = function(data) {
+
+			json_data = data;
+
+			// Parse json data
+			if (typeof json_data != "object") {
+				try {
+					json_data = JSON.parse(json_data);
+				} catch (err) {
+					App.Utils.notification("An error occured while parsing the json file");
+					return;
+				}
 			}
-		}
 
-		var stack_names = [],
-		    stack_keys = [],
-		    imported = [],
-		    merged = [],
-		    count = 0,
-		    stack_length = 0,
-		    interval,
+			var stack_names = [], stack_keys = [];
 
-		    check_fn = function() {
+			imported = [];
+			merged = [];
+			count = 0;
+			stack_length = 0;
+
+			Object.keys(json_data).forEach(function(v) {
+				stack_length += Object.keys(json_data[v]).length;
+			});
+
+			App.Stacks.getAll(function(data) {
+
+				var category, stack;
+				
+				data.forEach(function(v) {
+					stack_names.push(v.value.name);
+					stack_keys.push(v.key);
+				});
+
+				interval = window.setInterval(fn_check, 100);
+
+				for (category in json_data) {
+					for (stack in json_data[category]) {
+
+						// Stack doesn't exist, create it
+						if (stack_names.indexOf(stack) == -1) {
+							App.Stacks.create(category, stack, fn_stack_create);
+
+						// Stack exists, merge them
+						} else {
+
+							var stackID = stack_keys[stack_names.indexOf(stack)];
+
+							// Compare flashcards
+							App.Flashcards.getAll(stackID, fn_merge);
+						}
+					}
+				}
+			});
+		};
+
+		fn_stack_create = function(key, category, stackname) {
+
+			var flashcards = json_data[category][stackname];
+			flashcards.forEach(function(v) { v.stackID = key; });
+
+			App.Flashcards.add(flashcards, function() {
+				imported.push("<li>" + category + " // " + stackname + "</li>");
+				count++;
+			});
+		};
+
+		fn_merge = function(data, stackID) {
+			App.Stacks.get(stackID, function(stack) {
+
+				// Sort out equal flashcards
+				var flashcards = json_data[stack.category][stack.name].filter(function(v, i) {
+					
+					var front_same, back_same;
+					var unique = [].every.call(data, function(vv) {
+
+						front_same = v.front == vv.value.front;
+						back_same = v.back == vv.value.back;
+
+						return !(front_same && back_same);
+					});
+
+					return unique;
+				});
+
+				if (!flashcards.length) { return count++; }
+				flashcards.forEach(function(v) { v.stackID = stackID; });
+
+				// Add new flashcards
+				App.Flashcards.add(flashcards, function() {
+					merged.push("<li>" + stack.name + "</li>");
+					count++;
+				});
+			});
+		};
+
+		fn_check = function() {
 
 			if (count < stack_length) { return; }
 			window.clearInterval(interval);
+
+			fn_report();
+		};
+
+		fn_report = function() {
 
 			var out = [];
 
@@ -216,76 +320,9 @@ define(function() {
 			window.location.hash = "page-settings";
 		};
 
-		Object.keys(json_data).forEach(function(v) {
-			stack_length += Object.keys(json_data[v]).length;
-		});
+		return fn_import;
 
-		App.Stacks.getAll(function(data) {
-
-			var category, stack;
-			
-			data.forEach(function(v) {
-				stack_names.push(v.value.name);
-				stack_keys.push(v.key);
-			});
-
-			for (category in json_data) {
-				for (stack in json_data[category]) {
-
-					// Stack doesn't exist, create it
-					if (stack_names.indexOf(stack) == -1) {
-						App.Stacks.create(category, stack, function(key, category, stackname) {
-
-							var flashcards = json_data[category][stackname];
-							flashcards.forEach(function(v) { v.stackID = key; });
-
-							App.Flashcards.add(flashcards, function() {
-								imported.push("<li>" + category + " // " + stackname + "</li>");
-								count++;
-							});
-						});
-
-					// Stack exists, merge them
-					} else {
-
-						var stackID = stack_keys[stack_names.indexOf(stack)];
-
-						// Compare flashcards
-						App.Flashcards.getAll(stackID, function(data, stackID) {
-							App.Stacks.get(stackID, function(stack) {
-
-								// Sort out equal flashcards
-								var flashcards = json_data[stack.category][stack.name].filter(function(v, i) {
-									
-									var front_same, back_same;
-									var unique = [].every.call(data, function(vv) {
-
-										front_same = v.front == vv.value.front;
-										back_same = v.back == vv.value.back;
-
-										return !(front_same && back_same);
-									});
-
-									return unique;
-								});
-
-								if (!flashcards.length) { return count++; }
-								flashcards.forEach(function(v) { v.stackID = stackID; });
-
-								// Add new flashcards
-								App.Flashcards.add(flashcards, function() {
-									merged.push("<li>" + stack.name + "</li>");
-									count++;
-								});
-							});
-						});
-					}
-				}
-			}
-
-			interval = window.setInterval(check_fn, 100);
-		});
-	};
+	}());
 
 	/* =================== */
 	/* ====== RESET ====== */
