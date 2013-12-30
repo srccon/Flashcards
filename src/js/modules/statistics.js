@@ -30,7 +30,8 @@ define(["chart"], function(Chart) {
 
 	Statistics.updateView = function() {
 
-		var display_note = true, fn_insert;
+		var display_note = true,
+		    stackdata = [], fn_insert;
 		
 		fn_insert = function(stack) {
 
@@ -90,7 +91,7 @@ define(["chart"], function(Chart) {
 		// Get all statistics
 		App.Statistics.get(function(data) {
 
-			var stackdata = [], stackID;
+			var stackID;
 
 			// Sort them into their own stack array
 			[].forEach.call(data, function(v) {
