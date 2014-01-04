@@ -19,6 +19,8 @@ define(function() {
 
 		// Open database
 		request = w.indexedDB.open("App");
+		request.onerror = function() { App.Utils.dialog("Error", "Can't open the database!"); };
+
 		request.onsuccess = function(e) {
 
 			// Store database object
@@ -227,19 +229,21 @@ define(function() {
 	Database.updateData = function(dbName, objectStoreName, key, newData, onsuccess) {
 
 		var transaction = Database[dbName].transaction(objectStoreName, "readwrite");
-		var objectStore = transaction.objectStore(objectStoreName), request;
+		var objectStore = transaction.objectStore(objectStoreName), request, range;
 
 		if (typeof key == "object" && key.length === undefined) {
 
-			range = window.IDBKeyRange.only(key.range);
+			range = key.range ? window.IDBKeyRange.only(key.range) : undefined;
 			objectStore.index(key.index).openCursor(range).onsuccess = function(e) {
 
-				var cursor = e.target.result, attr;
+				var cursor = e.target.result, attr, data = newData;
 
 				if (cursor) {
 
+					if (newData.length) { data = newData[cursor.key] || {}; }
+
 					if (key.keys.indexOf(cursor.primaryKey) != -1) {
-						for (attr in newData) { cursor.value[attr] = newData[attr]; }
+						for (attr in data) { cursor.value[attr] = data[attr]; }
 						cursor.update(cursor.value);
 					}
 
@@ -272,7 +276,7 @@ define(function() {
 
 		if (typeof key == "object" && key.length === undefined) {
 
-			range = window.IDBKeyRange.only(key.range);
+			range = key.range ? window.IDBKeyRange.only(key.range) : undefined;
 			objectStore.index(key.index).openKeyCursor(range).onsuccess = function(e) {
 
 				var cursor = e.target.result;

@@ -18,14 +18,14 @@ define(["transit"], function() {
 	Flashcards.events = {
 
 		// Select all
-		"click #flashcards input[name=select_all]": function(e) {
+		"click .flashcards input[name=select_all]": function(e) {
 			var checked = $(e.currentTarget).is(":checked");
-			$("#flashcards input[type=checkbox]").prop("checked", checked);
-			$("#flashcards tr:not(.searchbar):visible").toggleClass("selected", checked);
+			$(".flashcards input[type=checkbox]").prop("checked", checked);
+			$(".flashcards tr:not(.searchbar):visible").toggleClass("selected", checked);
 		},
 
 		// Select single
-		"click #flashcards td": function(e) {
+		"click .flashcards td": function(e) {
 
 			if ($(e.currentTarget).parent().hasClass("searchbar")) { return; }
 
@@ -39,24 +39,13 @@ define(["transit"], function() {
 		// Search
 		"search|keyup .search-wrapper input": function(e) {
 
-			var query = $(e.currentTarget).val().trim();
-			if (!query) { $("#flashcards tr").show(); return; }
-
-			$("#flashcards tr").each(function(i) {
-
-				if (i < 2) { return true; }
-
-				var front = $(this).find("td:eq(1)").text().trim().toLowerCase();
-				var back = $(this).find("td:eq(2)").text().trim().toLowerCase();
-
-				$(this).toggle((front.indexOf(query) === 0) || (back.indexOf(query) === 0));
-			});
+			Flashcards.search($(e.currentTarget).val().trim());
 		},
 
 		// Markdown info
 		"click .button-markdown-info": function(e) {
 			App.Utils.dialog("Markdown",
-				"<table class='help-markdown'>" +
+				"<table class='help'>" +
 					"<tr><th>Description</th><th>Markdown</th><th>Result</th></tr>" +
 					"<tr><td>Italic</td><td>*word*</td><td><i>word</i></td></tr>" +
 					"<tr><td>Bold</td><td>**word**</td><td><b>word</b></td></tr>" +
@@ -66,9 +55,35 @@ define(["transit"], function() {
 			);
 		},
 
+		// Search info
+		"click .button-search-info": function(e) {
+			App.Utils.dialog("Search",
+				"More specific queries require a special syntax:<br><br>"+
+				"<ul>" +
+					"<li><b>category:</b>value</li>" +
+					"<li><b>stack:</b>value</li>" +
+					"<li><b>front:</b>value</li>" +
+					"<li><b>back:</b>value</li>" +
+					"<li><b>tags:</b>value</li>" +
+					"<li><b>score_front:</b>[n, &gt;n, &lt;n]</li>" +
+					"<li><b>score_back:</b>[n, &gt;n, &lt;n]</li>" +
+				"</ul><br>" +
+
+				"Most of the keywords should be pretty self explanatory. It is importand to not use spaces between the keyword and the search value." +
+				"If you must use spaces, wrap them in quotes.<br><br>" +
+
+				"<b>score_front</b> and <b>score_back</b> are used to filter flashcards by their score (indicated by the number infront of their value). " +
+				"You can either search for an exact score, or for a score lesser/greater a number using &lt; and &gt;.<br><br>" +
+
+				"To search for multiple categories or stacks, seperate them with two pipe symbols (||), tags however use a comma for seperation.<br><br>" +
+				"An example query could look like this:<br><b>stack:\"Lorem Ipsum\"||Dolor tags:foo,bar</b><br><br>" +
+				"Note that we have to seperate each syntax:value pair with a space. The above example would search for all flashcards contained in a stack named <b>Lorem Ipsum</b> or <b>Dolor</b> with either <b>foo</b> or <b>bar</b> as a tag."
+			);
+		},
+
 		// New flashcard(s)
 		"click .button-new-flashcard": function(e) {
-			location.hash = "page-flashcard-new:" + App.Stacks.current;
+			window.location.hash = "page-flashcard-new:" + App.Stacks.current;
 		},
 
 		// Add flashcard(s)
@@ -76,8 +91,9 @@ define(["transit"], function() {
 
 			var data = {
 				stackID: App.Stacks.current,
-				front: App.Utils.escapeHTML($("#page-flashcard-new textarea[name=front]").val()),
-				back: App.Utils.escapeHTML($("#page-flashcard-new textarea[name=back]").val())
+				front: App.Utils.escapeHTML(App.Router.$page.find("textarea[name=front]").val()),
+				back: App.Utils.escapeHTML(App.Router.$page.find("textarea[name=back]").val()),
+				tags: JSON.stringify(App.Utils.escapeHTML(App.Router.$page.find("input[name=tags]").val()).split(/ ?, ?/g))
 			};
 
 			if (!data.front.trim() || !data.back.trim())
@@ -86,16 +102,45 @@ define(["transit"], function() {
 			Flashcards.add(data);
 		},
 
+		// Flashcard info
+		"click .flashcard-info": function(e) {
+
+			var cards = Flashcards.getSelection();
+			if (!cards.length) { return App.Utils.notification("Nothing selected"); }
+
+			Flashcards.get(cards.map(function(v) { return v.key; }), function(data) {
+
+				var html ="<table class='flashcard-info-table'><tr><th>Front</th><th>Back</th><tr>";
+
+				data.forEach(function(v) {
+					var s = v.value.score || {front:{yes:0,no:0},back:{yes:0,no:0}};
+					if (typeof s == "string") { s = JSON.parse(s); }
+
+					html += "<tr>";
+					html += "<td>[" + s.front.yes + ";" + s.front.no + "] " + v.value.front + "</td>";
+					html += "<td>[" + s.back.yes + ";" + s.back.no + "] " + v.value.back + "</td>";
+					html += "</tr>";
+				});
+
+				html += "</table><hr>";
+				html += "The first number inside each bracket represents the amount of times you pressed the \"thumbs-up\"-button, ";
+				html += "the second one the opposite.<br><br>The numbers displayed behind this window represent the difference between the two (thumbs-up minus thumbs-down).";
+
+				App.Utils.dialog("Flashcard Info", html);
+			});
+		},
+
+
 		// Remove flashcard(s)
 		"click .flashcard-remove": function(e) {
 
-			var keys = Flashcards.getSelection();
-			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
+			var cards = Flashcards.getSelection();
+			if (!cards.length) { return App.Utils.notification("Nothing selected"); }
 
 			App.Utils.dialog("Confirm", {
 				content: "Remove selection?",
 				buttons: {
-					ok: function() { Flashcards.remove(keys); },
+					ok: function() { Flashcards.remove(cards); },
 					cancel: true
 				}
 			});
@@ -104,18 +149,21 @@ define(["transit"], function() {
 		// Edit flashcard(s)
 		"click .flashcard-edit": function(e) {
 
-			var keys = Flashcards.getSelection();
-			if (!keys.length) { return App.Utils.notification("Nothing selected"); }
+			var cards = Flashcards.getSelection(), card;
+			if (!cards.length) { return App.Utils.notification("Nothing selected"); }
 
-			location.hash = "page-flashcard-edit:" + App.Stacks.current + ":" + keys.shift();
-			Flashcards.update.queue = keys;
+			card = cards.shift();
+
+			Flashcards.update.origin = window.location.hash.substr(1);
+			window.location.hash = "page-flashcard-edit:" + card.stackID + ":" + card.key;
+			Flashcards.update.queue = cards;
 		},
 
 		// Move flashcard(s)
 		"click .flashcard-move": function(e) {
 
-			var $checkboxes = App.$("#page-stack #flashcards td input:checked");
-			var stackname = App.$("#page-stack .stack-name").text().trim();
+			var $checkboxes = App.Router.$page.find(".flashcards td input:checked");
+			var stackname = App.Router.$page.find(".stack-name").text().trim();
 
 			if (!$checkboxes.length) { return App.Utils.notification("Nothing selected"); }
 
@@ -146,8 +194,9 @@ define(["transit"], function() {
 			var key = +window.location.hash.split(":")[2];
 
 			var data = {
-				front: $("#page-flashcard-edit textarea[name=front]").val(),
-				back: $("#page-flashcard-edit textarea[name=back]").val()
+				front: App.Router.$page.find("textarea[name=front]").val(),
+				back: App.Router.$page.find("textarea[name=back]").val(),
+				tags: JSON.stringify(App.Utils.escapeHTML(App.Router.$page.find("input[name=tags]").val()).split(/ ?, ?/g))
 			};
 
 			Flashcards.update(key, data);
@@ -233,7 +282,7 @@ define(["transit"], function() {
 	/* ===================== */
 
 	Flashcards.getAll = function(stackID, callback, applyMarkdown) {
-		App.DB.getData("App", "Flashcards", { index: "stackID", range: stackID }, function(data) {
+		App.DB.getData("App", "Flashcards", stackID !== undefined ? { index: "stackID", range: stackID } : null, function(data) {
 
 			if (applyMarkdown) {
 				data.forEach(function(v) {
@@ -251,13 +300,8 @@ define(["transit"], function() {
 	/* ====== GET ====== */
 	/* ================= */
 
-	Flashcards.get = function(key, callback, applyMarkdown) {
+	Flashcards.get = function(key, callback) {
 		App.DB.getData("App", "Flashcards", key, function(data) {
-
-			if (applyMarkdown) {
-				data.front = App.Utils.markdown(data.front);
-				data.back = App.Utils.markdown(data.back);
-			}
 
 			callback(data);
 		});
@@ -268,17 +312,21 @@ define(["transit"], function() {
 	/* =========================== */
 
 	Flashcards.getSelection = function() {
-		var $checkboxes = App.$("#flashcards td input:checked");
-		var keys = [];
-
-		if (!$checkboxes.length) { return App.Utils.notification("Nothing selected"); }
+		var $checkboxes = App.Router.$page.find(".flashcards td input:checked");
+		var cards = [], card;
 
 		$checkboxes.each(function() {
 			var $parent = $(this).parents("tr");
-			keys.push(+$parent.attr("data-key"));
+
+			card = {
+				stackID: +$parent.attr("data-stackID") || App.Stacks.current,
+				key: +$parent.attr("data-key")
+			};
+
+			cards.push(card);
 		});
 
-		return keys;
+		return cards;
 	};
 
 	/* ================= */
@@ -293,8 +341,9 @@ define(["transit"], function() {
 			if (callback) { callback(); }
 			if (data.length) { return; }
 			
-			App.$("#page-flashcard-new textarea[name=front]").val("");
-			App.$("#page-flashcard-new textarea[name=back]").val("");
+			App.Router.$page.find("textarea[name=front]").val("");
+			App.Router.$page.find("textarea[name=back]").val("");
+			App.Router.$page.find("input[name=tags]").val("");
 
 			App.Utils.notification("Flashcard added");
 		});
@@ -309,12 +358,12 @@ define(["transit"], function() {
 		App.DB.updateData("App", "Flashcards", key, newData, function() {
 
 			if (Flashcards.update.queue && Flashcards.update.queue.length) {
-				var key = Flashcards.update.queue.shift();
-				location.hash = "page-flashcard-edit:" + App.Stacks.current + ":" + key;
+				var card = Flashcards.update.queue.shift();
+				window.location.hash = "page-flashcard-edit:" + card.stackID + ":" + card.key;
 				return;
 			}
 
-			window.location.hash = "#page-stack:" + App.Stacks.current;
+			window.location.hash = Flashcards.update.origin;
 		});
 	};
 
@@ -347,16 +396,21 @@ define(["transit"], function() {
 	/* ====== REMOVE ====== */
 	/* ==================== */
 
-	Flashcards.remove = function(key, no_UI) {
+	Flashcards.remove = function(card, no_UI) {
 
-		var keys = typeof key == "object" && key.length ? key : [key], count = 0;
+		var cards = typeof card == "object" && card.length ? card : [card], count = 0;
 		var fn = function(key) {
 
-			if (!no_UI) {
-				App.$("#page-stack tr[data-key=" + key + "]").remove();
+			if (fn.fired) { return; }
+			fn.fired = true;
 
-				if (App.$("#page-stack tr").length < 5) {
-					$("#page-stack .note").show();
+			if (!no_UI) {
+				cards.forEach(function(v) {
+					App.Router.$page.find("tr[data-key=" + v.key + "]").remove();
+				});
+
+				if (App.Router.$page.find("tr").length < 6) {
+					App.Router.$page.find(".note").show();
 					App.$(".flashcard-actions-container").hide();
 				}
 			}
@@ -364,10 +418,16 @@ define(["transit"], function() {
 			count++;
 		};
 
-		// Remove key(s)
-		keys.forEach(function(key) {
-			App.DB.removeData("App", "Flashcards", key, function() { fn(key); });
-		});
+		// Workaround...
+		if (window.shimIndexedDB) {
+			card.forEach(function(card) {
+				App.DB.removeData("App", "Flashcards", card.key, function() { fn(card.key); });
+			});
+		} else {
+
+			// Remove key(s)
+			App.DB.removeData("App", "Flashcards", { index: "stackID", keys: cards.map(function(v) { return v.key; }) }, function() { fn(card.key); });
+		}
 	};
 
 	/* ================== */
@@ -378,25 +438,34 @@ define(["transit"], function() {
 
 		var destination = $("#dialog select option:selected").text();
 		var stackID = +$("#dialog select option:selected").attr("data-key");
-		var $checkboxes = App.$("#page-stack #flashcards td input:checked");
-		var keys = Flashcards.getSelection();
+		var $checkboxes = App.Router.$page.find(".flashcards td input:checked");
+		var cards = Flashcards.getSelection();
 
 		var fn_finish = function(e) {
-			$checkboxes.parents("tr").remove();
 
-			if (App.$("#page-stack tr").length < 5) {
-				$("#page-stack .note").show();
+			var is_search = App.Router.$page.attr("id") == "page-search";
+
+			cards.forEach(function(v) {
+				if (v.key != App.Stacks.current && !is_search) {
+					App.Router.$page.find("tr[data-key=" + v.key + "]").remove();
+				}
+			});
+
+			if (App.Router.$page.find("tr").length < 6) {
+				App.Router.$page.find(".note").show();
 				App.$(".flashcard-actions-container").hide();
 			}
 
-			App.Utils.notification("Moved " + keys.length + " flashcards to " + destination);
+			App.Utils.notification("Moved " + cards.length + " flashcards to " + destination);
 		};
 
-		// Workaround....
+		// Workaround...
 		if (window.shimIndexedDB) {
 
-			keys.forEach(function(v) {
-				Flashcards.update(v, { stackID: stackID });
+			cards.forEach(function(v) {
+				delete Flashcards.update.queue;
+				Flashcards.update.origin = window.location.hash.substr(1);
+				cards.map(function(v) { Flashcards.update(v.key, { stackID: stackID }); });
 			});
 
 			return fn_finish();
@@ -406,13 +475,153 @@ define(["transit"], function() {
 
 				index: "stackID",
 				range: App.Stacks.current,
-				keys: keys
+				keys: cards.map(function(v) { return v.key; })
 
 			}, { stackID: stackID },
 
 			fn_finish
 		);
 	};
+
+	Flashcards.search = (function() {
+
+		var tests = {
+			category: function(v, fl) { return v.indexOf(fl.category) != -1; },
+			stack: function(v, fl) { return v.indexOf(fl.stack) != -1; },
+			raw: function(v, fl) { return fl.value.front.indexOf(v) != -1 || fl.value.back.indexOf(v) != -1; },
+			front: function(v, fl) { return fl.value.front.indexOf(v) != -1; },
+			back: function(v, fl) { return fl.value.back.indexOf(v) != -1; },
+			score_front: function(v, fl) {
+
+				var match = false;
+				
+				if (v[0] == "<")
+				{ match = fl.value.score_front < +v.substr(1); }
+				else if (v[0] == ">")
+				{ match = fl.value.score_front > +v.substr(1); }
+				else
+				{ match = fl.value.score_front == +v; }
+
+				return match;
+			},
+
+			score_back: function(v, fl) {
+
+				var match = false;
+				
+				if (v[0] == "<")
+				{ match = fl.value.score_back < +v.substr(1); }
+				else if (v[0] == ">")
+				{ match = fl.value.score_back > +v.substr(1); }
+				else
+				{ match = fl.value.score_back == +v; }
+
+				return match;
+			},
+
+			tags: function(v, fl) {
+				return v.some(function(tag) {
+					return fl.value.tags.indexOf(tag) != -1;
+				});
+			}
+		}, fn_parse, fn_process, pending, last_query, timeout;
+
+		fn_parse = function(query_string) {
+
+			var query = {}, query_pairs = [], start = 0, quotes;
+
+			// Split the query on whitespace excpet when
+			// the whitespace is contained in quotes
+			query_string.split("").map(function(v, i) {
+				
+				if (v == "\"") { quotes = !quotes; }
+				
+				if (i == query_string.length-1) {
+					quotes = false;
+					v = " ";
+					i++;
+				}
+
+				if (!quotes && v == " ") {
+					query_pairs.push(query_string.substring(start, i).replace(/\"/g, ""));
+					start = i+1;
+				}
+			});
+
+			// Form syntax pairs into a proper object
+			query_pairs.forEach(function(v) {
+
+				var pair = v.split(":");
+				var filter = pair[0];
+				var search = pair[1];
+
+				if (pair.length == 1) {
+					if (query.raw) { return true; }
+					query.raw = pair[0];
+					return true;
+				}
+
+				if (filter == "tags")
+				{ search = search.split(/ ?, ?/g); }
+				else if (["category", "stack"].indexOf(filter) != -1)
+				{ search = search.split(/ ?\|\| ?/g); }
+
+				query[pair[0]] = search;
+			});
+
+			fn_process(query);
+		};
+
+		fn_process = function(query) {
+
+			// Don't excessively search while typing
+			if (pending) {
+
+				last_query = query;
+
+				window.clearTimeout(timeout);
+				timeout = window.setTimeout(function() {
+					pending = false;
+					fn_process(last_query);
+				}, 250);
+
+				return;
+			}
+
+			pending = true;
+
+			// No input
+			if (!Object.keys(query).length) { return App.Router.$page.find(".flashcards tr").show(); }
+
+			var keys = [], show = [], hide = [], query_tests = Object.keys(query);
+
+			// Perform tests
+			App._search.forEach(function(v) {
+
+				var passed = 0;
+
+				query_tests.forEach(function(t) {
+					if (tests[t] && tests[t](query[t], v)) { passed++; }
+				});
+
+				if (passed == query_tests.length) { keys.push(v.key); }
+			});
+
+			// Get table row objects
+			App.Router.$page.find(".flashcards tr").each(function(i) {
+				if ($(this).index() < 2) { return true; }
+				if (keys.indexOf(+App.$(this).attr("data-key")) != -1)
+				{ show.push(this); }
+				else
+				{ hide.push(this); }
+			});
+
+			App.$.call(this, show).show();
+			App.$.call(this, hide).hide();
+		};
+
+		return fn_parse;
+	}());
 
 	return Flashcards;
 });

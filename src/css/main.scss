@@ -83,6 +83,7 @@ html.page-stacks body {
 	background-color: #CCC;
 }
 
+html.page-search .page > .content,
 html.page-stack .page > .content {
 	padding-bottom: 0px;
 }
@@ -319,6 +320,8 @@ textarea {
 	box-sizing: border-box;
 }
 
+a.button { text-decoration: none; }
+
 .button.big {
 	padding: 1.25em;
 	font-size: 1.2em;
@@ -340,7 +343,7 @@ textarea {
 .button.green:hover { background-color: #0D0; border: 0.0625em solid #090; }
 .button.red:hover { background-color: #D00; border: 0.0625em solid #900; }
 .button:hover { background-color: #CCC; }
-.note { display: none; }
+.note, .loading { display: none; }
 
 #dialog {
 	position: fixed;
@@ -374,7 +377,7 @@ textarea {
 
 
 #dialog .title {
-	color: #999;
+	color: #666;
 	padding: 1.25em;
 	font-weight: bold;
 
@@ -393,6 +396,13 @@ textarea {
 	overflow-y: auto;
 	max-height: 20em;
 	border-radius: 0px 0px 0.125em 0.125em;
+}
+
+#dialog .content hr {
+	border: 0px;
+	height: 0px;
+	border-bottom: 1px solid #EEE;
+	margin: 2em 0px;
 }
 
 #dialog input[type=text] {
@@ -582,14 +592,14 @@ textarea {
 /* ====== STACK ====== */
 /* =================== */
 
-#flashcards {
+.flashcards {
 	width: 100%;
 	border-spacing: 0px;
 	display: none;
 	border: 0.3125em solid #036;
 }
 
-#flashcards th {
+.flashcards th {
 	color: #FFF;
 	background-color: #059;
 	text-align: left;
@@ -599,46 +609,50 @@ textarea {
 	border-bottom: 0.3125em solid #036;
 }
 
-#flashcards tr:last-child td {
+.flashcards tr:last-child td {
 	border-bottom: 0px;
 }
 
-#flashcards th:first-child,
-#flashcards td:first-child {
+.flashcards th:first-child {
 	padding: 0px;
 	text-align: center;
 }
 
-#flashcards th label {
+.flashcards td label {
+	padding: 0px;
+	margin: 0px;
+}
+
+.flashcards th label {
 	margin: 0px;
 	color: #FFF;
 	text-shadow: none;
 }
 
-#flashcards td {
+.flashcards tr:not(.searchbar) td {
 	color: #666;
 	background-color: #FFF;
-	padding: 0.625em 1.25em;
+	padding: 1.25em;
 	cursor: pointer;
 }
 
-#flashcards tr.selected label span::before {
+.flashcards tr.selected label span::before {
 	color: #FFF;
 	text-shadow: none;
 }
 
-#flashcards tr.selected td {
+.flashcards tr.selected td {
 	color: #FFF !important;
 	background-color: #036 !important;
 }
 
-#flashcards tr:nth-child(odd) td {
+.flashcards tr:nth-child(odd) td {
 	background-color: #F9F9F9;
 }
 
-#flashcards label { background: transparent; }
+.flashcards label { background: transparent; }
 
-#flashcards input[type=search] {
+.flashcards input[type=search] {
 	color: #666;
 	font-size: inherit;
 	font-style: italic;
@@ -654,16 +668,16 @@ textarea {
 	display: block;
 }
 
-#flashcards .search-wrapper {
+.flashcards .search-wrapper {
 	position: relative;
 	width: 100%;
 	height: 100%;
 }
 
-#flashcards .search-wrapper::before {
+.flashcards .search-wrapper::before {
 	position: absolute;
 	top: 0.8em; left: 0.8em;
-	z-index: 99;
+	z-index: 98;
 	font-size: 1.5em;
 	font-weight: normal;
 
@@ -674,12 +688,12 @@ textarea {
 }
 
 
-#page-stack .flashcard-actions-container {
+.flashcard-actions-container {
 	padding: 0px 3.125em 3.125em 3.125em;
 	display: none;
 }
 
-#page-stack .flashcard-actions {
+.flashcard-actions {
 	width: 100%;
 	table-layout: fixed;
 	border: 0.3125em solid #036;
@@ -688,11 +702,9 @@ textarea {
 	border-spacing: 0px;
 }
 
-#page-stack .flashcard-actions td { padding: 0px 0.125em; }
-#page-stack .flashcard-actions td:first-child { padding-left: 0px; }
-#page-stack .flashcard-actions td:last-child { padding-right: 0px; }
+.flashcard-actions td { padding: 0.125em; }
 
-#page-stack .flashcard-actions td .button {
+.flashcard-actions td .button {
 	color: #FFF;
 	border: 0px;
 
@@ -702,12 +714,12 @@ textarea {
 	box-shadow: none;
 }
 
-#page-stack .flashcard-actions td .button:hover {
+.flashcard-actions td .button:hover {
 	background-color: #09C;
 	border-color: #0CF;
 }
 
-#page-stack .flashcard-actions td .button .fa { margin-right: 0.3125em; }
+.flashcard-actions td .button .fa { margin-right: 0.3125em; }
 
 
 /* ======================= */
@@ -794,7 +806,20 @@ textarea {
 	padding: 1.5em 1em 0em 1em;
 	height: auto;
 	height: 4em;
+	background-color: #FFF;
 }
+
+#page-flashcard-new input[name=tags],
+#page-flashcard-edit input[name=tags] {
+	color: #666;
+	font-size: inherit;
+	width: 100%;
+	padding: 1em;
+	border: 0px;
+	background-color: #FFF;
+	box-sizing: border-box;
+}
+
 
 #practice-buttons {
 	position: absolute;
@@ -807,11 +832,16 @@ textarea {
 }
 
 #practice-buttons .button {
-	font-weight: bold;
-	font-size: 1.5em;
-	padding: 0.9375em 0px;
+	font-size: 3em;
+	padding: 0.3125em 0px;
+	border-radius: 0.05em;
+	border-width: 0px;
+	font-weight: normal;
 	display: table-cell;
 }
+
+#practice-buttons .button.green { color: #EFE; }
+#practice-buttons .button.red { color: #FEE; }
 
 #quiz {
 	width: 100%;
@@ -868,6 +898,17 @@ textarea {
 	left: 1em;
 	color: #666;
 }
+
+.score { color: #BBB; }
+.score.red { color: #900; }
+.score.green { color: #090; }
+
+tr.selected .score { color: #CCC; }
+tr.selected .score.red { color: #F66; }
+tr.selected .score.green { color: #6F6; }
+
+.flashcard-info-table { width: 100%; }
+.flashcard-info-table th { text-align: left; }
 
 #page-quiz .stats {
 	color: #FFF;
@@ -949,9 +990,9 @@ textarea {
 /* ====== MISC ====== */
 /* ================== */
 
-.help-markdown { width: 100%; }
-.help-markdown th { text-align: left; padding-bottom: 1em; }
-.help-markdown td { padding-bottom: 1em; }
+table.help { width: 100%; }
+table.help th { text-align: left; padding-bottom: 1em; }
+table.help td { padding-bottom: 1em; }
 
 .paypal-button {
 	color: #0E3168;
@@ -1122,23 +1163,23 @@ textarea {
 		margin-bottom: 1.25em;
 	}
 
-	#flashcards {
+	.flashcards {
 		border-left: 0px;
 		border-right: 0px;
 	}
 
 	#flashcard > div { font-size: 2em; }
 
-	#page-stack .flashcard-actions {
+	.flashcard-actions {
 		border-left: 0px;
 		border-right: 0px;
 	}
 
-	#flashcards,
-	#page-stack .flashcard-actions { border-spacing: 0px; }
-	#page-stack .flashcard-actions-container { padding: 0px; }
+	.flashcards,
+	.flashcard-actions { border-spacing: 0px; }
+	.flashcard-actions-container { padding: 0px; }
 	
-	#page-stack .flashcard-actions td {
+	.flashcard-actions td {
 		padding: 0.15625em 0px;
 		display: block;
 		width: 100%;

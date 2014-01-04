@@ -72,7 +72,7 @@ define([
 
 		// Initialize the database
 		DB.initialize(function() {
-
+			
 			Settings.initialize();
 			Statistics.initialize();
 

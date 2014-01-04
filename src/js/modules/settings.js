@@ -107,14 +107,18 @@ define(function() {
 	Settings.export_json = (function() {
 
 		var anchor = document.createElement("a"),
-		    json_data, stackdata, count, interval,
+		    json_data, stackdata, count,
+		    interval, _callback, _parse,
 		    
 		    fn_export, fn_process,
 		    fn_check, fn_serve;
 
-		fn_export = function() {
+		fn_export = function(callback) {
 
-			App.Utils.notification("Exporting...");
+			_callback = callback;
+
+			if (!callback)
+			{ App.Utils.notification("Exporting..."); }
 
 			App.Flashcards.get(null, function(data) {
 
@@ -140,9 +144,14 @@ define(function() {
 			var data = stackdata[stack.id];
 
 			data = data.map(function(v) {
+
+				if (_callback) { return v; }
+
 				return {
 					front: v.value.front,
-					back: v.value.back
+					back: v.value.back,
+					tags: v.value.tags && JSON.parse(v.value.tags),
+					score: v.value.score && JSON.parse(v.value.score)
 				};
 			});
 
@@ -160,6 +169,8 @@ define(function() {
 		};
 
 		fn_serve = function() {
+
+			if (typeof _callback == "function") { return _callback(json_data); }
 			var out = JSON.stringify(json_data, null, "\t");
 
 			if (App.isPhoneGap) {
@@ -273,7 +284,9 @@ define(function() {
 		fn_stack_create = function(key, category, stackname) {
 
 			var flashcards = json_data[category][stackname];
-			flashcards.forEach(function(v) { v.stackID = key; });
+			flashcards.forEach(function(v) {
+				v.stackID = key;
+			});
 
 			App.Flashcards.add(flashcards, function() {
 				imported.push("<li>" + category + " // " + stackname + "</li>");
@@ -344,15 +357,21 @@ define(function() {
 	/* =================== */
 
 	Settings.reset = function() {
-		window.indexedDB.deleteDatabase("App");
-		window.localStorage.clear();
+
+		var request, interval;
 
 		App.Utils.notification("Resetting...");
+		window.localStorage.clear();
 
-		window.setTimeout(function() {
+		App.DB.App.close();
+		request = window.indexedDB.deleteDatabase("App");
+
+		interval = window.setInterval(function() {
+			if (request.readyState != "done" && !window.shimIndexedDB) { return; }
+			window.clearInterval(interval);
 			App.Utils.localStorage("reset", "true");
 			window.location.reload();
-		}, 1000);
+		}, 250);
 	};
 
 	/* ============================== */
