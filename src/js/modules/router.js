@@ -109,8 +109,8 @@ define(function() {
 				});
 
 				if (prefs) {
-					App.$("select.from").find("option[value=" + prefs.from + "]").attr("selected", "selected")
-					App.$("select.to").find("option[value=" + prefs.to + "]").attr("selected", "selected")
+					App.$("select.from").find("option[value=" + prefs.from + "]").attr("selected", "selected");
+					App.$("select.to").find("option[value=" + prefs.to + "]").attr("selected", "selected");
 				}
 			});
 		},
@@ -247,7 +247,7 @@ define(function() {
 		    $pageCurrent,
 		    $pageNext;
 
-		if (!$("#" + hash).length) { hash = "page-stacks"; }
+		if (!hash || !$("#" + hash).length) { hash = "page-stacks"; }
 
 		$pageCurrent = App.$("#" + Router.currentPage);
 		$pageNext = Router.$page = App.$("#" + hash);

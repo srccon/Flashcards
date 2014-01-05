@@ -299,7 +299,7 @@ define(function() {
 			if (!data) { return; }
 
 			data.id = id;
-			callback && callback(data);
+			if (callback) { callback(data); }
 		});
 	};
 
@@ -321,7 +321,7 @@ define(function() {
 	Stacks.countFlashcards = function(stack, callback) {
 		App.DB.countObjectStoreEntries("App", "Flashcards", ["stackID", stack.key], function(num) {
 			stack.value.flashcardAmount = num;
-			callback && callback(stack);
+			if (callback) { callback(stack); }
 		});
 	};
 
@@ -376,7 +376,7 @@ define(function() {
 
 			$category.toggleClass("expand", true);
 
-			callback && callback(key, category, name);
+			if (callback) { callback(key, category, name); }
 		});
 	};
 

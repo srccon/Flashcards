@@ -54,6 +54,10 @@ define([
 				e.preventDefault();
 				return false;
 			});
+
+		// Load roboto font
+		} else {
+			App.$("head").append("<link rel='stylesheet' type='text/css' href='css_external/roboto.css'>");
 		}
 
 		// Translates click events into touch events
@@ -101,7 +105,7 @@ define([
 					pair = event.split(" ");
 					type = pair.shift().replace("|", " ");
 					selector = pair.join(" ");
-					$("body").on(type, selector, App[key].events[event])
+					$("body").on(type, selector, App[key].events[event]);
 				}
 			}
 		}

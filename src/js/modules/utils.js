@@ -40,7 +40,7 @@ define(function() {
 	Utils.events = {
 		"click #dialog .close, #dialog-modal, #dialog input[type=button]": function() {
 			$("#dialog, #dialog-modal").hide();
-			Utils.dialog.onclose && Utils.dialog.onclose();
+			if (Utils.dialog.onclose) { Utils.dialog.onclose(); }
 		}
 	};
 
@@ -223,7 +223,7 @@ define(function() {
 
 	Utils.forceRender = function($elem) {
 		$elem.hide();
-		$elem[0].offsetHeight;
+		var foo = $elem[0].offsetHeight;
 		$elem.show();
 	};
 
@@ -248,7 +248,7 @@ define(function() {
 	/* ============================= */
 
 	Utils.translateRange = function(val, a0, b0, a1, b1) {
-		return ((val-a0)/(b0-a0)) * (b1-a1) + a1
+		return ((val-a0)/(b0-a0)) * (b1-a1) + a1;
 	};
 
 	/* =================== */

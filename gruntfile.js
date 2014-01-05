@@ -17,12 +17,7 @@ module.exports = function(grunt) {
 
 		jshint: {
 			options: {
-				curly: true,
-				eqnull: true,
-				browser: true,
-				asi: true,
-				smarttabs: true,
-				expr: true
+				smarttabs: true
 			},
 			before: ["src/js/*.js", "src/js/modules/*.js"],
 			after: ["www/build/build.js"]

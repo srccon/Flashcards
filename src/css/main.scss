@@ -1066,19 +1066,19 @@ table.help td { padding-bottom: 1em; }
 /* ====== MEDIA QUERIES ====== */
 /* =========================== */
 
-@media only screen and (orientation : portrait) and (max-width : 800px) {
+@media only screen and (max-width : 800px) {
 	html {
 		background-image: none;
 	}
 }
 
-@media only screen and (orientation : portrait) and (max-width : 810px) {
+@media only screen and (max-width : 810px) {
 	html.page-quiz .menubar {
 		border-radius: 0px;
 	}
 }
 
-@media only screen and (orientation : portrait) and (max-width : 600px) {
+@media only screen and (max-width : 600px) {
 
 	html {
 		font-size: 80%;
