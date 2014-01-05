@@ -353,9 +353,11 @@ define(["transit"], function() {
 	/* ====== UPDATE ====== */
 	/* ==================== */
 
-	Flashcards.update = function(key, newData) {
+	Flashcards.update = function(key, newData, callback) {
 
 		App.DB.updateData("App", "Flashcards", key, newData, function() {
+
+			if (callback) { callback(); }
 
 			if (Flashcards.update.queue && Flashcards.update.queue.length) {
 				var card = Flashcards.update.queue.shift();

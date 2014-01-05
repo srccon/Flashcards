@@ -61,6 +61,15 @@ define(function() {
 			});
 		},
 
+		// Reset statistics
+		"click .button-reset-stack": function(e) {
+
+			App.Utils.dialog("Confirm", {
+				content: "Reset individual flashcard statistics for this stack?",
+				buttons: { ok: function() { App.Statistics.reset(Stacks.current); }, cancel: true }
+			});
+		},
+
 		// Remove stack
 		"click .button-remove-stack": function(e) {
 

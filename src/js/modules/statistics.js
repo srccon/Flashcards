@@ -108,6 +108,18 @@ define(["chart"], function(Chart) {
 		});
 	};
 
+	Statistics.reset = function(stackID) {
+		App.Flashcards.getAll(stackID, function(data) {
+			var keys = data.map(function(v) { return v.key; });
+			var score = "{\"front\":{\"yes\":0,\"no\":0},\"back\":{\"yes\":0,\"no\":0}}";
+
+			App.Flashcards.update.origin = window.location.hash.substr(1);
+			App.Flashcards.update({ index: "stackID", keys: keys }, { score: score }, function() {
+				App.Utils.notification("Reset successful");
+			});
+		});
+	};
+
 	/* ======================================= */
 	/* ====== REGISTER PRACTICE SESSION ====== */
 	/* ======================================= */
