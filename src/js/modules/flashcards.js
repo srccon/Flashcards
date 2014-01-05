@@ -69,10 +69,10 @@ define(["transit"], function() {
 					"<li><b>score_back:</b>[n, &gt;n, &lt;n]</li>" +
 				"</ul><br>" +
 
-				"Most of the keywords should be pretty self explanatory. It is importand to not use spaces between the keyword and the search value." +
+				"Most of the keywords should be pretty self explanatory. It is important to not use spaces between the keyword and the search value." +
 				"If you must use spaces, wrap them in quotes.<br><br>" +
 
-				"<b>score_front</b> and <b>score_back</b> are used to filter flashcards by their score (indicated by the number infront of their value). " +
+				"<b>score_front</b> and <b>score_back</b> are used to filter flashcards by their score (indicated by the number in front of their value). " +
 				"You can either search for an exact score, or for a score lesser/greater a number using &lt; and &gt;.<br><br>" +
 
 				"To search for multiple categories or stacks, seperate them with two pipe symbols (||), tags however use a comma for seperation.<br><br>" +

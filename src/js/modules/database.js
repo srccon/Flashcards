@@ -27,9 +27,9 @@ define(function() {
 			Database.App = request.result;
 
 			// Create necessary object stores
-			Database.createObjectStore("App", "Stacks",     function(objectStore) { objectStore.createIndex("categoryID", "categoryID", { unique: false }); });
-			Database.createObjectStore("App", "Flashcards", function(objectStore) { objectStore.createIndex("stackID",    "stackID",    { unique: false }); });
-			Database.createObjectStore("App", "Statistics", function(objectStore) { objectStore.createIndex("stackID",    "stackID",    { unique: false }); }, callback, callback);
+			Database.createObjectStore("App", "Stacks");
+			Database.createObjectStore("App", "Flashcards", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); });
+			Database.createObjectStore("App", "Statistics", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); }, callback, callback);
 		};
 	};
 
@@ -229,12 +229,13 @@ define(function() {
 	Database.updateData = function(dbName, objectStoreName, key, newData, onsuccess) {
 
 		var transaction = Database[dbName].transaction(objectStoreName, "readwrite");
-		var objectStore = transaction.objectStore(objectStoreName), request, range;
+		var objectStore = transaction.objectStore(objectStoreName), request, range, fn;
 
 		if (typeof key == "object" && key.length === undefined) {
 
 			range = key.range ? window.IDBKeyRange.only(key.range) : undefined;
-			objectStore.index(key.index).openCursor(range).onsuccess = function(e) {
+
+			fn = function(e) {
 
 				var cursor = e.target.result, attr, data = newData;
 
@@ -251,6 +252,9 @@ define(function() {
 
 				} else { onsuccess(); }
 			};
+
+			if (range) { objectStore.index(key.index).openCursor(range).onsuccess = fn; }
+			else {objectStore.index(key.index).openCursor().onsuccess = fn; }
 
 		} else {
 
@@ -272,12 +276,13 @@ define(function() {
 
 		var transaction = Database[dbName].transaction(objectStoreName, "readwrite");
 		var objectStore = transaction.objectStore(objectStoreName);
-		var request, range;
+		var request, range, fn;
 
 		if (typeof key == "object" && key.length === undefined) {
 
 			range = key.range ? window.IDBKeyRange.only(key.range) : undefined;
-			objectStore.index(key.index).openKeyCursor(range).onsuccess = function(e) {
+
+			fn = function(e) {
 
 				var cursor = e.target.result;
 
@@ -290,6 +295,10 @@ define(function() {
 
 				} else { onsuccess(); }
 			};
+
+			if (range) { objectStore.index(key.index).openKeyCursor(range).onsuccess = fn; }
+			else { objectStore.index(key.index).openKeyCursor().onsuccess = fn; }
+
 
 		} else {
 			request = objectStore["delete"](key);

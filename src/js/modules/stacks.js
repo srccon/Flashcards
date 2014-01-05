@@ -384,10 +384,30 @@ define(function() {
 			var keys = [].map.call(flashcards, function(v) { return v.key; });
 			App.Flashcards.remove(keys, true);
 
-			App.DB.removeData("App", "Stacks", id, function(e) {
-				App.$(".stack[data-key=" + id + "]").remove();
-				if (!App.$(".stack").length) { App.Router.$page.find(".note").show(); }
-				window.location.hash = "page-stacks";
+			App.Flashcards.getAll(id, function(data) {
+
+				var keys = data.map(function(v) { return v.key; });
+
+				if (window.shimIndexedDB) {
+					keys.forEach(function(v) {
+						App.DB.removeData("App", "Flashcards", v);
+					});
+
+					App.DB.removeData("App", "Stacks", id, function(e) {
+						App.$(".stack[data-key=" + id + "]").remove();
+						if (!App.$(".stack").length) { App.Router.$page.find(".note").show(); }
+						window.location.hash = "page-stacks";
+					});
+				} else {
+
+					App.DB.removeData("App", "Flashcards", { index: "stackID", range: id, keys: keys }, function(e) {
+						App.DB.removeData("App", "Stacks", id, function(e) {
+							App.$(".stack[data-key=" + id + "]").remove();
+							if (!App.$(".stack").length) { App.Router.$page.find(".note").show(); }
+							window.location.hash = "page-stacks";
+						});
+					});
+				}
 			});
 		});
 	};
