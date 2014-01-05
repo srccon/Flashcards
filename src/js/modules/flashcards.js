@@ -235,7 +235,7 @@ define(["transit"], function() {
 
 			if (App._settings.tts_auto) {
 
-				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.practice.id];
+				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.practice.flashcard.value.stackID];
 				
 				if (prefs) {
 					langCode = flipped ? prefs.from : prefs.to;
@@ -266,7 +266,7 @@ define(["transit"], function() {
 
 			if (App._settings.tts_auto) {
 
-				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.practice.id];
+				prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.practice.flashcards.stackID];
 				
 				if (prefs) {
 					langCode = App.Stacks.practice.flashcard.flipped ? prefs.to : prefs.from;

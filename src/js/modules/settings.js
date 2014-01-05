@@ -34,12 +34,16 @@ define(function() {
 
 		"click .button-import": function(e) {
 			if (!App.isPhoneGap) { return; }
+			e.preventDefault();
 			window.location.hash = "page-file-browser";
 		},
 
 		"change .button-import input": function(e) {
 
-			if (App.isPhoneGap) { return; }
+			if (App.isPhoneGap) {
+				e.preventDefault();
+				return;
+			}
 
 			var reader = new FileReader();
 			var fileName = e.target.files[0].name;
@@ -314,6 +318,9 @@ define(function() {
 
 				if (!flashcards.length) { return count++; }
 				flashcards.forEach(function(v) { v.stackID = stackID; });
+
+				v.tags = JSON.stringify(v.tags);
+				v.score = JSON.stringify(v.score);
 
 				// Add new flashcards
 				App.Flashcards.add(flashcards, function() {

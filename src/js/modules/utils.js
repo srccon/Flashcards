@@ -80,6 +80,19 @@ define(function() {
 		  .replace(/'/g, "&#039;");
 	};
 
+	/* =========================== */
+	/* ====== UNESCAPE HTML ====== */
+	/* =========================== */
+
+	Utils.unescapeHTML = function(str) {
+		return str
+		  .replace(/&amp;/g, "&")
+		  .replace(/&lt;/g, "<")
+		  .replace(/&gt;/g, ">")
+		  .replace(/&quot;/g, "\"")
+		  .replace(/&#039;/g, "'");
+	};
+
 	/* ==================== */
 	/* ====== DIALOG ====== */
 	/* ==================== */
@@ -249,7 +262,7 @@ define(function() {
 		
 		var u = new window.SpeechSynthesisUtterance();
 		
-		u.text = text;
+		u.text = Utils.unescapeHTML(text);
 		u.lang = langCode;
 		u.rate = 1.0;
 

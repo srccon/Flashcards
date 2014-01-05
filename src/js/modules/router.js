@@ -87,8 +87,8 @@ define(function() {
 					if (typeof tags == "string") { tags = JSON.parse(tags); }
 
 					Router.$page.find(".stack-name").html("<span style='font-weight: 500;'>" + stack.category + "</span> // " + stack.name);
-					Router.$page.find("textarea[name=front]").val(data.front);
-					Router.$page.find("textarea[name=back]").val(data.back);
+					Router.$page.find("textarea[name=front]").val(App.Utils.unescapeHTML(data.front));
+					Router.$page.find("textarea[name=back]").val(App.Utils.unescapeHTML(data.back));
 					Router.$page.find("input[name=tags]").val(tags.join(", "));
 				});
 			});
