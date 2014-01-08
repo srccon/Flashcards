@@ -37,6 +37,7 @@ define([
 		if (!window.indexedDB) {
 
 			require(["js_external/indexedDB.js"], function() {
+
 				// window.shimIndexedDB.__debug(true);
 				App.initialize();
 			});
@@ -46,6 +47,7 @@ define([
 
 		// Open external links with PhoneGap's InAppBrowser
 		if (App.isPhoneGap) {
+
 			$("body").on("click", "a[target='_blank']", function(e) {
 
 				var url = $(e.currentTarget).attr("href");
@@ -79,16 +81,15 @@ define([
 			
 			Settings.initialize();
 			Statistics.initialize();
-
 			Stacks.initialize();
 			Flashcards.initialize();
-
 			App.registerEvents();
-			
+
 			Router.initialize();
 
 			// Insert some test data on first runtime
 			if (!Utils.localStorage("testdata")) {
+
 				DB.createTestData();
 				Utils.localStorage("testdata", true);
 			}
@@ -97,15 +98,15 @@ define([
 
 	App.registerEvents = function() {
 		
-		var key, event, pair, type, selector;
+		var key, evt, pair, type, selector;
 
 		for (key in App) {
 			if (App[key].events) {
-				for (event in App[key].events) {
-					pair = event.split(" ");
+				for (evt in App[key].events) {
+					pair = evt.split(" ");
 					type = pair.shift().replace("|", " ");
 					selector = pair.join(" ");
-					$("body").on(type, selector, App[key].events[event]);
+					$("body").on(type, selector, App[key].events[evt]);
 				}
 			}
 		}

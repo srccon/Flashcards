@@ -16,14 +16,12 @@ require.config({
 require(["app"], function(App) {
 
 	if (App.isPhoneGap) {
-		
 		require(["cordova.js", "js_external/utils_phonegap"], function(Cordova, PhoneGap_Utils) {
-
 			App.Utils.PhoneGap = PhoneGap_Utils;
 			App.Utils.PhoneGap.initialize();
 			
 			document.addEventListener("deviceready", function() {
-				App.Utils.PhoneGap.getFilesystem(App.initialize);
+				App.Utils.PhoneGap.getFilesystem(App.initialize, function(error) { alert("ERROR !!!!!111elf: " + error.code); });
 			});
 		});
 

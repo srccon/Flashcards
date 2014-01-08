@@ -55,14 +55,14 @@ define(function() {
 	/* ====== GET FILESYSTEM  ====== */
 	/* ============================= */
 
-	PhoneGap.getFilesystem = function(callback) {
+	PhoneGap.getFilesystem = function(callback, error) {
 
 		if (PhoneGap.filesystem) { return callback(PhoneGap.filesystem); }
 
-		window.requestFileSystem(window.LocalFileSystem.PERSISTENT, 0, function(filesystem) {
+		window.requestFileSystem(window.LocalFileSystem.PERSISTENT, 5*1024*1024, function(filesystem) {
 			PhoneGap.filesystem = filesystem;
 			callback(filesystem);
-		});
+		}, error || function(){});
 	};
 
 	/* ========================= */
