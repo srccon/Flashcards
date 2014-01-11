@@ -3,14 +3,18 @@ define(function() {
 	var PhoneGap = {}, App;
 	PhoneGap.currentDir = "/mnt/sdcard/";
 
+	/* ======================== */
+	/* ====== INITIALIZE ====== */
+	/* ======================== */
+
 	PhoneGap.initialize = function() {
 
 		App = require("app");
 		
-		$("body").on("click", "#file-browser li", function(e) {
+		App.$("body").on("click", "#file-browser li", function(e) {
 
-			var $entry = $(e.currentTarget);
-			var entry = $(e.currentTarget).text().trim();
+			var $entry = App.$(e.currentTarget);
+			var entry = App.$(e.currentTarget).text().trim();
 			var directory = $entry.attr("data-directory");
 
 			if (directory) {
@@ -20,13 +24,36 @@ define(function() {
 
 			} else { PhoneGap.readFile(entry, App.Settings.import_json); }
 		});
+
+		document.addEventListener("deviceready", function() {
+			PhoneGap.registerEvents();
+			PhoneGap.getFilesystem(App.initialize);
+		});
 	};
+
+	/* ============================= */
+	/* ====== REGISTER EVENTS ====== */
+	/* ============================= */
+
+	PhoneGap.registerEvents = function() {
+		document.addEventListener("online", function() {
+			App.isOnlinePhoneGap = true;
+		}, false);
+
+		document.addEventListener("offline", function() {
+			App.isOnlinePhoneGap = false;
+		}, false);
+	};
+
+	/* ========================== */
+	/* ====== UPDATE VIEW ======= */
+	/* ========================== */
 
 	PhoneGap.updateView = function(entries, callback) {
 
 		var fn_populate = function(entries) {
 
-			$("#page-file-browser .path").html(PhoneGap.currentDir);
+			App.$("#page-file-browser .path").html(PhoneGap.currentDir);
 
 			if (PhoneGap.currentDir != "/") {
 				$fileBrowser.append("<li data-directory='..'><span class='fa fa-arrow-left' style='margin-right: 0.5em'></span> <em>parent directory</em></li>");
@@ -52,7 +79,7 @@ define(function() {
 	};
 
 	/* ============================= */
-	/* ====== GET FILESYSTEM  ====== */
+	/* ====== GET FILESYSTEM ======= */
 	/* ============================= */
 
 	PhoneGap.getFilesystem = function(callback, error) {
@@ -66,7 +93,7 @@ define(function() {
 	};
 
 	/* ========================= */
-	/* ====== WRITE FILE  ====== */
+	/* ====== WRITE FILE ======= */
 	/* ========================= */
 
 	PhoneGap.writeFile = function(path, content, callback) {
@@ -87,7 +114,7 @@ define(function() {
 	};
 
 	/* ========================= */
-	/* ====== CHANGE DIR  ====== */
+	/* ====== CHANGE DIR ======= */
 	/* ========================= */
 
 	PhoneGap.changeDir = function(directory) {
@@ -102,7 +129,7 @@ define(function() {
 	};
 
 	/* ======================= */
-	/* ====== READ DIR  ====== */
+	/* ====== READ DIR ======= */
 	/* ======================= */
 
 	PhoneGap.readDir = function(callback) {
@@ -123,7 +150,7 @@ define(function() {
 	};
 
 	/* ======================== */
-	/* ====== READ FILE  ====== */
+	/* ====== READ FILE ======= */
 	/* ======================== */
 
 	PhoneGap.readFile = function(file, callback) {

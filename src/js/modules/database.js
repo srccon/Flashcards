@@ -2,7 +2,11 @@ define(function() {
 
 	// Documentation: https://developer.mozilla.org/en-US/docs/IndexedDB
 
-	var Database = {}, App;
+	var Database = {}, w = window, App;
+
+	w.indexedDB = w.indexedDB || w.mozIndexedDB || w.webkitIndexedDB || w.msIndexedDB;
+	w.IDBTransaction = w.IDBTransaction || w.webkitIDBTransaction || w.msIDBTransaction;
+	w.IDBKeyRange = w.IDBKeyRange || w.webkitIDBKeyRange || w.msIDBKeyRange;
 
 	/* ======================== */
 	/* ====== INITIALIZE ====== */
@@ -11,14 +15,10 @@ define(function() {
 	Database.initialize = function(callback) {
 
 		App = require("app");
-		var w = window, request;
-
-		w.indexedDB = w.indexedDB || w.mozIndexedDB || w.webkitIndexedDB || w.msIndexedDB;
-		w.IDBTransaction = w.IDBTransaction || w.webkitIDBTransaction || w.msIDBTransaction;
-		w.IDBKeyRange = w.IDBKeyRange || w.webkitIDBKeyRange || w.msIDBKeyRange;
+		var request;
 
 		// Open database
-		request = w.indexedDB.open("App");
+		request = window.indexedDB.open("App");
 		request.onerror = function() { App.Utils.dialog("Error", "Can't open the database!"); };
 
 		request.onsuccess = function(e) {
@@ -310,7 +310,16 @@ define(function() {
 	/* ====== CREATE TEST DATA  ====== */
 	/* =============================== */
 
-	Database.createTestData = function() {
+	Database.createTestData = function(callback) {
+
+		if (App.Utils.localStorage("testdata") && callback)
+		{ return callback(); }
+
+		App.Utils.localStorage("testdata", true);
+
+		var count = 0, fn_finish = function() {
+			if (++count > 1 && callback) { callback(); }
+		};
 
 		App.Stacks.create("Japanese", "Greetings", function(stackID) {
 			App.Flashcards.add([
@@ -331,8 +340,8 @@ define(function() {
 					front: "Good evening.",
 					back: "こんばんは。"
 				}
-			]);
-		});
+			], fn_finish);
+		}, true);
 
 		App.Stacks.create("Japanese", "Animals", function(stackID) {
 				App.Flashcards.add([
@@ -361,8 +370,8 @@ define(function() {
 					front: "Bird",
 					back: "鳥{とり}"
 				}
-			]);
-		});	
+			], fn_finish);
+		}, true);	
 	};
 
 	return Database;

@@ -12,7 +12,7 @@ define(["chart"], function(Chart) {
 		var updateTimeout;
 
 		// Update statistics once the window size hasn't changed for 100ms
-		$(window).on("resize", function() {
+		App.$(window).on("resize", function() {
 			window.clearTimeout(updateTimeout);
 			updateTimeout = window.setTimeout(Statistics.updateView, 100);
 		});
@@ -48,7 +48,7 @@ define(["chart"], function(Chart) {
 
 			// Create canvas
 			var ctx = document.createElement("canvas").getContext("2d");
-			ctx.canvas.width = $("body").width() / 100 * 80;
+			ctx.canvas.width = App.$("body").width() / 100 * 80;
 			ctx.canvas.height = Math.round(ctx.canvas.width / 1.618);
 
 			// Insert heading and canvas

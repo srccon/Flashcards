@@ -19,7 +19,7 @@ define(function() {
 
 		// Expand category
 		"click #stacks > li ": function(e) {
-			$(e.currentTarget).toggleClass("expand");
+			App.$(e.currentTarget).toggleClass("expand");
 		},
 
 		// Stack link
@@ -89,7 +89,7 @@ define(function() {
 		// Practice buttons
 		"click #practice-buttons .button": function(e) {
 
-			var correct = $(e.currentTarget).hasClass("green");
+			var correct = App.$(e.currentTarget).hasClass("green");
 
 			if (correct)
 			{ Stacks.practice.score++; }
@@ -108,7 +108,7 @@ define(function() {
 			if (Stacks.quiz.pending) { return; }
 			Stacks.quiz.pending = true;
 
-			var $target = $(e.currentTarget);
+			var $target = App.$(e.currentTarget);
 			var correct = $target.attr("data-correct") == "true";
 			var flipped = Stacks.quiz.question.flipped;
 			var langCode, text, prefs;
@@ -169,8 +169,8 @@ define(function() {
 		"change .languages": function(e) {
 
 			var stackID = Stacks.current;
-			var isFrom = $(e.currentTarget).hasClass("from");
-			var code = $(e.currentTarget).val();
+			var isFrom = App.$(e.currentTarget).hasClass("from");
+			var code = App.$(e.currentTarget).val();
 
 			if (!App._settings.translation_preferences)
 			{ App._settings.translation_preferences = {}; }
@@ -185,8 +185,8 @@ define(function() {
 		"click .button-apply-lang-all": function(e) {
 
 			var category = App.Router.$page.find(".stack-name").text().split(" // ").shift();
-			var from = $(".languages.from").val();
-			var to = $(".languages.to").val();
+			var from = App.$(".languages.from").val();
+			var to = App.$(".languages.to").val();
 
 			if (!App._settings.translation_preferences)
 			{ App._settings.translation_preferences = {}; }
@@ -329,52 +329,56 @@ define(function() {
 	/* ====== CREATE ====== */
 	/* ==================== */
 
-	Stacks.create = function(category, name, callback) {
+	Stacks.create = function(category, name, callback, no_UI) {
 
-		if (typeof category != "string") { category = $("#dialog input[name='stack-category']").val().trim(); }
-		if (typeof name != "string") { name = $("#dialog input[name='stack-name']").val().trim(); }
+		if (typeof category != "string") { category = App.$("#dialog input[name='stack-category']").val().trim(); }
+		if (typeof name != "string") { name = App.$("#dialog input[name='stack-name']").val().trim(); }
 
 		category = App.Utils.escapeHTML(category);
 		name = App.Utils.escapeHTML(name);
 
 		App.DB.addData("App", "Stacks", { category: category, name: name }, function(e) {
 
-			category = category || "Uncategorized";
+			var key = e.target.result, $stacks, $category;
 
-			var key = e.target.result,
-			    $stacks = $("#stacks"),
-			    $category = $stacks.find("li[data-category='" + category + "']");
+			if (!no_UI) {
 
-			if (!App.$(".stack").length) {
-				App.Router.$page.find(".view-all").css("display", "block");
-				App.Router.$page.find(".note").hide();
-			}
+				category = category || "Uncategorized";
 
-			if (!$category.length) {
+				$stacks = App.$("#stacks");
+				$category = $stacks.find("li[data-category='" + category + "']");
 
-				$stacks.append(
-					"<li data-category='" + category + "'>" +
-						"<div class='category'>" +
-							"<span class='fa fa-fw fa-caret-right'></span> " +
-							category +
-						"</div>" +
-						"<ul></ul>" +
+				if (!App.$(".stack").length) {
+					App.Router.$page.find(".view-all").css("display", "block");
+					App.Router.$page.find(".note").hide();
+				}
+
+				if (!$category.length) {
+
+					$stacks.append(
+						"<li data-category='" + category + "'>" +
+							"<div class='category'>" +
+								"<span class='fa fa-fw fa-caret-right'></span> " +
+								category +
+							"</div>" +
+							"<ul></ul>" +
+						"</li>"
+					);
+
+					$category = $stacks.find("li[data-category='" + category + "']");
+				}
+
+				$category.find("ul").append(
+					"<li class='stack' data-key='" + key + "'>" +
+						"<span class='fa fa-tags' style='margin-right: 0.5em;'></span>" +
+						name +
+						"<span class='fa fa-arrow-right' style='float: right;'></span>" +
+						"<span class='count'>0 Cards</span>" +
 					"</li>"
 				);
 
-				$category = $stacks.find("li[data-category='" + category + "']");
+				$category.toggleClass("expand", true);
 			}
-
-			$category.find("ul").append(
-				"<li class='stack' data-key='" + key + "'>" +
-					"<span class='fa fa-tags' style='margin-right: 0.5em;'></span>" +
-					name +
-					"<span class='fa fa-arrow-right' style='float: right;'></span>" +
-					"<span class='count'>0 Cards</span>" +
-				"</li>"
-			);
-
-			$category.toggleClass("expand", true);
 
 			if (callback) { callback(key, category, name); }
 		});
@@ -424,8 +428,8 @@ define(function() {
 
 	Stacks.rename = function(id) {
 
-		var category = $("#dialog input[name='stack-category']").val().trim();
-		var name = $("#dialog input[name='stack-name']").val().trim();
+		var category = App.$("#dialog input[name='stack-category']").val().trim();
+		var name = App.$("#dialog input[name='stack-name']").val().trim();
 
 		category = App.Utils.escapeHTML(category);
 		name = App.Utils.escapeHTML(name);
@@ -745,8 +749,8 @@ define(function() {
 
 			// Insert new data
 			$question.html(App.Utils.markdown(front));
-			$(right_answer).html(App.Utils.markdown(back));
-			$(right_answer).attr("data-correct", "true");
+			App.$(right_answer).html(App.Utils.markdown(back));
+			App.$(right_answer).attr("data-correct", "true");
 
 			indices = [Stacks.quiz.index-1];
 			index = Stacks.quiz.index-1;
@@ -759,7 +763,7 @@ define(function() {
 				indices.push(index);
 				val = App.Utils.markdown(Stacks.quiz.flashcards[index].value[flipped ? "front" : "back"]);
 
-				$(Array.prototype.pop.call($answers)).html(val);
+				App.$(Array.prototype.pop.call($answers)).html(val);
 			}
 
 			updateStats();

@@ -13,11 +13,15 @@ define(function() {
 
 		// Store page templates
 		App.$("[data-template=true]").each(function() {
-			Router.templates[$(this).attr("id")] = $(this).html();
+			Router.templates[$(this).attr("id")] = App.$(this).html();
 		});
 
 		window.addEventListener("hashchange", Router.route, false);
 		Router.route();
+
+		window.setTimeout(function() {
+			App.$("#splash-screen").fadeOut();
+		}, 1000);
 	};
 
 	/* ==================== */
@@ -244,12 +248,9 @@ define(function() {
 		var page = typeof p == "string" ? p : window.location.hash.substr(1),
 		    args = page.split(":"),
 		    hash = args.shift(),
-		    $pageCurrent,
 		    $pageNext;
 
-		if (!hash || !$("#" + hash).length) { hash = "page-stacks"; }
-
-		$pageCurrent = App.$("#" + Router.currentPage);
+		if (!App.$("#" + hash).length) { hash = "page-stacks"; }
 		$pageNext = Router.$page = App.$("#" + hash);
 
 		// Apply template if exists
@@ -257,10 +258,10 @@ define(function() {
 		{ $pageNext.html(Router.templates[hash]); }
 
 		// Hide the previous page
-		$pageCurrent.hide();
+		if (Router.currentPage) { App.$("#" + Router.currentPage).hide(); }
 
 		// Register arguments in sub modules
-		Router.registerArgs(hash.substr(5));
+		Router.registerArgs(hash.replace(/page-/, ""));
 
 		// Call route function
 		if (Router.routes[hash])

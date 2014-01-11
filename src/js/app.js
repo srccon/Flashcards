@@ -31,13 +31,16 @@ define([
 	App.Stacks = Stacks;
 	App.Flashcards = Flashcards;
 
+	/* ======================== */
+	/* ====== INITIALIZE ====== */
+	/* ======================== */
+
 	App.initialize = function() {
 
 		// Load indexedDB shim if needed
 		if (!window.indexedDB) {
 
 			require(["js_external/indexedDB.js"], function() {
-
 				// window.shimIndexedDB.__debug(true);
 				App.initialize();
 			});
@@ -62,18 +65,8 @@ define([
 			App.$("head").append("<link rel='stylesheet' type='text/css' href='css_external/roboto.css'>");
 		}
 
-		// Translates click events into touch events
-		fastclick.attach(document.body);
-
-		// Menubutton event listener
-		document.addEventListener("menubutton", function(e) {
-
-			var $actions = App.Router.$page.find(".actions");
-			$actions.toggleClass("android-menu");
-			App.Utils.forceRender($("body"));
-
-		}, false);
-
+		// Other modules depend on Utils
+		// so initialize them first
 		Utils.initialize();
 
 		// Initialize the database
@@ -83,21 +76,45 @@ define([
 			Statistics.initialize();
 			Stacks.initialize();
 			Flashcards.initialize();
-			App.registerEvents();
-
-			Router.initialize();
 
 			// Insert some test data on first runtime
-			if (!Utils.localStorage("testdata")) {
-
-				DB.createTestData();
-				Utils.localStorage("testdata", true);
-			}
+			// Skips creation and executes the callback
+			// right ahead if the data already exists
+			DB.createTestData(function() {
+				Router.initialize();
+				App.registerEvents();
+			});
 		});
 	};
 
+	/* ======================= */
+	/* ====== IS ONLINE ====== */
+	/* ======================= */
+
+	App.isOnline = function() {
+		return App.isOnlinePhoneGap !== undefined ? App.isOnlinePhoneGap : navigator.onLine;
+	};
+
+	/* ============================= */
+	/* ====== REGISTER EVENTS ====== */
+	/* ============================= */
+
 	App.registerEvents = function() {
-		
+
+		// Translates click events into touch events
+		fastclick.attach(document.body);
+
+		// Menubutton event listener
+		document.addEventListener("menubutton", function(e) {
+
+			if (!Router.$page) { return; }
+			var $actions = Router.$page.find(".actions");
+			$actions.toggleClass("android-menu");
+			Utils.forceRender($("body"));
+
+		}, false);
+
+		// Register module events
 		var key, evt, pair, type, selector;
 
 		for (key in App) {

@@ -10,24 +10,24 @@ define(function() {
 
 		App = require("app");
 
-		$(window).on("resize", function(e) {
+		App.$(window).on("resize", function(e) {
 
-			var $notification = $("#notification");
+			var $notification = App.$("#notification");
 
 			if ($notification.length) {
 				$notification.css({
-					top: $(window).height() - $notification[0].offsetHeight*2,
-					left: $(window).width()/2 - $notification[0].offsetWidth/2
+					top: App.$(window).height() - $notification[0].offsetHeight*2,
+					left: App.$(window).width()/2 - $notification[0].offsetWidth/2
 				});
 			}
 
-			var $dialog = $("#dialog");
+			var $dialog = App.$("#dialog");
 
 			if ($dialog.length) {
 				$dialog.css({
-					top: $(window).height()/2 - $dialog.height()/2,
-					left: $(window).width()/2 - $dialog.width()/2,
-					width: $("body").width() / 100 * 70
+					top: App.$(window).height()/2 - $dialog.height()/2,
+					left: App.$(window).width()/2 - $dialog.width()/2,
+					width: App.$("body").width() / 100 * 70
 				});
 			}
 		});
@@ -39,7 +39,7 @@ define(function() {
 
 	Utils.events = {
 		"click #dialog .close, #dialog-modal, #dialog input[type=button]": function() {
-			$("#dialog, #dialog-modal").hide();
+			App.$("#dialog, #dialog-modal").hide();
 			if (Utils.dialog.onclose) { Utils.dialog.onclose(); }
 		}
 	};
@@ -103,7 +103,7 @@ define(function() {
 
 		if (!$dialog.length) {
 
-			$("body").append(
+			App.$("body").append(
 				"<div id='dialog'>" +
 					"<span class='close fa fa-times'></span>" +
 					"<div class='title'></div>" +
@@ -115,7 +115,7 @@ define(function() {
 				"</div>"
 			);
 
-			$("body").append("<div id='dialog-modal'>");
+			App.$("body").append("<div id='dialog-modal'>");
 			$dialog = App.$("#dialog");
 		}
 
@@ -143,7 +143,7 @@ define(function() {
 
 			if (content.input) {
 
-				$input = $("<input type='text'>");
+				$input = App.$("<input type='text'>");
 
 				$input.attr({
 					name: content.input.name,
@@ -157,17 +157,17 @@ define(function() {
 			}
 		}
 
-		var width = $("body").width() / 100 * 70;
+		var width = App.$("body").width() / 100 * 70;
 
 		$dialog.css({
-			top: $(window).height()/2 - $dialog.height()/2,
-			left: $(window).width()/2 - width/2,
+			top: App.$(window).height()/2 - $dialog.height()/2,
+			left: App.$(window).width()/2 - width/2,
 			width: width
 		}).show();
 
 		Utils.dialog.onclose = onclose;
 
-		$("#dialog-modal").show();
+		App.$("#dialog-modal").show();
 		if ($input && content.input && content.input.focus) { $input.focus(); }
 	};
 
@@ -181,7 +181,7 @@ define(function() {
 		var $notification = App.$("#notification");
 
 		if (!$notification.length) {
-			$("body").append("<div id='notification'></div>");
+			App.$("body").append("<div id='notification'></div>");
 			$notification = App.$("#notification");
 		}
 
@@ -191,8 +191,8 @@ define(function() {
 		});
 
 		$notification.css({
-			top: $(window).height() - $notification[0].offsetHeight*2,
-			left: $(window).width()/2 - $notification[0].offsetWidth/2
+			top: App.$(window).height() - $notification[0].offsetHeight*2,
+			left: App.$(window).width()/2 - $notification[0].offsetWidth/2
 		});
 
 		$notification.stop(true, true).finish(true, true).animate({

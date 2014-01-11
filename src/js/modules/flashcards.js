@@ -19,9 +19,9 @@ define(["transit"], function() {
 
 		// Select all
 		"click .flashcards input[name=select_all]": function(e) {
-			var checked = $(e.currentTarget).is(":checked");
-			$(".flashcards input[type=checkbox]").prop("checked", checked);
-			$(".flashcards tr:not(.searchbar):visible").toggleClass("selected", checked);
+			var checked = App.$(e.currentTarget).is(":checked");
+			App.$(".flashcards input[type=checkbox]").prop("checked", checked);
+			App.$(".flashcards tr:not(.searchbar):visible").toggleClass("selected", checked);
 		},
 
 		// Select single
@@ -29,11 +29,11 @@ define(["transit"], function() {
 
 			if ($(e.currentTarget).parent().hasClass("searchbar")) { return; }
 
-			var $checkbox = $(e.currentTarget).parent().find("input");
+			var $checkbox = App.$(e.currentTarget).parent().find("input");
 			var checked = $checkbox.is(":checked");
 
 			$checkbox.prop("checked", !checked);
-			$(e.currentTarget).parent().toggleClass("selected", !checked);
+			App.$(e.currentTarget).parent().toggleClass("selected", !checked);
 		},
 
 		// Search
@@ -169,7 +169,7 @@ define(["transit"], function() {
 
 			App.Stacks.getAll(function(stacks) {
 
-				var $select = $("<select></select>"), destination;
+				var $select = App.$("<select></select>"), destination;
 
 				[].forEach.call(stacks, function(v) {
 					if (v.key == App.Stacks.current) { return true; }
@@ -205,10 +205,16 @@ define(["transit"], function() {
 		// Translate flashcard
 		"click .translate": function(e) {
 
-			var isFront = $(e.currentTarget).hasClass("front");
+			var isFront = App.$(e.currentTarget).hasClass("front");
 			var text = App.Router.$page.find("textarea[name=" + (isFront ? "front" : "back") + "]").val();
 
-			Flashcards.translate(App.Stacks.current, text, isFront);
+			if (!text.trim()) { return; }
+
+			if (App.isOnline()) {
+				Flashcards.translate(App.Stacks.current, text, isFront);
+			} else {
+				App.Utils.notification("Can't translate when offline");
+			}
 		},
 
 		// Flashcard transition
@@ -224,14 +230,14 @@ define(["transit"], function() {
 			if (App._settings.disable_animation) { time_factor = 0; }
 			App.Stacks.practice.flashcard.flipped = !App.Stacks.practice.flashcard.flipped;
 
-			$("#flashcard .front").transition({ rotateX: 180 }, 750 * time_factor, function() {
+			App.$("#flashcard .front").transition({ rotateX: 180 }, 750 * time_factor, function() {
 				App.Stacks.practice.pending = false;
 			});
 
-			$("#flashcard .back").transition({ rotateX: 365 }, 750 * time_factor);
-			$("#flashcard-shadow").transition({ rotateX: 180 }, 750 * time_factor);
+			App.$("#flashcard .back").transition({ rotateX: 365 }, 750 * time_factor);
+			App.$("#flashcard-shadow").transition({ rotateX: 180 }, 750 * time_factor);
 
-			$("#practice-buttons").delay(750 * time_factor).fadeIn(500 * time_factor);
+			App.$("#practice-buttons").delay(750 * time_factor).fadeIn(500 * time_factor);
 
 			if (App._settings.tts_auto) {
 
@@ -257,12 +263,12 @@ define(["transit"], function() {
 			if (App._settings.disable_animation) { time_factor = 0; }
 			App.Stacks.practice.flashcard.flipped = !App.Stacks.practice.flashcard.flipped;
 
-			$("#flashcard .front").transition({ rotateX: 5 }, 750 * time_factor, function() {
+			App.$("#flashcard .front").transition({ rotateX: 5 }, 750 * time_factor, function() {
 				App.Stacks.practice.pending = false;
 			});
 
-			$("#flashcard .back").transition({ rotateX: 180 }, 750 * time_factor);
-			$("#flashcard-shadow").transition({ rotateX: 0 }, 750 * time_factor);
+			App.$("#flashcard .back").transition({ rotateX: 180 }, 750 * time_factor);
+			App.$("#flashcard-shadow").transition({ rotateX: 0 }, 750 * time_factor);
 
 			if (App._settings.tts_auto) {
 
@@ -316,7 +322,7 @@ define(["transit"], function() {
 		var cards = [], card;
 
 		$checkboxes.each(function() {
-			var $parent = $(this).parents("tr");
+			var $parent = App.$(this).parents("tr");
 
 			card = {
 				stackID: +$parent.attr("data-stackID") || App.Stacks.current,
@@ -438,7 +444,7 @@ define(["transit"], function() {
 
 	Flashcards.move = function() {
 
-		var destination = $("#dialog select option:selected").text();
+		var destination = App.$("#dialog select option:selected").text();
 		var stackID = +$("#dialog select option:selected").attr("data-key");
 		var $checkboxes = App.Router.$page.find(".flashcards td input:checked");
 		var cards = Flashcards.getSelection();

@@ -48,7 +48,7 @@ define(function() {
 			var reader = new FileReader();
 			var fileName = e.target.files[0].name;
 			var extension = fileName.substr(fileName.lastIndexOf('.') + 1);
-			var $target = $(e.currentTarget);
+			var $target = App.$(e.currentTarget);
 
 			if (extension != "json") { return App.Utils.notification("Only json files supported"); }
 
