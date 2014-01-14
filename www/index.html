@@ -152,7 +152,7 @@
 					<br><br>Background images provided by Marvin Zerulla
 				</div>
 
-				<div class="version">v1.2.0</div>
+				<div class="version">v1.2.1</div>
 			</div>
 		</div>	
 
@@ -183,43 +183,45 @@
 			</div>
 
 			<div class="content">
-
 				<h1 class="stack-name"></h1><hr>
-
 				<em class="note">No flashcards available, create one!</em>
+
+				<table class="stack-buttons">
+					<tr>
+						<td style="padding-right: 0.25em;"><a class="button button-practice stretch"><span class="fa fa-lightbulb-o" style="float: left; margin-top: 2px;"></span>practice mode</a></td>
+						<td style="padding-left: 0.25em;"><a class="button button-quiz stretch"><span class="fa fa-th-large" style="float: left; margin-top: 2px;"></span>quiz mode</a></td>
+					</tr>
+					<tr>
+						<td style="padding-top: 0.25em;" colspan="2"><a class="button select-all stretch"><span class="fa fa-list-ul" style="float: left; margin-top: 2px;"></span>toggle selection</a></td>
+					</tr>
+				</table>
 			</div>
 
-			<div class="flashcard-actions-container">
+			<hr class="transparent">
 
-				<table class="stack-buttons" style="width: 100%">
-					<tr>
-						<td width="50%" style="padding-right: 0.5em;"><a class="button button-practice stretch"><span class="fa fa-lightbulb-o" style="float: left; margin-top: 2px;"></span>practice mode</a></td>
-						<td width="50%" style="padding-left: 0.5em;"><a class="button button-quiz stretch"><span class="fa fa-th-large" style="float: left; margin-top: 2px;"></span>quiz mode</a></td>
-					</tr>
-				</table><br>
-
-				<table class="flashcards">
-					<tr>
-						<th style="width: 20px"><label><input type="checkbox" name="select_all"><span></span></label></th>
-						<th>Front</th>
-						<th>Back</th>
-					</tr>
+			<table class="flashcards">
+				<thead>
 					<tr class="searchbar">
-						<td colspan="3"><div class="search-wrapper"><input type="search" placeholder="Filter (see help for advanced syntax)"></div></td>
+						<td colspan="2"><div class="search-wrapper"><input type="search" placeholder="Filter (see help for advanced syntax)"></div></td>
 					</tr>
-				</table>
+				</thead>
 
-				<table class="flashcard-actions">
-					<tr>
-						<td><a class="button big stretch flashcard-info"><span class="fa fa-info"></span> selection info</a></td>
-						<td><a class="button big stretch flashcard-move"><span class="fa fa-share"></span> move selection</a></td>
-					</tr>
-					<tr>
-						<td><a class="button big stretch flashcard-edit"><span class="fa fa-pencil"></span> edit selection</a></td>
-						<td><a class="button big stretch flashcard-remove"><span class="fa fa-times"></span> remove selection</a></td>
-					</tr>
-				</table>
-			</div>
+				<tbody>
+				</tbody>
+
+				<tfoot>
+					<table class="flashcard-actions">
+						<tr>
+							<td><a class="button big stretch flashcard-info"><span class="fa fa-info"></span> selection info</a></td>
+							<td><a class="button big stretch flashcard-move"><span class="fa fa-share"></span> move selection</a></td>
+						</tr>
+						<tr>
+							<td><a class="button big stretch flashcard-edit"><span class="fa fa-pencil"></span> edit selection</a></td>
+							<td><a class="button big stretch flashcard-remove"><span class="fa fa-times"></span> remove selection</a></td>
+						</tr>
+					</table>
+				</tfoot>
+			</table>
 		</div>
 
 		<!--============================-->
@@ -491,38 +493,40 @@
 
 				<em class="loading">loading...</em>
 				<em class="note">No flashcards available, create one!</em>
+
+				<table class="stack-buttons">
+					<tr>
+						<td style="padding-right: 0.25em;"><a class="button button-practice stretch"><span class="fa fa-lightbulb-o" style="margin-right: 0.5em; margin-top: 2px;"></span> practice mode</a></td>
+						<td style="padding-left: 0.25em;"><a class="button select-all stretch"><span class="fa fa-list-ul" style="float: left; margin-top: 2px;"></span>toggle selection</a></td>
+					</tr>
+				</table>
 			</div>
 
-			<div class="flashcard-actions-container">
+			<hr class="transparent">
 
-				<table class="stack-buttons" style="width: 100%">
-					<tr>
-						<td style="padding-right: 0.5em;"><a class="button button-practice"><span class="fa fa-lightbulb-o" style="margin-right: 0.5em; margin-top: 2px;"></span> practice mode</a></td>
-					</tr>
-				</table><br>
-
-				<table class="flashcards">
-					<tr>
-						<th style="width: 20px"><label><input type="checkbox" name="select_all"><span></span></label></th>
-						<th>Front</th>
-						<th>Back</th>
-					</tr>
+			<table class="flashcards">
+				<thead>
 					<tr class="searchbar">
-						<td colspan="3"><div class="search-wrapper"><input type="search" placeholder="Filter (see help for advanced syntax)"></div></td>
+						<td colspan="2"><div class="search-wrapper"><input type="search" placeholder="Filter (see help for advanced syntax)"></div></td>
 					</tr>
-				</table>
+				</thead>
 
-				<table class="flashcard-actions">
-					<tr>
-						<td><a class="button big stretch flashcard-info"><span class="fa fa-info"></span> selection info</a></td>
-						<td><a class="button big stretch flashcard-move"><span class="fa fa-share"></span> move selection</a></td>
-					</tr>
-					<tr>
-						<td><a class="button big stretch flashcard-edit"><span class="fa fa-pencil"></span> edit selection</a></td>
-						<td><a class="button big stretch flashcard-remove"><span class="fa fa-times"></span> remove selection</a></td>
-					</tr>
-				</table>
-			</div>
+				<tbody>
+				</tbody>
+
+				<tfoot>
+					<table class="flashcard-actions">
+						<tr>
+							<td><a class="button big stretch flashcard-info"><span class="fa fa-info"></span> selection info</a></td>
+							<td><a class="button big stretch flashcard-move"><span class="fa fa-share"></span> move selection</a></td>
+						</tr>
+						<tr>
+							<td><a class="button big stretch flashcard-edit"><span class="fa fa-pencil"></span> edit selection</a></td>
+							<td><a class="button big stretch flashcard-remove"><span class="fa fa-times"></span> remove selection</a></td>
+						</tr>
+					</table>
+				</tfoot>
+			</table>
 		</div>
 
 		<script type="text/javascript" src="build/build.js"></script>

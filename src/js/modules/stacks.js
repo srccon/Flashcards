@@ -231,7 +231,7 @@ define(function() {
 
 			var $stacks = App.$("#stacks"),
 			    $category, categories = {},
-			    category, fn_insert;
+			    category, fn_insert, fn_sort;
 
 			fn_insert = function(v) {
 				Stacks.countFlashcards(v, function(stack) {
@@ -247,6 +247,8 @@ define(function() {
 					);
 				});
 			};
+
+			fn_sort = function(a, b) { return a.value.name < b.value.name ? -1 : 1; };
 
 			if (stacks.length) {
 
@@ -281,6 +283,7 @@ define(function() {
 
 				for (category in categories) {
 					stacks = categories[category];
+					stacks = stacks.sort(fn_sort);
 					stacks.forEach(fn_insert);
 				}
 
@@ -473,15 +476,15 @@ define(function() {
 						cancel: true
 					}
 				});
+
 			} else {
 
-				$cards_visible = App.Router.$page.find(".flashcards tr:visible");
+				$cards_visible = App.Router.$page.find(".flashcards tbody tr:visible");
 				$cards_visible.each(function(i) {
-					if ($(this).index() < 2) { return true; }
 					keys.push(+$(this).attr("data-key"));
 				});
 
-				if ($cards_visible.length != App.Router.$page.find(".flashcards tr").length) {
+				if ($cards_visible.length != App.Router.$page.find(".flashcards tbody tr").length) {
 
 					if ($cards_visible.length < 3) {
 						App.Utils.notification("No flashcards visible for filtered practice");

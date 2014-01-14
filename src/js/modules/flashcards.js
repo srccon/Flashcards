@@ -18,22 +18,15 @@ define(["transit"], function() {
 	Flashcards.events = {
 
 		// Select all
-		"click .flashcards input[name=select_all]": function(e) {
-			var checked = App.$(e.currentTarget).is(":checked");
-			App.$(".flashcards input[type=checkbox]").prop("checked", checked);
-			App.$(".flashcards tr:not(.searchbar):visible").toggleClass("selected", checked);
+		"click .select-all": function(e) {
+			var selected = App.$(e.currentTarget).hasClass("selected");
+			App.$(e.currentTarget).toggleClass("selected");
+			App.Router.$page.find(".flashcards tbody tr").toggleClass("selected", !selected);
 		},
 
 		// Select single
-		"click .flashcards td": function(e) {
-
-			if ($(e.currentTarget).parent().hasClass("searchbar")) { return; }
-
-			var $checkbox = App.$(e.currentTarget).parent().find("input");
-			var checked = $checkbox.is(":checked");
-
-			$checkbox.prop("checked", !checked);
-			App.$(e.currentTarget).parent().toggleClass("selected", !checked);
+		"click .flashcards tbody tr": function(e) {
+			App.$(e.currentTarget).toggleClass("selected");
 		},
 
 		// Search
@@ -162,10 +155,10 @@ define(["transit"], function() {
 		// Move flashcard(s)
 		"click .flashcard-move": function(e) {
 
-			var $checkboxes = App.Router.$page.find(".flashcards td input:checked");
+			var cards = Flashcards.getSelection();
 			var stackname = App.Router.$page.find(".stack-name").text().trim();
 
-			if (!$checkboxes.length) { return App.Utils.notification("Nothing selected"); }
+			if (!cards.length) { return App.Utils.notification("Nothing selected"); }
 
 			App.Stacks.getAll(function(stacks) {
 
@@ -308,7 +301,6 @@ define(["transit"], function() {
 
 	Flashcards.get = function(key, callback) {
 		App.DB.getData("App", "Flashcards", key, function(data) {
-
 			callback(data);
 		});
 	};
@@ -318,18 +310,15 @@ define(["transit"], function() {
 	/* =========================== */
 
 	Flashcards.getSelection = function() {
-		var $checkboxes = App.Router.$page.find(".flashcards td input:checked");
-		var cards = [], card;
 
-		$checkboxes.each(function() {
-			var $parent = App.$(this).parents("tr");
+		var $rows = App.Router.$page.find(".flashcards tbody tr.selected");
+		var cards = [];
 
-			card = {
-				stackID: +$parent.attr("data-stackID") || App.Stacks.current,
-				key: +$parent.attr("data-key")
-			};
-
-			cards.push(card);
+		$rows.each(function() {
+			cards.push({
+				stackID: +App.$(this).attr("data-stackID") || App.Stacks.current,
+				key: +App.$(this).attr("data-key")
+			});
 		});
 
 		return cards;
@@ -599,7 +588,7 @@ define(["transit"], function() {
 			pending = true;
 
 			// No input
-			if (!Object.keys(query).length) { return App.Router.$page.find(".flashcards tr").show(); }
+			if (!Object.keys(query).length) { return App.Router.$page.find(".flashcards tbody tr").show(); }
 
 			var keys = [], show = [], hide = [], query_tests = Object.keys(query);
 
@@ -616,8 +605,7 @@ define(["transit"], function() {
 			});
 
 			// Get table row objects
-			App.Router.$page.find(".flashcards tr").each(function(i) {
-				if ($(this).index() < 2) { return true; }
+			App.Router.$page.find(".flashcards tbody tr").each(function(i) {
 				if (keys.indexOf(+App.$(this).attr("data-key")) != -1)
 				{ show.push(this); }
 				else

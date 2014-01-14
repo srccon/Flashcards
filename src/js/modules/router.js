@@ -149,7 +149,7 @@ define(function() {
 					});
 				});
 
-				var $flashcards = Router.$page.find(".flashcards");
+				var $flashcards = Router.$page.find(".flashcards tbody");
 
 				if (App._search.length) {
 					App._search.forEach(function(v) {
@@ -161,8 +161,7 @@ define(function() {
 
 						$flashcards.append(
 							"<tr data-key='" + v.key + "' data-stackID='" + v.value.stackID + "'>" +
-								"<td><label><input type='checkbox'><span></span></label></td>" +
-								"<td><span class='score " + class_front + "'>[" + Math.abs(v.value.score_front) + "]</span> " + App.Utils.markdown(v.value.front) + "</td>" +
+								"<td>" + App.Utils.markdown(v.value.front) + " <span class='score " + class_front + "'>[" + Math.abs(v.value.score_front) + "]</span></td>" +
 								"<td><span class='score " + class_back + "'>[" + Math.abs(v.value.score_back) + "]</span> " + App.Utils.markdown(v.value.back) + "</td>" +
 							"</tr>"
 						);
@@ -170,7 +169,7 @@ define(function() {
 
 					Router.$page.find(".note, .loading").hide();
 					Router.$page.find(".flashcard-actions-container").show();
-					$flashcards.show();
+					$flashcards.parent().show();
 
 				} else {
 					Router.$page.find(".loading").hide();
@@ -191,7 +190,7 @@ define(function() {
 
 					App.Flashcards.current = data || [];
 					Router.$page.find(".stack-name").html("<span style='font-weight: 500;'>" + stack.category + "</span> // " + stack.name);
-					var $flashcards = Router.$page.find(".flashcards");
+					var $flashcards = Router.$page.find(".flashcards tbody");
 
 					if (data.length) {
 						data.forEach(function(v) {
@@ -214,9 +213,8 @@ define(function() {
 
 							$flashcards.append(
 								"<tr data-key='" + v.key + "'>" +
-									"<td><label><input type='checkbox'><span></span></label></td>" +
-								"<td><span class='score " + class_front + "'>[" + Math.abs(v.value.score_front) + "]</span> " + App.Utils.markdown(v.value.front) + "</td>" +
-								"<td><span class='score " + class_back + "'>[" + Math.abs(v.value.score_back) + "]</span> " + App.Utils.markdown(v.value.back) + "</td>" +
+									"<td>" + App.Utils.markdown(v.value.front) + " <span class='score " + class_front + "'>[" + Math.abs(v.value.score_front) + "]</span></td>" +
+									"<td><span class='score " + class_back + "'>[" + Math.abs(v.value.score_back) + "]</span> " + App.Utils.markdown(v.value.back) + "</td>" +
 								"</tr>"
 							);
 
@@ -225,7 +223,7 @@ define(function() {
 
 						Router.$page.find(".note").hide();
 						Router.$page.find(".flashcard-actions-container").show();
-						$flashcards.show();
+						$flashcards.parent().show();
 
 					} else { Router.$page.find(".note").show(); }
 				});

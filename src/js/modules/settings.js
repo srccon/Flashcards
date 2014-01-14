@@ -151,12 +151,22 @@ define(function() {
 
 				if (_callback) { return v; }
 
-				return {
+				var card = {
 					front: v.value.front,
-					back: v.value.back,
-					tags: v.value.tags && JSON.parse(v.value.tags),
-					score: v.value.score && JSON.parse(v.value.score)
+					back: v.value.back
 				};
+
+				if (typeof v.value.tags == "object")
+				{ card.tags = v.value.tags; }
+				else if (typeof v.value.tags == "string")
+				{ card.tags = JSON.parse(v.value.tags); }
+
+				if (typeof v.value.score == "object")
+				{ card.score = v.value.score; }
+				else if (typeof v.value.score == "string")
+				{ card.score = JSON.parse(v.value.score); }
+
+				return card;
 			});
 
 			if (!json_data[stack.category]) { json_data[stack.category] = {}; }
