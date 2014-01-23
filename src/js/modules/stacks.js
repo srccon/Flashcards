@@ -19,6 +19,7 @@ define(function() {
 
 		// Expand category
 		"click #stacks > li ": function(e) {
+			Stacks.currentFocus = e.currentTarget;
 			App.$(e.currentTarget).toggleClass("expand");
 		},
 
@@ -30,9 +31,11 @@ define(function() {
 		// Create stack
 		"click .button-new-stack": function(e) {
 
+			var guess = Stacks.currentFocus ? $(Stacks.currentFocus).find(".category .name").text().trim() : "";
+
 			App.Utils.dialog("Enter stack name", {
 
-				content: "<input type='text' name='stack-category' placeholder='Category'><br><br>" +
+				content: "<input type='text' name='stack-category' value='" + guess + "' placeholder='Category'><br><br>" +
 				         "<input type='text' name='stack-name' placeholder='Stackname'>",
 
 				buttons: {
@@ -227,6 +230,8 @@ define(function() {
 
 	Stacks.updateView = function() {
 
+		delete Stacks.currentFocus;
+
 		Stacks.getAll(function(stacks) {
 
 			var $stacks = App.$("#stacks"),
@@ -265,7 +270,7 @@ define(function() {
 							"<li data-category='" + category + "'>" +
 								"<div class='category'>" +
 									"<span class='fa fa-fw fa-caret-right'></span> " +
-									category +
+									"<span class='name'>" +category + "</span>" +
 								"</div>" +
 								"<ul></ul>" +
 							"</li>"
@@ -362,7 +367,8 @@ define(function() {
 						"<li data-category='" + category + "'>" +
 							"<div class='category'>" +
 								"<span class='fa fa-fw fa-caret-right'></span> " +
-								category +
+								"<span class='name'>" + category + "</span>" +
+								"<span class='count'>1 Stack</span>" +
 							"</div>" +
 							"<ul></ul>" +
 						"</li>"
@@ -380,6 +386,7 @@ define(function() {
 					"</li>"
 				);
 
+				$category.find(".category > .count").html($category.find("ul").children().length + " Stacks");
 				$category.toggleClass("expand", true);
 			}
 

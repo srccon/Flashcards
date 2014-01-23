@@ -6,6 +6,7 @@ require.config({
 	},
 
 	paths: {
+		"IDBOpen": "shims/IDBOpen",
 		"jquery": "libs/jquery",
 		"chart": "libs/chart",
 		"transit": "plugins/jquery.transit",

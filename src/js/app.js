@@ -20,6 +20,7 @@ define([
 		isMobile: /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent),
 	};
 
+	App._settings.translation_preferences = Utils.localStorage("settings") || {};
 	App.isPhoneGap = App.isMobile && (document.location.protocol == "file:");
 
 	App.$ = $;
@@ -38,7 +39,7 @@ define([
 	App.initialize = function() {
 
 		// Load indexedDB shim if needed
-		if (!window.indexedDB) {
+		if (!window.indexedDB || (window.indexedDB && window.indexedDB.setVersion)) {
 
 			require(["js_external/indexedDB.js"], function() {
 				// window.shimIndexedDB.__debug(true);
@@ -71,19 +72,12 @@ define([
 
 		// Initialize the database
 		DB.initialize(function() {
-			
 			Settings.initialize();
 			Statistics.initialize();
 			Stacks.initialize();
 			Flashcards.initialize();
-
-			// Insert some test data on first runtime
-			// Skips creation and executes the callback
-			// right ahead if the data already exists
-			DB.createTestData(function() {
-				Router.initialize();
-				App.registerEvents();
-			});
+			Router.initialize();
+			App.registerEvents();
 		});
 	};
 

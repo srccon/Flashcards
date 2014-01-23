@@ -136,8 +136,6 @@ define(function() {
 					stackdata[v.value.stackID].push(v);
 				});
 
-				interval = window.setInterval(fn_check, 100);
-
 				for (stackID in stackdata)
 				{ App.Stacks.get(+stackID, fn_process); }
 			});
@@ -145,7 +143,8 @@ define(function() {
 
 		fn_process = function(stack) {
 
-			var data = stackdata[stack.id];
+			var data = stackdata[stack.id],
+			    prefs = App._settings.translation_preferences[stack.id];
 
 			data = data.map(function(v) {
 
@@ -153,32 +152,37 @@ define(function() {
 
 				var card = {
 					front: v.value.front,
-					back: v.value.back
+					back: v.value.back,
+					tags: v.value.tags,
+					score: v.value.score
 				};
 
-				if (typeof v.value.tags == "object")
-				{ card.tags = v.value.tags; }
-				else if (typeof v.value.tags == "string")
-				{ card.tags = JSON.parse(v.value.tags); }
+				if (typeof v.value.tags == "string") {
+					card.tags = JSON.parse(v.value.tags);
+					if (typeof card.tags == "string") { card.tags = [card.tags]; }
+				}
 
-				if (typeof v.value.score == "object")
-				{ card.score = v.value.score; }
-				else if (typeof v.value.score == "string")
-				{ card.score = JSON.parse(v.value.score); }
+				if (typeof v.value.score == "string") {
+					card.score = JSON.parse(v.value.score);
+				}
+
+				if (!card.tags || !card.tags.join("").length) { delete card.tags; }
+				if (!card.score) { delete card.score; }
 
 				return card;
 			});
+
+			if (prefs) { data.push(prefs.from + "|" + prefs.to); }
 
 			if (!json_data[stack.category]) { json_data[stack.category] = {}; }
 			json_data[stack.category][stack.name] = data;
 
 			count++;
+			fn_check();
 		};
 
 		fn_check = function() {
-
-			if (count != Object.keys(stackdata).length) { return; }
-			window.clearInterval(interval);
+			if (count != stackdata.length-1) { return; }
 			fn_serve();
 		};
 
@@ -191,12 +195,12 @@ define(function() {
 
 				var date = new Date(),
 
-				    year = date.getUTCFullYear(),
-				    month = date.getUTCMonth()+1,
+				    year = date.getFullYear(),
+				    month = date.getMonth()+1,
 				    day = date.getUTCDate(),
 				    
-				    hours = date.getUTCHours(),
-				    minutes = date.getUTCMinutes(),
+				    hours = date.getHours(),
+				    minutes = date.getMinutes(),
 				    seconds = date.getUTCSeconds(),
 				    dateString;
 
@@ -273,14 +277,12 @@ define(function() {
 					stack_keys.push(v.key);
 				});
 
-				interval = window.setInterval(fn_check, 100);
-
 				for (category in json_data) {
 					for (stack in json_data[category]) {
 
 						// Stack doesn't exist, create it
 						if (stack_names.indexOf(stack) == -1) {
-							App.Stacks.create(category, stack, fn_stack_create);
+							App.Stacks.create(category, stack, fn_stack_create, true);
 
 						// Stack exists, merge them
 						} else {
@@ -298,13 +300,30 @@ define(function() {
 		fn_stack_create = function(key, category, stackname) {
 
 			var flashcards = json_data[category][stackname];
-			flashcards.forEach(function(v) {
+
+			flashcards = flashcards.filter(function(v) {
+
+				if (typeof v == "string") {
+					var prefs = v.split("|");
+					App._settings.translation_preferences[key] = {
+						from: prefs[0],
+						to: prefs[1]
+					};
+
+					return false;
+				}
+
 				v.stackID = key;
+				v.tags = JSON.stringify(v.tags);
+				v.score = JSON.stringify(v.score);
+
+				return true;
 			});
 
 			App.Flashcards.add(flashcards, function() {
 				imported.push("<li>" + category + " // " + stackname + "</li>");
 				count++;
+				fn_check();
 			});
 		};
 
@@ -326,25 +345,25 @@ define(function() {
 					return unique;
 				});
 
-				if (!flashcards.length) { return count++; }
-				flashcards.forEach(function(v) { v.stackID = stackID; });
+				if (!flashcards.length) { count++; return fn_check(); }
 
-				v.tags = JSON.stringify(v.tags);
-				v.score = JSON.stringify(v.score);
+				flashcards.forEach(function(v) {
+					v.stackID = stackID;
+					v.tags = JSON.stringify(v.tags);
+					v.score = JSON.stringify(v.score);
+				});
 
 				// Add new flashcards
 				App.Flashcards.add(flashcards, function() {
-					merged.push("<li>" + stack.name + "</li>");
+					merged.push("<li>" + stack.category + " // " + stack.name + "</li>");
 					count++;
+					fn_check();
 				});
 			});
 		};
 
 		fn_check = function() {
-
 			if (count < stack_length) { return; }
-			window.clearInterval(interval);
-
 			fn_report();
 		};
 

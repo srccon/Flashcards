@@ -1,4 +1,4 @@
-define(function() {
+define(["IDBOpen"], function(IDBOpen) {
 
 	// Documentation: https://developer.mozilla.org/en-US/docs/IndexedDB
 
@@ -18,7 +18,7 @@ define(function() {
 		var request;
 
 		// Open database
-		request = window.indexedDB.open("App");
+		request = IDBOpen("App");
 		request.onerror = function() { App.Utils.dialog("Error", "Can't open the database!"); };
 
 		request.onsuccess = function(e) {
@@ -32,6 +32,8 @@ define(function() {
 			Database.createObjectStore("App", "Statistics", function(objectStore) { objectStore.createIndex("stackID", "stackID", { unique: false }); }, callback, callback);
 		};
 	};
+
+
 
 	/* ================================= */
 	/* ====== CREATE OBJECT STORE ====== */
@@ -57,12 +59,11 @@ define(function() {
 
 		// Reopen DB with new version
 		version = Database[dbName].version + 1; Database[dbName].close();
-		request = window.indexedDB.open(dbName, version);
+		request = IDBOpen(dbName, version);
 
 		// Create new objectStore
 		request.onupgradeneeded = function(e) {
-			var db = e.target.result;
-			objectStore = db.createObjectStore(name, { autoIncrement: true });
+			objectStore = request.result.createObjectStore(name, { autoIncrement: true });
 			if (onupgradeneeded) { onupgradeneeded(objectStore); }
 		};
 
@@ -101,13 +102,11 @@ define(function() {
 
 		// Reopen DB with new version
 		version = Database[dbName].version + 1; Database[dbName].close();
-		request = window.indexedDB.open(dbName, version);
+		request = IDBOpen(dbName, version);
 
 		// Delete objectStore
 		request.onupgradeneeded = function(e) {
-			var db = e.target.result;
-			objectStore = db.deleteObjectStore(name);
-
+			objectStore = request.result.deleteObjectStore(name);
 			if (onupgradeneeded) { onupgradeneeded(objectStore); }
 		};
 
