@@ -380,6 +380,7 @@ define(function() {
 			if (!imported.length && !merged.length)
 			{ return App.Utils.notification("Everything up to date!"); }
 	
+			App.Utils.localStorage("settings", App._settings);
 			App.Utils.dialog("Import", out.join("<br><br>"));
 			window.location.hash = "page-settings";
 		};

@@ -20,7 +20,7 @@ define([
 		isMobile: /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent),
 	};
 
-	App._settings.translation_preferences = Utils.localStorage("settings") || {};
+	App._settings.translation_preferences = App._settings.translation_preferences || {};
 	App.isPhoneGap = App.isMobile && (document.location.protocol == "file:");
 
 	App.$ = $;
