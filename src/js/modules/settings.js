@@ -111,7 +111,7 @@ define(function() {
 	Settings.export_json = (function() {
 
 		var anchor = document.createElement("a"),
-		    json_data, stackdata, count,
+		    json_data, stackdata, stackdata_length, count,
 		    interval, _callback, _parse,
 		    
 		    fn_export, fn_process,
@@ -128,13 +128,15 @@ define(function() {
 
 				var stackID;
 				json_data = {};
-				stackdata = [];
+				stackdata = {};
 				count = 0;
 
 				[].forEach.call(data, function(v) {
 					if (!stackdata[v.value.stackID]) { stackdata[v.value.stackID] = []; }
 					stackdata[v.value.stackID].push(v);
 				});
+
+				stackdata_length = Object.keys(stackdata).length;
 
 				for (stackID in stackdata)
 				{ App.Stacks.get(+stackID, fn_process); }
@@ -182,7 +184,7 @@ define(function() {
 		};
 
 		fn_check = function() {
-			if (count != stackdata.length-1) { return; }
+			if (count != stackdata_length) { return; }
 			fn_serve();
 		};
 

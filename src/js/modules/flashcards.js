@@ -406,9 +406,9 @@ define(["transit"], function() {
 					App.Router.$page.find("tr[data-key=" + v.key + "]").remove();
 				});
 
-				if (App.Router.$page.find("tr").length < 6) {
+				if (!App.Router.$page.find(".flashcards > tbody tr").length) {
+					App.Router.$page.find(".stack-buttons, .flashcards").hide();
 					App.Router.$page.find(".note").show();
-					App.$(".flashcard-actions-container").hide();
 				}
 			}
 			
@@ -448,9 +448,9 @@ define(["transit"], function() {
 				}
 			});
 
-			if (App.Router.$page.find("tr").length < 6) {
+			if (!App.Router.$page.find(".flashcards > tbody tr").length) {
+				App.Router.$page.find(".stack-buttons, .flashcards").hide();
 				App.Router.$page.find(".note").show();
-				App.$(".flashcard-actions-container").hide();
 			}
 
 			App.Utils.notification("Moved " + cards.length + " flashcards to " + destination);

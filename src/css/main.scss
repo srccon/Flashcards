@@ -587,6 +587,7 @@ a.button { text-decoration: none; }
 	margin-right: 0.625em;
 }
 
+.stack-buttons,
 .view-all { display: none; }
 
 
@@ -605,24 +606,24 @@ a.button { text-decoration: none; }
 	width: 100%;
 	border-spacing: 0.3125em;
 	table-layout: fixed;
-	display: none;
 	background-color: #026;
+	display: none;
 }
 
-.flashcards tbody td {
+.flashcards > tbody td {
 	color: #69C;
 	background-color: #037;
 	padding: 1.5em;
 	cursor: pointer;
 }
 
-.flashcards tbody td:first-child { text-align: right; padding-right: 1em; }
-.flashcards tbody td:last-child { padding-left: 1em; }
+.flashcards > tbody td:first-child { text-align: right; padding-right: 1em; }
+.flashcards > tbody td:last-child { padding-left: 1em; }
 
-.flashcards tbody td:first-child .score { float: left; }
-.flashcards tbody td:last-child .score { float: right; }
+.flashcards > tbody td:first-child .score { float: left; }
+.flashcards > tbody td:last-child .score { float: right; }
 
-.flashcards tr.selected td {
+.flashcards > tbody tr.selected td {
 	color: #9CF !important;
 	background-color: #259 !important;
 }
@@ -667,7 +668,6 @@ a.button { text-decoration: none; }
 	table-layout: fixed;
 	background-color: #026;
 	border-spacing: 0.3125em;
-	margin-top: -0.3125em;
 }
 
 .flashcard-actions td .button {

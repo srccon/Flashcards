@@ -132,6 +132,8 @@ define(function() {
 					Object.keys(data[category]).forEach(function(stack) {
 						data[category][stack].forEach(function(v) {
 
+							if (typeof v == "string") { return true; }
+
 							v.category = category;
 							v.stack = stack;
 
@@ -149,7 +151,7 @@ define(function() {
 					});
 				});
 
-				var $flashcards = Router.$page.find(".flashcards tbody");
+				var $flashcards = Router.$page.find(".flashcards > tbody");
 
 				if (App._search.length) {
 					App._search.forEach(function(v) {
@@ -168,11 +170,11 @@ define(function() {
 					});
 
 					Router.$page.find(".note, .loading").hide();
-					Router.$page.find(".flashcard-actions-container").show();
+					Router.$page.find(".stack-buttons, .flashcards").show();
 					$flashcards.parent().show();
 
 				} else {
-					Router.$page.find(".loading").hide();
+					Router.$page.find(".loading, .stack-buttons, .flashcards").hide();
 					Router.$page.find(".note").show();
 				}
 			}, true);
@@ -190,7 +192,7 @@ define(function() {
 
 					App.Flashcards.current = data || [];
 					Router.$page.find(".stack-name").html("<span style='font-weight: 500;'>" + stack.category + "</span> // " + stack.name);
-					var $flashcards = Router.$page.find(".flashcards tbody");
+					var $flashcards = Router.$page.find(".flashcards > tbody");
 
 					if (data.length) {
 						data.forEach(function(v) {
@@ -222,10 +224,13 @@ define(function() {
 						});
 
 						Router.$page.find(".note").hide();
-						Router.$page.find(".flashcard-actions-container").show();
+						Router.$page.find(".stack-buttons, .flashcards").show();
 						$flashcards.parent().show();
 
-					} else { Router.$page.find(".note").show(); }
+					} else {
+						Router.$page.find(".stack-buttons, .flashcards").hide();
+						Router.$page.find(".note").show();
+					}
 				});
 			});
 		}
