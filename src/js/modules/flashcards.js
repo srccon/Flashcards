@@ -605,7 +605,7 @@ define(["transit"], function() {
 			});
 
 			// Get table row objects
-			App.Router.$page.find(".flashcards tbody tr").each(function(i) {
+			App.Router.$page.find(".flashcards > tbody tr").each(function(i) {
 				if (keys.indexOf(+App.$(this).attr("data-key")) != -1)
 				{ show.push(this); }
 				else
