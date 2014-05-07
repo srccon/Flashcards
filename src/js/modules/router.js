@@ -190,6 +190,11 @@ define(function() {
 				// Get all flashcards for that stack
 				App.Flashcards.getAll(+stackID, function(data) {
 
+					if ($(".sort-flashcards option[value=" + App._settings.sorting + "]").length) {
+						$(".sort-flashcards select").val(App._settings.sorting);
+						data.sort(App.Stacks.sortFn[App._settings.sorting]);
+					}
+
 					App.Flashcards.current = data || [];
 					Router.$page.find(".stack-name").html("<span style='font-weight: 500;'>" + stack.category + "</span> // " + stack.name);
 					var $flashcards = Router.$page.find(".flashcards > tbody");
@@ -252,6 +257,9 @@ define(function() {
 		    args = page.split(":"),
 		    hash = args.shift(),
 		    $pageNext;
+
+		// Temporary hack
+		App.Stacks.practice.clearTimeouts();
 
 		if (!App.$("#" + hash).length) { hash = "page-stacks"; }
 		$pageNext = Router.$page = App.$("#" + hash);

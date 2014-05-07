@@ -66,17 +66,30 @@ html.page-about body {
 	position: relative;
 }
 
-html.page-quiz #bg {
-	background-image: url("../img/bg-quiz.jpg");
-}
+html.page-quiz {
+	#bg {
+		background-image: url("../img/bg-quiz.jpg");
+	}
 
-html.page-quiz body {
-	background-image: none;
-	background-color: transparent;
-}
+	body {
+		background-image: none;
+		background-color: transparent;
+	}
 
-html.page-quiz .menubar {
-	border-radius: 0px 0px 0.3125em 0.3125em;
+	.menubar {
+		border-radius: 0px 0px 0.3125em 0.3125em;
+		background-color: rgba(255,255,255,0.3);
+		border-bottom: 0.125em solid rgba(255,255,255,0.3);
+
+		.action {
+			background-color: rgba(0,0,0,0.2);
+			border-bottom: 0.125em solid rgba(0,0,0,0.1);
+		}
+
+		.title {
+			text-shadow: 0px 0px 0.125em rgba(0, 0, 0, 0.5);
+		}
+	}
 }
 
 html.page-stacks body {
@@ -600,6 +613,27 @@ a.button { text-decoration: none; }
 .stack-buttons {
 	width: 100%;
 	margin-bottom: 0.5em;
+}
+
+
+.sort-flashcards {
+	text-align: center;
+
+	select {
+		color: #6699cc;
+		font-size: 0.7em;
+		font-weight: bold;
+		text-align: center;
+
+		padding: 0.8em;
+		border: 0px;
+
+		border-radius: 3px 3px 0px 0px;
+		background-color: #002266;
+
+		box-sizing: border-box;
+		-webkit-appearance: listbox;
+	}
 }
 
 .flashcards {

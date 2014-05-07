@@ -95,12 +95,13 @@
 				<hr class="transparent">
 				<h1>Practice mode</h1><hr>
 
-				<label><input type="checkbox" name="always_show_buttons"> <span></span> Always show thumb-buttons</label>
-				<label><input type="checkbox" name="switch_front_back"> <span></span> Switch front/back</label>
-				<label><input type="checkbox" name="switch_front_back_randomly"> <span></span> Switch front/back randomly</label>
-				<label><input type="checkbox" name="shuffle_flashcards"> <span></span> Shuffle flashcards</label>
-				<label><input type="checkbox" name="disable_animation"> <span></span> Disable flashcard animation</label>
-				<label><input type="checkbox" name="tts_auto"> <span></span> Automatically play text to speech</label>
+				<label><input type="checkbox" name="always_show_buttons"><span></span> Always show thumb-buttons <span style="float: right;" class="fa fa-thumbs-up"></span></label>
+				<label><input type="checkbox" name="switch_front_back"><span></span> Switch front/back <span style="float: right;" class="fa fa-tags"></span></label>
+				<label><input type="checkbox" name="switch_front_back_randomly"><span></span> Switch front/back randomly <span style="float: right;" class="fa fa-tags"></span></label>
+				<label><input type="checkbox" name="shuffle_flashcards"><span></span> Shuffle flashcards <span style="float: right;" class="fa fa-refresh"></span></label>
+				<label><input type="checkbox" name="disable_animation"><span></span> Disable flashcard animation <span style="float: right;" class="fa fa-ban"></span></label>
+				<label><input type="checkbox" name="tts_auto"><span></span> Automatically play text to speech <span style="float: right;" class="fa fa-volume-up"></span></label>
+				<label><input type="checkbox" name="playthrough"><span></span> Enable practice playthrough <span style="float: right;" class="fa fa-play-circle"></span></label>
 
 				<hr class="transparent">
 				<h1>Reset</h1><hr>
@@ -152,7 +153,7 @@
 					<br><br>Background images provided by Marvin Zerulla
 				</div>
 
-				<div class="version">v1.2.3</div>
+				<div class="version">v1.2.4</div>
 			</div>
 		</div>	
 
@@ -198,6 +199,19 @@
 			</div>
 
 			<hr class="transparent">
+
+			<div class="sort-flashcards">
+				<select>
+					<option value="front-asc">Sort by: Front value (ascending)</option>
+					<option value="front-desc">Sort by: Front value (descending)</option>
+
+					<option value="back-asc">Sort by: Back value (ascending)</option>
+					<option value="back-desc">Sort by: Back value (descending)</option>
+
+					<option value="date-asc">Sort by: Date added (ascending)</option>
+					<option value="date-desc">Sort by: Date added (descending)</option>
+				</select>
+			</div>
 
 			<table class="flashcards">
 				<thead>

@@ -221,7 +221,25 @@ define(function() {
 			} else {
 				App.Utils.notification("Please set your translation preferences in your stack settings first");
 			}
+		},
+
+		"change .sort-flashcards select": function(e) {
+			var val = $(e.currentTarget).val();
+			App._settings.sorting = val;
+			App.Utils.localStorage("settings", App._settings);
+			App.Router.route("page-stack:" + Stacks.current);
 		}
+	};
+
+	Stacks.sortFn = {
+		"front-asc": function(a, b) { return a.value.front < b.value.front ? -1 : 1; },
+		"front-desc": function(a, b) { return a.value.front > b.value.front ? -1 : 1; },
+
+		"back-asc": function(a, b) { return a.value.back < b.value.back ? -1 : 1; },
+		"back-desc": function(a, b) { return a.value.back > b.value.back ? -1 : 1; },
+
+		"date-asc": function(a, b) { return a.key < b.key ? -1 : 1; },
+		"date-desc": function(a, b) { return a.key > b.key ? -1 : 1; }
 	};
 
 	/* ========================= */
@@ -466,6 +484,7 @@ define(function() {
 
 			Stacks.practice.custom = App.Router.$page.attr("id") == "page-search";
 			Stacks.practice.origin = window.location.hash.substr(1);
+			Stacks.practice.timeouts = [];
 
 			if (selection.length) {
 
@@ -535,6 +554,12 @@ define(function() {
 			if (App._settings.shuffle_flashcards)
 			{ data = App.Utils.array_shuffle(data); }
 
+			// Sort
+			else {
+				$(".sort-flashcards select").val(App._settings.sorting || "front-asc");
+				data.sort(App.Stacks.sortFn[App._settings.sorting || "front-asc"]);
+			}
+
 			// Replace linebreaks
 			data = data.map(function(v) {
 				v.value.front = v.value.front.replace(/\n/, "<br>");
@@ -544,13 +569,17 @@ define(function() {
 			});
 
 			App.Router.route("page-practice");
+			$(".tts").toggle(!App._settings.playthrough);
 
 			Stacks.practice.flashcards = data;
 			Stacks.practice.advance();
 		}
 
 		function end() {
+
+			clearTimeouts();
 			delete Stacks.practice.flashcards;
+			if (App._settings.playthrough) { return App.Router.route(Stacks.practice.origin); }
 
 			if (!Stacks.practice.custom) {
 				App.Statistics.registerPracticeSession(
@@ -571,13 +600,14 @@ define(function() {
 		}
 
 		function abort() {
+			clearTimeouts();
 			delete Stacks.practice.flashcards;
 			delete Stacks.practice.index;
 			App.Router.route(Stacks.practice.origin);
 		}
 
 		function updateStats(bool, callback) {
-			if (bool !== undefined) {
+			if (bool !== undefined && !App._settings.playthrough) {
 				var flipped = Stacks.practice.flashcard._flipped;
 				var score = Stacks.practice.flashcard.value.score || {front:{yes:0,no:0},back:{yes:0,no:0}};
 				if (typeof score == "string") { score = JSON.parse(score); }
@@ -628,21 +658,38 @@ define(function() {
 
 			updateStats();
 
-			if (App._settings.tts_auto) {
-
+			if (App._settings.tts_auto || App._settings.playthrough) {
 				prefs = App._settings.translation_preferences && App._settings.translation_preferences[Stacks.practice.flashcard.value.stackID];
 				
 				if (prefs) {
 					langCode = flipped ? prefs.to : prefs.from;
 					text = App.Utils.markdown(front, true);
-					App.Utils.speak(text, langCode);
+					App.Utils.speak(text, langCode, App._settings.playthrough ? playthrough : undefined);
+				} else if (App._settings.playthrough) {
+					Stacks.practice.timeouts.push(window.setTimeout(playthrough, 1000));
 				}
 			}
+		}
+
+		function playthrough() {
+			if (!Stacks.practice.flashcard.flipped) {
+				Stacks.practice.timeouts.push(window.setTimeout(function() { App.Flashcards.flip(true, playthrough); }, 1000));
+			} else {
+				Stacks.practice.timeouts.push(window.setTimeout(advance, 1000));
+			}
+		}
+
+		function clearTimeouts() {
+			if (!Stacks.practice.timeouts) { return; }
+			Stacks.practice.timeouts.forEach(function(v) {
+				window.clearTimeout(v);
+			});
 		}
 
 		api = {
 			initialize: initialize,
 			updateStats: updateStats,
+			clearTimeouts: clearTimeouts,
 			advance: advance,
 			abort: abort
 		};
@@ -681,8 +728,13 @@ define(function() {
 				if (App._settings.shuffle_flashcards)
 				{ data = App.Utils.array_shuffle(data); }
 
-				// Replace linebreaks
+				// Sort
+				else {
+					$(".sort-flashcards select").val(App._settings.sorting || "front-asc");
+					data.sort(App.Stacks.sortFn[App._settings.sorting || "front-asc"]);
+				}
 
+				// Replace linebreaks
 				data = data.map(function(v) {
 					v.value.front = v.value.front.replace(/\n/, "<br>");
 					v.value.back = v.value.back.replace(/\n/, "<br>");
