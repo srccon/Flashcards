@@ -13,7 +13,7 @@ A simple flashcard application for android and web browsers.
 <img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/01.png" height="275">&nbsp;
 <img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/02.png" height="275">&nbsp;
 <img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/03.png" height="275">&nbsp;
-<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/04.png" height="275">&nbsp;
+<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/05.png" height="275">&nbsp;
 
 
 ## Features
