@@ -216,18 +216,25 @@ define(["transit"], function() {
 		}
 	};
 
+	/* ================== */
+	/* ====== FLIP ====== */
+	/* ================== */
+
 	Flashcards.flip = function(e, speakCallback) {
 
 		if (App.Stacks.practice.pending) { return; }
 		App.Stacks.practice.pending = true;
 
+		if (!App.Stacks.practice.flashcard.flipped) { App.Stacks.practice.flashcard.flipped = true; }
+		else { App.Stacks.practice.flashcard.flipped = !App.Stacks.practice.flashcard.flipped; }
+
 		var time_factor = 1,
 			front = e === true || $(e.currentTarget).hasClass("front"),
-		    flipped = App.Stacks.practice.flashcard.flipped,
+		    switched = App.Stacks.practice.flashcard.switched,
 		    langCode, text, prefs;
 
 		if (App._settings.disable_animation) { time_factor = 0; }
-		App.Stacks.practice.flashcard.flipped = !App.Stacks.practice.flashcard.flipped;
+		App.Stacks.practice.flashcard.switched = !App.Stacks.practice.flashcard.switched;
 
 		App.$("#flashcard .front").transition({ rotateX: front ? 180 : 5 }, 750 * time_factor, function() {
 			App.Stacks.practice.pending = false;
@@ -243,11 +250,11 @@ define(["transit"], function() {
 			prefs = App._settings.translation_preferences && App._settings.translation_preferences[App.Stacks.practice.flashcard.value.stackID];
 			
 			if (prefs) {
-				langCode = flipped ? (front ? prefs.from : prefs.to) : (front ? prefs.to : prefs.from);
-				text = App.Utils.markdown(App.Stacks.practice.flashcard.value[flipped ? "front" : "back"], true);
+				langCode = switched ? (front ? prefs.from : prefs.to) : (front ? prefs.to : prefs.from);
+				text = App.Utils.markdown(App.Stacks.practice.flashcard.value[switched ? "front" : "back"], true);
 				App.Utils.speak(text, langCode, speakCallback);
 			} else if (speakCallback) {
-				Stacks.practice.timeouts.push(window.setTimeout(speakCallback, 1000));
+				App.Stacks.practice.timeouts.push(window.setTimeout(speakCallback, 1000));
 			}
 		}
 	};

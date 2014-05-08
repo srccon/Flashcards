@@ -113,7 +113,7 @@ define(function() {
 
 			var $target = App.$(e.currentTarget);
 			var correct = $target.attr("data-correct") == "true";
-			var flipped = Stacks.quiz.question.flipped;
+			var switched = Stacks.quiz.question.switched;
 			var langCode, text, prefs;
 
 			var fn = function() {
@@ -134,8 +134,8 @@ define(function() {
 				prefs = App._settings.translation_preferences && App._settings.translation_preferences[Stacks.quiz.question.value.stackID];
 				
 				if (prefs) {
-					langCode = flipped ? prefs.from : prefs.to;
-					text = App.Utils.markdown(Stacks.quiz.question.value[flipped ? "front" : "back"], true);
+					langCode = switched ? prefs.from : prefs.to;
+					text = App.Utils.markdown(Stacks.quiz.question.value[switched ? "front" : "back"], true);
 					App.Utils.speak(text, langCode, fn);
 				}
 			}
@@ -211,12 +211,12 @@ define(function() {
 			if (!Stacks.practice.flashcard) { return; }
 
 			var prefs = App._settings.translation_preferences && App._settings.translation_preferences[Stacks.practice.flashcard.value.stackID],
-				flipped = Stacks.practice.flashcard.flipped,
+				switched = Stacks.practice.flashcard.switched,
 			    langCode, text;
 			
 			if (prefs) {
-				langCode = flipped ? prefs.to : prefs.from;
-				text = App.Utils.markdown(Stacks.practice.flashcard.value[flipped ? "back" : "front"], true);
+				langCode = switched ? prefs.to : prefs.from;
+				text = App.Utils.markdown(Stacks.practice.flashcard.value[switched ? "back" : "front"], true);
 				App.Utils.speak(text, langCode);
 			} else {
 				App.Utils.notification("Please set your translation preferences in your stack settings first");
@@ -227,7 +227,7 @@ define(function() {
 			var val = $(e.currentTarget).val();
 			App._settings.sorting = val;
 			App.Utils.localStorage("settings", App._settings);
-			App.Router.route("page-stack:" + Stacks.current);
+			App.Router.reroute();
 		}
 	};
 
@@ -321,6 +321,7 @@ define(function() {
 	/* ================= */
 
 	Stacks.get = function(id, callback) {
+
 		App.DB.getData("App", "Stacks", id, function(data) {
 			if (!data) { return; }
 
@@ -608,11 +609,11 @@ define(function() {
 
 		function updateStats(bool, callback) {
 			if (bool !== undefined && !App._settings.playthrough) {
-				var flipped = Stacks.practice.flashcard._flipped;
+				var switched = Stacks.practice.flashcard._switched;
 				var score = Stacks.practice.flashcard.value.score || {front:{yes:0,no:0},back:{yes:0,no:0}};
 				if (typeof score == "string") { score = JSON.parse(score); }
 
-				score[flipped ? "back" : "front"][bool ? "yes" : "no"]++;
+				score[switched ? "back" : "front"][bool ? "yes" : "no"]++;
 				App.DB.updateData("App", "Flashcards", Stacks.practice.flashcard.key, { score: JSON.stringify(score) }, callback || function(){});
 			} else {
 				App.Router.$page.find(".stats").html("Flashcard " + (Stacks.practice.index) + " of " + Stacks.practice.total + "<br>");
@@ -623,21 +624,23 @@ define(function() {
 
 			var flashcard = Stacks.practice.flashcards[Stacks.practice.index++];
 			if (!flashcard) { return end(); }
+
 			Stacks.practice.flashcard = flashcard;
+			Stacks.practice.flashcard.flipped = false;
 
 			var $front = App.$("#flashcard .front"),
 			    $back = App.$("#flashcard .back"),
-			    flipped = App._settings.switch_front_back,
+			    switched = App._settings.switch_front_back,
 			    tallest, prefs, langCode, text;
 
 			if (App._settings.switch_front_back_randomly)
-			{ flipped = Math.round(Math.random()); }
+			{ switched = Math.round(Math.random()); }
 
-			flashcard._flipped = flipped;
-			flashcard.flipped = flipped;
+			flashcard._switched = switched;
+			flashcard.switched = switched;
 
-			var front = flipped ? flashcard.value.back : flashcard.value.front;
-			var back = flipped ? flashcard.value.front : flashcard.value.back;
+			var front = switched ? flashcard.value.back : flashcard.value.front;
+			var back = switched ? flashcard.value.front : flashcard.value.back;
 
 			// Show/Hide buttons
 			App.$("#practice-buttons").toggle(!!App._settings.always_show_buttons);
@@ -662,7 +665,7 @@ define(function() {
 				prefs = App._settings.translation_preferences && App._settings.translation_preferences[Stacks.practice.flashcard.value.stackID];
 				
 				if (prefs) {
-					langCode = flipped ? prefs.to : prefs.from;
+					langCode = switched ? prefs.to : prefs.from;
 					text = App.Utils.markdown(front, true);
 					App.Utils.speak(text, langCode, App._settings.playthrough ? playthrough : undefined);
 				} else if (App._settings.playthrough) {
@@ -673,7 +676,7 @@ define(function() {
 
 		function playthrough() {
 			if (!Stacks.practice.flashcard.flipped) {
-				Stacks.practice.timeouts.push(window.setTimeout(function() { App.Flashcards.flip(true, playthrough); }, 1000));
+				Stacks.practice.timeouts.push(window.setTimeout(function() { App.Flashcards.flip(!Stacks.practice.flashcard.flipped, playthrough); }, 1000));
 			} else {
 				Stacks.practice.timeouts.push(window.setTimeout(advance, 1000));
 			}
@@ -774,11 +777,11 @@ define(function() {
 
 		function updateStats(bool, callback) {
 			if (bool !== undefined) {
-				var flipped = Stacks.quiz.question._flipped;
+				var switched = Stacks.quiz.question._switched;
 				var score = Stacks.quiz.question.value.score || {front:{yes:0,no:0},back:{yes:0,no:0}};
 				if (typeof score == "string") { score = JSON.parse(score); }
 
-				score[flipped ? "back" : "front"][bool ? "yes" : "no"]++;
+				score[switched ? "back" : "front"][bool ? "yes" : "no"]++;
 				App.DB.updateData("App", "Flashcards", Stacks.quiz.question.key, { score: JSON.stringify(score) }, callback || function(){});
 			} else {
 				App.Router.$page.find(".stats").html((Stacks.quiz.index) + " of " + Stacks.quiz.total + "<br>");
@@ -793,19 +796,19 @@ define(function() {
 
 			var $question = App.$("#quiz .quiz-question"),
 			    $answers = App.$("#quiz .quiz-answer"),
-			    flipped = App._settings.switch_front_back,
+			    switched = App._settings.switch_front_back,
 			    right_answer, indices, index, val, i, langCode, text, prefs;
 
 			if (App._settings.switch_front_back_randomly)
-			{ flipped = Math.round(Math.random()); }
+			{ switched = Math.round(Math.random()); }
 			
 			$answers.removeAttr("data-correct");
-			question._flipped = flipped;
-			question.flipped = flipped;
+			question._switched = switched;
+			question.switched = switched;
 			question.failed = false;
 
-			var front = flipped ? question.value.back : question.value.front;
-			var back = flipped ? question.value.front : question.value.back;
+			var front = switched ? question.value.back : question.value.front;
+			var back = switched ? question.value.front : question.value.back;
 
 			right_answer = Array.prototype.splice.call($answers, App.Utils.rand(0, 3), 1);
 
@@ -823,7 +826,7 @@ define(function() {
 				{ index = App.Utils.rand(0, Stacks.quiz.total-1); }
 
 				indices.push(index);
-				val = App.Utils.markdown(Stacks.quiz.flashcards[index].value[flipped ? "front" : "back"]);
+				val = App.Utils.markdown(Stacks.quiz.flashcards[index].value[switched ? "front" : "back"]);
 
 				App.$(Array.prototype.pop.call($answers)).html(val);
 			}
@@ -835,7 +838,7 @@ define(function() {
 				prefs = App._settings.translation_preferences && App._settings.translation_preferences[Stacks.quiz.question.value.stackID];
 				
 				if (prefs) {
-					langCode = flipped ? prefs.to : prefs.from;
+					langCode = switched ? prefs.to : prefs.from;
 					text = App.Utils.markdown(front, true);
 					App.Utils.speak(text, langCode);
 				}

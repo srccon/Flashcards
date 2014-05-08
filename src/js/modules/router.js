@@ -151,7 +151,12 @@ define(function() {
 					});
 				});
 
-				var $flashcards = Router.$page.find(".flashcards > tbody");
+				if ($(".sort-flashcards option[value=" + App._settings.sorting + "]").length) {
+					$(".sort-flashcards select").val(App._settings.sorting);
+					App._search.sort(App.Stacks.sortFn[App._settings.sorting]);
+				}
+
+				var $flashcards = Router.$page.find(".flashcards > tbody").html("");
 
 				if (App._search.length) {
 					App._search.forEach(function(v) {
@@ -170,7 +175,7 @@ define(function() {
 					});
 
 					Router.$page.find(".note, .loading").hide();
-					Router.$page.find(".stack-buttons, .flashcards").show();
+					Router.$page.find(".stack-buttons, .flashcards, .sort-flashcards").show();
 					$flashcards.parent().show();
 
 				} else {
@@ -197,7 +202,7 @@ define(function() {
 
 					App.Flashcards.current = data || [];
 					Router.$page.find(".stack-name").html("<span style='font-weight: 500;'>" + stack.category + "</span> // " + stack.name);
-					var $flashcards = Router.$page.find(".flashcards > tbody");
+					var $flashcards = Router.$page.find(".flashcards > tbody").html("");
 
 					if (data.length) {
 						data.forEach(function(v) {
@@ -229,7 +234,7 @@ define(function() {
 						});
 
 						Router.$page.find(".note").hide();
-						Router.$page.find(".stack-buttons, .flashcards").show();
+						Router.$page.find(".stack-buttons, .flashcards, .sort-flashcards").show();
 						$flashcards.parent().show();
 
 					} else {
@@ -258,6 +263,9 @@ define(function() {
 		    hash = args.shift(),
 		    $pageNext;
 
+		Router._args = args;
+		Router._hash = hash;
+
 		// Temporary hack
 		App.Stacks.practice.clearTimeouts();
 
@@ -284,6 +292,15 @@ define(function() {
 			Router.currentPage = hash;
 			$pageNext.show();
 		}
+	};
+
+	/* ===================== */
+	/* ====== REROUTE ====== */
+	/* ===================== */
+
+	Router.reroute = function() {
+		if (Router.routes[Router._hash])
+		{ Router.routes[Router._hash].apply(this, Router._args); }
 	};
 
 	return Router;

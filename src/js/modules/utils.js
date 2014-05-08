@@ -259,6 +259,8 @@ define(function() {
 		
 		if (!(window.speechSynthesis || window.SpeechSynthesisUtterance))
 		{ return callback && callback(); }
+
+		window.clearTimeout(Utils.speak.timeout);
 		
 		var u = new window.SpeechSynthesisUtterance();
 		
@@ -266,8 +268,20 @@ define(function() {
 		u.lang = langCode;
 		u.rate = 1.0;
 
-		if (callback) { u.onend = callback; }
+		Utils.speak.status = false;
+
+		u.onend = function() {
+			Utils.speak.status = true;
+			if (callback) { callback(); }
+		};
+
 		window.speechSynthesis.speak(u);
+
+		Utils.speak.timeout = window.setTimeout(function() {
+			if (!Utils.speak.status) {
+				Utils.notification("Loading TTS-Engine, please wait...", 1000);
+			}
+		}, 3000);
 	};
 
 	return Utils;
