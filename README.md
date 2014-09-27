@@ -6,14 +6,14 @@ Flashcards (WIP) <a rel="license" href="http://creativecommons.org/licenses/by-n
 
 A simple flashcard application for android and web browsers.  
 
-* [**Browser version**](http://elias-schuett.de/git/Flashcards/)
-* [**Android app (APK)**](https://dl.dropboxusercontent.com/u/14645664/files/Flashcards.apk)
+* [**Browser version**](http://apps.elias.media/Flashcards/)
+* [**Android app (APK)**](https://owncloud.elias.media/public.php?service=files&t=d334fada92ba53259561a3177ae34a87&download)
 * [**Android app (Google Play)**](https://play.google.com/store/apps/details?id=de.elias_schuett.flashcards)
 
-<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/01.png" height="275">&nbsp;
-<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/02.png" height="275">&nbsp;
-<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/03.png" height="275">&nbsp;
-<img src="https://dl.dropboxusercontent.com/u/14645664/tablet/Flashcards/05.png" height="275">&nbsp;
+<img src="https://elias94xx.github.io/Flashcards/screenshots/01.png" height="275">&nbsp;
+<img src="https://elias94xx.github.io/Flashcards/screenshots/02.png" height="275">&nbsp;
+<img src="https://elias94xx.github.io/Flashcards/screenshots/03.png" height="275">&nbsp;
+<img src="https://elias94xx.github.io/Flashcards/screenshots/05.png" height="275">&nbsp;
 
 
 ## Features
