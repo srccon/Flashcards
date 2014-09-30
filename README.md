@@ -13,10 +13,10 @@ A simple flashcard application for android and web browsers.
 CC-BY-NC-SA 3.0
 
 
-<img src="https://elias94xx.github.io/Flashcards/screenshots/01.png" height="275">&nbsp;
-<img src="https://elias94xx.github.io/Flashcards/screenshots/02.png" height="275">&nbsp;
-<img src="https://elias94xx.github.io/Flashcards/screenshots/03.png" height="275">&nbsp;
-<img src="https://elias94xx.github.io/Flashcards/screenshots/05.png" height="275">&nbsp;
+<img src="https://elias-schuett.github.io/Flashcards/screenshots/01.png" height="275">&nbsp;
+<img src="https://elias-schuett.github.io/Flashcards/screenshots/02.png" height="275">&nbsp;
+<img src="https://elias-schuett.github.io/Flashcards/screenshots/03.png" height="275">&nbsp;
+<img src="https://elias-schuett.github.io/Flashcards/screenshots/05.png" height="275">&nbsp;
 
 
 ## Features
