@@ -4,6 +4,23 @@
  * An initialization file that checks for conditions, removes console.log and warn, etc
  */
 var idbModules = {};
+
+var cleanInterface = false;
+(function () {
+    var testObject = {test: true};
+    //Test whether Object.defineProperty really works.
+    if (Object.defineProperty) {
+        try {
+            Object.defineProperty(testObject, 'test', { enumerable: false });
+            if (testObject.test) {
+                cleanInterface = true;
+            }
+        } catch (e) {
+        //Object.defineProperty does not work as intended.
+        }
+    }
+})();
+
 /*jshint globalstrict: true*/
 'use strict';
 (function(idbModules) {
@@ -30,7 +47,13 @@ var idbModules = {};
      */
 
     function throwDOMException(name, message, error) {
-        var e = new DOMException.prototype.constructor(0, message);
+        var e;
+        try {
+            e = new DOMException.prototype.constructor(0, message);
+        } catch (_error) {
+            e = new Error(message);
+        }
+
         e.name = name;
         e.message = message;
         if (idbModules.DEBUG) {
@@ -48,7 +71,7 @@ var idbModules = {};
         this.length = 0;
         this._items = [];
         //Internal functions on the prototype have been made non-enumerable below.
-        if (Object.defineProperty) {
+        if (cleanInterface) {
             Object.defineProperty(this, '_items', {
                 enumerable: false
             });
@@ -87,7 +110,7 @@ var idbModules = {};
             }
         }
     };
-    if (Object.defineProperty) {
+    if (cleanInterface) {
         for (var i in {
             'indexOf': false,
             'push': false,
@@ -107,6 +130,7 @@ var idbModules = {};
         "StringList": StringList
     };
 }(idbModules));
+
 /*jshint globalstrict: true*/
 'use strict';
 (function(idbModules){
@@ -502,9 +526,9 @@ var idbModules = {};
 /*jshint globalstrict: true*/
 'use strict';
 (function(idbModules, undefined){
-	// The event interface used for IndexedBD Actions.
+	// The event interface used for IndexedDB Actions.
 	var Event = function(type, debug){
-		// Returning an object instead of an even as the event's target cannot be set to IndexedDB Objects
+		// Returning an object instead of an event as the event's target cannot be set to IndexedDB Objects
 		// We still need to have event.target.result as the result of the IDB request
 		return {
 			"type": type,
@@ -591,6 +615,9 @@ var idbModules = {};
      * @param {Object} cursorRequest
      */
     function IDBCursor(range, direction, idbObjectStore, cursorRequest, keyColumnName, valueColumnName){
+        if (range && !(range instanceof idbModules.IDBKeyRange)) {
+            range = new idbModules.IDBKeyRange(range, range, false, false);
+        }
         this.__range = range;
         this.source = this.__idbObjectStore = idbObjectStore;
         this.__req = cursorRequest;
@@ -620,17 +647,22 @@ var idbModules = {};
         var sql = ["SELECT * FROM ", idbModules.util.quote(me.__idbObjectStore.name)];
         var sqlValues = [];
         sql.push("WHERE ", me.__keyColumnName, " NOT NULL");
-        if (me.__range && (me.__range.lower || me.__range.upper)) {
+        if (me.__range && (me.__range.lower !== undefined || me.__range.upper !== undefined )) {
             sql.push("AND");
-            if (me.__range.lower) {
-                sql.push(me.__keyColumnName + (me.__range.lowerOpen ? " >" : " >= ") + " ?");
-                sqlValues.push(idbModules.Key.encode(me.__range.lower));
-            }
-            (me.__range.lower && me.__range.upper) && sql.push("AND");
-            if (me.__range.upper) {
-                sql.push(me.__keyColumnName + (me.__range.upperOpen ? " < " : " <= ") + " ?");
-                sqlValues.push(idbModules.Key.encode(me.__range.upper));
-            }
+			if (me.__range.lower === me.__range.upper && me.__range.lower !== undefined) {
+				sql.push(me.__keyColumnName + " = ?");
+				sqlValues.push(idbModules.Key.encode(me.__range.lower));
+			} else {
+	            if (me.__range.lower !== undefined) {
+	                sql.push(me.__keyColumnName + (me.__range.lowerOpen ? " > " : " >= ") + " ?");
+	                sqlValues.push(idbModules.Key.encode(me.__range.lower));
+	            }
+	            (me.__range.lower !== undefined && me.__range.upper !== undefined) && sql.push("AND");
+	            if (me.__range.upper !== undefined) {
+	                sql.push(me.__keyColumnName + (me.__range.upperOpen ? " < " : " <= ") + " ?");
+	                sqlValues.push(idbModules.Key.encode(me.__range.upper));
+	            }
+	        }
         }
         if (typeof key !== "undefined") {
             me.__lastKeyContinued = key;
@@ -723,9 +755,25 @@ var idbModules = {};
         idbModules.Sca.encode(valueToUpdate, function(encoded) {
             me.__idbObjectStore.transaction.__pushToQueue(request, function(tx, args, success, error){
                 me.__find(undefined, tx, function(key, value, primaryKey){
-                    var sql = "UPDATE " + idbModules.util.quote(me.__idbObjectStore.name) + " SET value = ? WHERE key = ?";
+                    var store = me.__idbObjectStore,
+                        storeProperties = me.__idbObjectStore.transaction.db.__storeProperties;
+                    var params = [encoded];
+                    var sql = "UPDATE " + idbModules.util.quote(store.name) + " SET value = ?";
+                    var indexList = storeProperties[store.name] && storeProperties[store.name].indexList;
+                    // Also correct the indexes in the table
+                    if (indexList) {
+                        for (var index in indexList) {
+                            var indexProps = indexList[index];
+                            sql += ", " + index + " = ?";
+                            params.push(idbModules.Key.encode(valueToUpdate[indexProps.keyPath]));
+                        }
+                    }
+                    sql += " WHERE key = ?";
+                    params.push(idbModules.Key.encode(primaryKey));
+
                     idbModules.DEBUG && console.log(sql, encoded, key, primaryKey);
-                    tx.executeSql(sql, [encoded, idbModules.Key.encode(primaryKey)], function(tx, data){
+                    tx.executeSql(sql, params, function(tx, data){
+                        me.__prefetchedData = null;
                         if (data.rowsAffected === 1) {
                             success(key);
                         }
@@ -748,6 +796,7 @@ var idbModules = {};
                 var sql = "DELETE FROM  " + idbModules.util.quote(me.__idbObjectStore.name) + " WHERE key = ?";
                 idbModules.DEBUG && console.log(sql, key, primaryKey);
                 tx.executeSql(sql, [idbModules.Key.encode(primaryKey)], function(tx, data){
+                    me.__prefetchedData = null;
                     if (data.rowsAffected === 1) {
                         // lower the offset or we will miss a row
                         me.__offset--;
@@ -778,10 +827,10 @@ var idbModules = {};
     function IDBIndex(indexName, idbObjectStore){
         this.indexName = this.name = indexName;
         this.__idbObjectStore = this.objectStore = this.source = idbObjectStore;
-        
-        var indexList = idbObjectStore.__storeProps && idbObjectStore.__storeProps.indexList;
-        indexList && (indexList = JSON.parse(indexList));
-        
+
+        var storeProps = idbObjectStore.transaction.db.__storeProperties[idbObjectStore.name];
+        var indexList = storeProps && storeProps.indexList;
+
         this.keyPath = ((indexList && indexList[indexName] && indexList[indexName].keyPath) || indexName);
         ['multiEntry','unique'].forEach(function(prop){
             this[prop] = !!indexList && !!indexList[indexName] && !!indexList[indexName].optionalParams && !!indexList[indexName].optionalParams[prop];
@@ -861,7 +910,6 @@ var idbModules = {};
         return me.__idbObjectStore.transaction.__addToTransactionQueue(function(tx, args, success, error){
             var sql = ["SELECT * FROM ", idbModules.util.quote(me.__idbObjectStore.name), " WHERE", me.indexName, "NOT NULL"];
             var sqlValues = [];
-
             if (typeof key !== "undefined" && (key.lower !== undefined || key.upper !== undefined)) {
                 sql.push("AND");
 
@@ -880,7 +928,6 @@ var idbModules = {};
                     }
                 }
             }
-
             idbModules.DEBUG && console.log("Trying to fetch data for Index", sql.join(" "), sqlValues);
             tx.executeSql(sql.join(" "), sqlValues, function(tx, data){
                 var d;
@@ -934,6 +981,15 @@ var idbModules = {};
         this.__ready = {};
         this.__setReadyState("createObjectStore", typeof ready === "undefined" ? true : ready);
         this.indexNames = new idbModules.util.StringList();
+        var dbProps = idbTransaction.db.__storeProperties;
+        if (dbProps[name] && dbProps[name].indexList) {
+            var indexes = dbProps[name].indexList;
+            for (var indexName in indexes) {
+                if(indexes.hasOwnProperty(indexName)) {
+                    this.indexNames.push(indexName);
+                }
+            }
+        }
     };
     
     /**
@@ -1040,7 +1096,7 @@ var idbModules = {};
                 if (value) {
                     try {
                         var primaryKey = eval("value['" + props.keyPath + "']");
-                        if (!primaryKey) {
+                        if (primaryKey === undefined) {
                             if (props.autoInc === "true") {
                                 getNextAutoIncKey();
                             }
@@ -1243,6 +1299,13 @@ var idbModules = {};
             result.__createIndex(indexName, keyPath, optionalParameters);
         }, "createObjectStore");
         me.indexNames.push(indexName);
+
+        // Also update the db indexList, because after reopening the store, we still want to know this indexName
+        var storeProps = me.transaction.db.__storeProperties[me.name];
+        storeProps.indexList[indexName] = {
+            keyPath: keyPath,
+            optionalParams: optionalParameters
+        };
         return result;
     };
     
@@ -1422,10 +1485,19 @@ var idbModules = {};
     var IDBDatabase = function(db, name, version, storeProperties){
         this.__db = db;
         this.version = version;
-        this.__storeProperties = storeProperties;
         this.objectStoreNames = new idbModules.util.StringList();
         for (var i = 0; i < storeProperties.rows.length; i++) {
             this.objectStoreNames.push(storeProperties.rows.item(i).name);
+        }
+        // Convert store properties to an object because we need to modify the object when a db is upgraded and new
+        // stores/indexes are being created
+        this.__storeProperties = {};
+        for (i = 0; i < storeProperties.rows.length; i++) {
+            var row = storeProperties.rows.item(i);
+            var objectStoreProps = this.__storeProperties[row.name] = {};
+            objectStoreProps.keyPath = row.keypath;
+            objectStoreProps.autoInc = row.autoInc === "true";
+            objectStoreProps.indexList = JSON.parse(row.indexList);
         }
         this.name = name;
         this.onabort = this.onerror = this.onversionchange = null;
@@ -1460,6 +1532,11 @@ var idbModules = {};
         // The IndexedDB Specification needs us to return an Object Store immediatly, but WebSQL does not create and return the store immediatly
         // Hence, this can technically be unusable, and we hack around it, by setting the ready value to false
         me.objectStoreNames.push(storeName);
+        // Also store this for the first run
+        var storeProps = me.__storeProperties[storeName] = {};
+        storeProps.keyPath = createOptions.keyPath;
+        storeProps.autoInc = !!createOptions.autoIncrement;
+        storeProps.indexList = {};
         return result;
     };
     
@@ -1511,20 +1588,9 @@ var idbModules = {};
     // The sysDB to keep track of version numbers for databases
     var sysdb = window.openDatabase("__sysdb__", 1, "System Database", DEFAULT_DB_SIZE);
     sysdb.transaction(function(tx){
-        tx.executeSql("SELECT * FROM dbVersions", [], function(t, data){
-            // dbVersions already exists
-        }, function(){
-            // dbVersions does not exist, so creating it
-            sysdb.transaction(function(tx){
-                tx.executeSql("CREATE TABLE IF NOT EXISTS dbVersions (name VARCHAR(255), version INT);", [], function(){
-                }, function(){
-                    idbModules.util.throwDOMException("Could not create table __sysdb__ to save DB versions");
-                });
-            });
-        });
-    }, function(){
-        // sysdb Transaction failed
-       idbModules.DEBUG && console.log("Error in sysdb transaction - when selecting from dbVersions", arguments);
+        tx.executeSql("CREATE TABLE IF NOT EXISTS dbVersions (name VARCHAR(255), version INT);", []);
+    }, function() {
+       idbModules.DEBUG && console.log("Error in sysdb transaction - when creating dbVersions", arguments);
     });
     
     var shimIndexedDB = {
@@ -1707,7 +1773,7 @@ var idbModules = {};
     if(!('indexedDB' in window)) {
         window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.oIndexedDB || window.msIndexedDB;
     }
-
+    
     /*
     detect browsers with known IndexedDb issues (e.g. Android pre-4.4)
     */
@@ -1719,7 +1785,7 @@ var idbModules = {};
         }
     }
 
-    if (typeof window.indexedDB === "undefined" && typeof window.openDatabase !== "undefined") {
+    if ((typeof window.indexedDB === "undefined" || poorIndexedDbSupport) && typeof window.openDatabase !== "undefined") {
         window.shimIndexedDB.__useShim();
     }
     else {
@@ -1730,8 +1796,12 @@ var idbModules = {};
         if(!window.IDBTransaction){
             window.IDBTransaction = {};
         }
-        window.IDBTransaction.READ_ONLY = window.IDBTransaction.READ_ONLY || "readonly";
-        window.IDBTransaction.READ_WRITE = window.IDBTransaction.READ_WRITE || "readwrite";
+        /* Some browsers (e.g. Chrome 18 on Android) support IndexedDb but do not allow writing of these properties */
+        try {
+            window.IDBTransaction.READ_ONLY = window.IDBTransaction.READ_ONLY || "readonly";
+            window.IDBTransaction.READ_WRITE = window.IDBTransaction.READ_WRITE || "readwrite";
+        } catch (e) {}
     }
     
 }(window, idbModules));
+

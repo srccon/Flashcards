@@ -25,7 +25,7 @@ define(["transit"], function() {
 		},
 
 		// Select single
-		"click .flashcards tbody tr": function(e) {
+		"click .flashcards > tbody tr": function(e) {
 			App.$(e.currentTarget).toggleClass("selected");
 		},
 
@@ -294,7 +294,7 @@ define(["transit"], function() {
 
 	Flashcards.getSelection = function() {
 
-		var $rows = App.Router.$page.find(".flashcards tbody tr.selected");
+		var $rows = App.Router.$page.find(".flashcards > tbody tr.selected");
 		var cards = [];
 
 		$rows.each(function() {

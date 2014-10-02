@@ -59,7 +59,7 @@ define(function() {
 
 	Utils.localStorage = function(key, value) {
 		if (key !== undefined && value !== undefined) {
-			// Phonegap hack ?
+			// Cordova hack ?
 			window.localStorage.removeItem(key);
 			window.localStorage.setItem(key, JSON.stringify(value));
 		} else if (key !== undefined) {

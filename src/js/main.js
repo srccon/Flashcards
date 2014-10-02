@@ -16,10 +16,11 @@ require.config({
 
 require(["app"], function(App) {
 
-	if (App.isPhoneGap) {
-		require(["cordova.js", "js_external/utils_phonegap"], function(Cordova, PhoneGap_Utils) {
-			App.Utils.PhoneGap = PhoneGap_Utils;
-			App.Utils.PhoneGap.initialize();
+	if (App.isCordova) {
+
+		require(["js_external/utils.cordova"], function(Cordova_Utils) {
+			App.Utils.Cordova = Cordova_Utils;
+			App.Utils.Cordova.initialize();
 		});
 
 		return;

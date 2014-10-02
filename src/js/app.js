@@ -21,7 +21,7 @@ define([
 	};
 
 	App._settings.translation_preferences = App._settings.translation_preferences || {};
-	App.isPhoneGap = App.isMobile && (document.location.protocol == "file:");
+	App.isCordova = App.isMobile && (document.location.protocol == "file:");
 
 	App.$ = $;
 	App.Utils = Utils;
@@ -49,8 +49,8 @@ define([
 			return;
 		}
 
-		// Open external links with PhoneGap's InAppBrowser
-		if (App.isPhoneGap) {
+		// Open external links with Cordova's InAppBrowser
+		if (App.isCordova) {
 
 			$("body").on("click", "a[target='_blank']", function(e) {
 
@@ -86,7 +86,7 @@ define([
 	/* ======================= */
 
 	App.isOnline = function() {
-		return App.isOnlinePhoneGap !== undefined ? App.isOnlinePhoneGap : navigator.onLine;
+		return App.isOnlineCordova !== undefined ? App.isOnlineCordova : navigator.onLine;
 	};
 
 	/* ============================= */

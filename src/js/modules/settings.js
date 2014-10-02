@@ -33,14 +33,14 @@ define(function() {
 		"click .button-export": function(e) { Settings.export_json(); },
 
 		"click .button-import": function(e) {
-			if (!App.isPhoneGap) { return; }
+			if (!App.isCordova) { return; }
 			e.preventDefault();
 			window.location.hash = "page-file-browser";
 		},
 
 		"change .button-import input": function(e) {
 
-			if (App.isPhoneGap) {
+			if (App.isCordova) {
 				e.preventDefault();
 				return;
 			}
@@ -193,7 +193,7 @@ define(function() {
 			if (typeof _callback == "function") { return _callback(json_data); }
 			var out = JSON.stringify(json_data, null, "\t");
 
-			if (App.isPhoneGap) {
+			if (App.isCordova) {
 
 				var date = new Date(),
 
@@ -213,10 +213,10 @@ define(function() {
 				seconds = seconds < 10 ? "0" + seconds : seconds;
 
 				dateString = year + "-" + month + "-" + day + "_" + hours + "-" + minutes + "-" + seconds;
-				path = "flashcards/flashcards_" + dateString + ".json";
+				path = dateString + ".json";
 
-				App.Utils.PhoneGap.writeFile(path, out, function() {
-					App.Utils.notification("Created file in: /sdcard/" + path);
+				App.Utils.Cordova.writeFile(path, out, function() {
+					App.Utils.notification("Created file in: Documents/Flashcards/" + path);
 				});
 
 			} else {

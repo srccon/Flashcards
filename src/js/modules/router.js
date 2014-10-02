@@ -74,9 +74,9 @@ define(function() {
 		},
 		
 		"page-file-browser": function() {
-			if (!App.isPhoneGap) { return; }
-			App.Utils.PhoneGap.currentDir = "/mnt/sdcard/";
-			App.Utils.PhoneGap.updateView();
+			if (!App.isCordova) { return; }
+			App.Utils.Cordova.currentDir = cordova.file.externalRootDirectory;
+			App.Utils.Cordova.updateView();
 		},
 
 		"page-flashcard-edit": function(stackID, key) {
