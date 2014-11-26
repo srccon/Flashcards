@@ -71,14 +71,16 @@ define([
 		Utils.initialize();
 
 		// Initialize the database
-		DB.initialize(function() {
-			Settings.initialize();
-			Statistics.initialize();
-			Stacks.initialize();
-			Flashcards.initialize();
-			Router.initialize();
-			App.registerEvents();
-		});
+        DB.initialize(function() {
+            DB.createTestData(function() {
+                Settings.initialize();
+                Statistics.initialize();
+                Stacks.initialize();
+                Flashcards.initialize();
+                Router.initialize();
+                App.registerEvents();
+            });
+        });
 	};
 
 	/* ======================= */
